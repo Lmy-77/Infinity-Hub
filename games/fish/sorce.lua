@@ -141,7 +141,7 @@ local Toggle = FischTab:CreateToggle({
       game.Players.LocalPlayer.PlayerGui.DescendantAdded:Connect(function(Descendant)
          if autoshake then
              if Descendant.Name == 'button' and Descendant.Parent.Name == 'safezone' then
-                 task.wait(0.1)
+                 task.wait(0.2)
                  game:GetService('GuiService').SelectedObject = Descendant
                  vim:SendKeyEvent(true, Enum.KeyCode.Return, false, game)
                  vim:SendKeyEvent(false, Enum.KeyCode.Return, false, game)
