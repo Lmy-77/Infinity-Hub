@@ -89,7 +89,7 @@ local Window = Rayfield:CreateWindow({
    Icon = 0,
    LoadingTitle = "Infinity Hub v2",
    LoadingSubtitle = "by Lmy77",
-   Theme = 'Ocean',
+   Theme = 'AmberGlow',
    DisableRayfieldPrompts = true,
    DisableBuildWarnings = false,
 })
@@ -101,8 +101,8 @@ local FischTab = Window:CreateTab("Fish")
 local RodTab = Window:CreateTab("Rod")
 local ItemTab = Window:CreateTab("Item")
 local TeleportTab = Window:CreateTab("Teleport")
-local LPlayerTab = Window:CreateTab("Player")
-local TradeTab = Window:CreateTab("Trade")
+local LPlayerTab = Window:CreateTab("Local Player")
+local PlayersTab = Window:CreateTab("Players")
 local VisualTab = Window:CreateTab("Visual")
 local SettingsTab = Window:CreateTab("Settings")
 
@@ -141,7 +141,7 @@ local Toggle = FischTab:CreateToggle({
       game.Players.LocalPlayer.PlayerGui.DescendantAdded:Connect(function(Descendant)
          if autoshake then
              if Descendant.Name == 'button' and Descendant.Parent.Name == 'safezone' then
-                 task.wait(0.2)
+                 task.wait(0.26)
                  game:GetService('GuiService').SelectedObject = Descendant
                  vim:SendKeyEvent(true, Enum.KeyCode.Return, false, game)
                  vim:SendKeyEvent(false, Enum.KeyCode.Return, false, game)
@@ -423,8 +423,8 @@ local Button = LPlayerTab:CreateButton({
 
 
 
-local Section = TradeTab:CreateSection("[ Trade Settings ]")
-local PlayerDropdown = TradeTab:CreateDropdown({
+local Section = PlayersTab:CreateSection("[ Players Settings ]")
+local PlayerDropdown = PlayersTab:CreateDropdown({
    Name = "Select Player",
    Options = getPlayers(),
    CurrentOption = '',
@@ -433,7 +433,7 @@ local PlayerDropdown = TradeTab:CreateDropdown({
    Callback = function(Options)
    end,
 })
-local Toggle = TradeTab:CreateToggle({
+local Toggle = PlayersTab:CreateToggle({
    Name = "Auto trade player",
    CurrentValue = false,
    Flag = "",
@@ -456,7 +456,7 @@ local Toggle = TradeTab:CreateToggle({
       end
    end,
 })
-local Button = TradeTab:CreateButton({
+local Button = PlayersTab:CreateButton({
    Name = "Teleport player",
    Callback = function()
       local playerTeleport = table.unpack(PlayerDropdown.CurrentOption)
@@ -465,7 +465,7 @@ local Button = TradeTab:CreateButton({
       )
    end,
 })
-local Button = TradeTab:CreateButton({
+local Button = PlayersTab:CreateButton({
    Name = "Refresh dropdown",
    Callback = function()
       PlayerDropdown:Refresh(getPlayers())
@@ -845,18 +845,21 @@ local Toggle = ItemTab:CreateToggle({
    Flag = "",
    Callback = function(bool)
       autochest = bool
+      if autochest then
+         game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-2827.480224609375, 214.8001708984375, 1518.3900146484375)
+         wait(.5)
+         vim:SendKeyEvent(true, "E", false, game)
+      end
       while autochest do task.wait()
          if not autochest then
             return
          end
-         game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-2827.480224609375, 214.8001708984375, 1518.3900146484375)
          for _, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
             if v:IsA('Tool') and v.Name == 'Treasure Map' then
                game.Players.LocalPlayer.Character.Humanoid:EquipTool(v)
                wait(.5)
                for _, jack in pairs(workspace.world.npcs:GetChildren()) do
                   if jack:IsA('Model') and jack.Name == 'Jack Marrow' then
-                    fireproximityprompt(v.dialogprompt)
                     local remote = jack.treasure.repairmap
                     local arguments = {}
                     local results = remote:InvokeServer(unpack(arguments))
@@ -954,8 +957,12 @@ local Toggle = ItemTab:CreateToggle({
    Flag = "",
    Callback = function(bool)
       autobuyrelic = bool
-      while autobuyrelic do task.wait(.2)
+      if autobuyrelic then
          game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-931.4317016601562, 225.73080444335938, -993.3056030273438)
+         wait(.5)
+         vim:SendKeyEvent(true, "E", false, game)
+      end
+      while autobuyrelic do task.wait(.2)
          for _, v in pairs(workspace.world.npcs:GetChildren()) do
             if v:IsA('Model') and v.Name == 'Merlin' then
                fireproximityprompt(v.dialogprompt)
@@ -980,8 +987,12 @@ local Toggle = ItemTab:CreateToggle({
    Flag = "",
    Callback = function(bool)
       autobuyrelic = bool
-      while autobuyrelic do task.wait(.2)
+      if autobuyrelic then
          game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-931.4317016601562, 225.73080444335938, -993.3056030273438)
+         wait(.5)
+         vim:SendKeyEvent(true, "E", false, game)
+      end
+      while autobuyrelic do task.wait(.2)
          for _, v in pairs(workspace.world.npcs:GetChildren()) do
             if v:IsA('Model') and v.Name == 'Merlin' then
                fireproximityprompt(v.dialogprompt)
@@ -1076,7 +1087,7 @@ local Section = SettingsTab:CreateSection("[ Script Settings ]")
 local ThemesDropdown = SettingsTab:CreateDropdown({
    Name = "Select theme",
    Options = {'Default', 'AmberGlow', 'Amethyst', 'Bloom', 'DarkBlue', 'Green', 'Light', 'Ocean', 'Serenity'},
-   CurrentOption = '',
+   CurrentOption = 'AmberGlow',
    MultipleOptions = false,
    Flag = "",
    Callback = function()
