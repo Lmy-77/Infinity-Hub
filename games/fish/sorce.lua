@@ -69,13 +69,6 @@ local function removePlatform()
         platform = nil
     end
 end
-function getTheme()
-   if Theme == '' then
-      return 'default'
-   else
-      return Theme
-   end
-end
 local vim = game:GetService("VirtualInputManager")
 local Signals = {"Activated", "MouseButton1Down", "MouseButton2Down", "MouseButton1Click", "MouseButton2Click"}
 local x = 580
@@ -96,7 +89,7 @@ local Window = Rayfield:CreateWindow({
    Icon = 0,
    LoadingTitle = "Infinity Hub v2",
    LoadingSubtitle = "by Lmy77",
-   Theme = getTheme(),
+   Theme = 'Ocean',
    DisableRayfieldPrompts = true,
    DisableBuildWarnings = false,
 })
