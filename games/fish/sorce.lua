@@ -78,12 +78,6 @@ local y = 350
 
 -- library settings
 local Rayfield = loadstring(game:HttpGet('https://raw.githubusercontent.com/InfinityMercury77/Library/refs/heads/main/Rayfield/source.lua'))()
-Rayfield:Notify({
-   Title = "Infinity Hub",
-   Content = "Hello "..game.Players.LocalPlayer.Name..", I hope you like it, have fun!",
-   Duration = 5,
-   Image = 10723415766
-})
 local Window = Rayfield:CreateWindow({
    Name = "Infinity Hub | Fisch 🐟",
    Icon = 0,
@@ -92,6 +86,12 @@ local Window = Rayfield:CreateWindow({
    Theme = 'AmberGlow',
    DisableRayfieldPrompts = true,
    DisableBuildWarnings = false,
+})
+Rayfield:Notify({
+   Title = "Infinity Hub",
+   Content = "Hello "..game.Players.LocalPlayer.Name..", I hope you like it, have fun!",
+   Duration = 5,
+   Image = 10723415766
 })
 
 
@@ -645,7 +645,7 @@ local Button = VisualTab:CreateButton({
 local Button = VisualTab:CreateButton({
    Name = "Infinite streak",
    Callback = function()
-      workspace.Lmy7745.HumanoidRootPart.user.user.Text = usernameInput.CurrentValue
+      workspace.Lmy7745.HumanoidRootPart.user.user.Text = '9000000000'
    end,
 })
 
@@ -921,7 +921,7 @@ local Toggle = ItemTab:CreateToggle({
          if game:GetService("ReplicatedStorage").playerstats[game.Players.LocalPlayer.Name].Rods[getRod()].Value == enchantF then
             Rayfield:Notify({
                Title = "Infinity Hub",
-               Content = "The enchantment "..enchantF.." has been achieved!",
+               Content = "The enchantment: "..enchantF.." has been achieved!",
                Duration = 5,
                Image = 10723415766
             })
