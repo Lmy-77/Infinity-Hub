@@ -69,6 +69,13 @@ local function removePlatform()
         platform = nil
     end
 end
+function getTheme()
+   if Theme == '' then
+      return 'default'
+   else
+      return Theme
+   end
+end
 local vim = game:GetService("VirtualInputManager")
 local Signals = {"Activated", "MouseButton1Down", "MouseButton2Down", "MouseButton1Click", "MouseButton2Click"}
 local x = 580
@@ -89,7 +96,7 @@ local Window = Rayfield:CreateWindow({
    Icon = 0,
    LoadingTitle = "Infinity Hub v2",
    LoadingSubtitle = "by Lmy77",
-   Theme = "Default",
+   Theme = getTheme(),
    DisableRayfieldPrompts = true,
    DisableBuildWarnings = false,
 })
@@ -141,7 +148,7 @@ local Toggle = FischTab:CreateToggle({
       game.Players.LocalPlayer.PlayerGui.DescendantAdded:Connect(function(Descendant)
          if autoshake then
              if Descendant.Name == 'button' and Descendant.Parent.Name == 'safezone' then
-                 task.wait(0.25)
+                 task.wait(0.3)
                  game:GetService('GuiService').SelectedObject = Descendant
                  vim:SendKeyEvent(true, Enum.KeyCode.Return, false, game)
                  vim:SendKeyEvent(false, Enum.KeyCode.Return, false, game)
