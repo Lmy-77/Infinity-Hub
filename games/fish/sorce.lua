@@ -1073,6 +1073,22 @@ local Toggle = ItemTab:CreateToggle({
 
 -- settings
 local Section = SettingsTab:CreateSection("[ Script Settings ]")
+local ThemesDropdown = SettingsTab:CreateDropdown({
+   Name = "Select theme",
+   Options = {'Default', 'AmberGlow', 'Amethyst', 'Bloom', 'DarkBlue', 'Green', 'Light', 'Ocean', 'Serenity'},
+   CurrentOption = '',
+   MultipleOptions = false,
+   Flag = "",
+   Callback = function()
+   end,
+})
+local Button = SettingsTab:CreateButton({
+   Name = "Apply theme",
+   Callback = function()
+      local selectedTheme = table.unpack(ThemesDropdown.CurrentOption)
+      Window.ModifyTheme(selectedTheme)
+   end,
+})
 local Button = SettingsTab:CreateButton({
    Name = "Destroy hub",
    Callback = function()
