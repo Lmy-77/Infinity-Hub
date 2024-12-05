@@ -89,7 +89,7 @@ local Window = Rayfield:CreateWindow({
    Icon = 0,
    LoadingTitle = "Infinity Hub v2",
    LoadingSubtitle = "by Lmy77",
-   Theme = "DarkBlue",
+   Theme = "Default",
    DisableRayfieldPrompts = true,
    DisableBuildWarnings = false,
 })
@@ -141,7 +141,7 @@ local Toggle = FischTab:CreateToggle({
       game.Players.LocalPlayer.PlayerGui.DescendantAdded:Connect(function(Descendant)
          if autoshake then
              if Descendant.Name == 'button' and Descendant.Parent.Name == 'safezone' then
-                 task.wait(0.2)
+                 task.wait(0.25)
                  game:GetService('GuiService').SelectedObject = Descendant
                  vim:SendKeyEvent(true, Enum.KeyCode.Return, false, game)
                  vim:SendKeyEvent(false, Enum.KeyCode.Return, false, game)
