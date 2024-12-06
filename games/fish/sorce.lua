@@ -645,7 +645,7 @@ local Button = VisualTab:CreateButton({
 local Button = VisualTab:CreateButton({
    Name = "Infinite streak",
    Callback = function()
-      workspace.Lmy7745.HumanoidRootPart.user.user.Text = '9000000000'
+      game.Players.LocalPlayer.Character.HumanoidRootPart.user.user.Text = '9000000000'
    end,
 })
 
