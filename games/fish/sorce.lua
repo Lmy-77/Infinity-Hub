@@ -100,6 +100,7 @@ Rayfield:Notify({
 local FischTab = Window:CreateTab("Fish")
 local RodTab = Window:CreateTab("Rod")
 local ItemTab = Window:CreateTab("Item")
+local EventTab = Window:CreateTab("Event")
 local TeleportTab = Window:CreateTab("Teleport")
 local LPlayerTab = Window:CreateTab("Local Player")
 local PlayersTab = Window:CreateTab("Players")
@@ -645,7 +646,7 @@ local Button = VisualTab:CreateButton({
 local Button = VisualTab:CreateButton({
    Name = "Infinite streak",
    Callback = function()
-      game.Players.LocalPlayer.Character.HumanoidRootPart.user.user.Text = '9000000000'
+      workspace.Lmy7745.HumanoidRootPart.user.user.Text = '9000000000'
    end,
 })
 
@@ -962,6 +963,7 @@ local Toggle = ItemTab:CreateToggle({
          wait(.5)
          vim:SendKeyEvent(true, "E", false, game)
       end
+      wait(.5)
       while autobuyrelic do task.wait(.2)
          for _, v in pairs(workspace.world.npcs:GetChildren()) do
             if v:IsA('Model') and v.Name == 'Merlin' then
@@ -1075,6 +1077,75 @@ local Toggle = ItemTab:CreateToggle({
                    firesignal(v[Signal])
                end
            end
+         end
+      end
+   end,
+})
+
+
+
+local Section = EventTab:CreateSection("[ Event Settings ]")
+local megalodonName  = {'Megalodon Default'}
+local Toggle = EventTab:CreateToggle({
+   Name = "Auto collect megalodon",
+   CurrentValue = false,
+   Flag = "",
+   Callback = function(bool)
+      automegalodon = bool
+      game.Players.LocalPlayer.PlayerGui.DescendantAdded:Connect(function(Descendant)
+         if automegalodon then
+             if Descendant.Name == 'button' and Descendant.Parent.Name == 'safezone' then
+                 task.wait(0.26)
+                 game:GetService('GuiService').SelectedObject = Descendant
+                 vim:SendKeyEvent(true, Enum.KeyCode.Return, false, game)
+                 vim:SendKeyEvent(false, Enum.KeyCode.Return, false, game)
+                 task.wait(0.1)
+                 game:GetService('GuiService').SelectedObject = nil
+             end
+         end
+      end)
+      while automegalodon do task.wait()
+         for _, v in pairs(workspace.zones.fishing:GetDescendants()) do
+            if v:IsA('Model') and v.Name == 'Megalodon Default' then
+               game:GetService('Players').LocalPlayer.Character.HumanoidRootPart:PivotTo(v:GetPivot())
+               wait()
+               for _, x in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+                  if x:IsA('Tool') and x.Name:lower():find('rod') then
+                     game.Players.LocalPlayer.Character.Humanoid:EquipTool(v)
+                  end
+               end
+               wait(.5)
+               for _, rod in pairs(game:GetService("Players").LocalPlayer.Character:GetChildren()) do
+                  if rod:IsA('Tool') and rod.Name:lower():find('rod') then
+                     local args = {[1] = 100, [2] = 1}
+                     rod.events.cast:FireServer(unpack(args))
+                  end
+               end
+               game:GetService('ReplicatedStorage').events.reelfinished:FireServer(100, true)
+            end
+         end
+      end
+   end,
+})
+local Button = EventTab:CreateButton({
+   Name = "Check megalodon",
+   Callback = function()
+      for _, v in pairs(workspace.zones.fishing:GetDescendants()) do
+         if v:IsA('Model') and table.find(megalodonName, v.Name) then
+            Rayfield:Notify({
+               Title = "Infinity Hub",
+               Content = "Megalodon spawned!",
+               Duration = 5,
+               Image = 10723415766
+            })
+         else
+          Rayfield:Notify({
+               Title = "Infinity Hub",
+               Content = "Megalodon dont spawned",
+               Duration = 5,
+               Image = 10723415766
+            })
+            return
          end
       end
    end,
