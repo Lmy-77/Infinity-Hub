@@ -71,6 +71,7 @@ local function removePlatform()
 end
 local vim = game:GetService("VirtualInputManager")
 local Signals = {"Activated", "MouseButton1Down", "MouseButton2Down", "MouseButton1Click", "MouseButton2Click"}
+local scriptVersion = '2.0'
 local x = 580
 local y = 350
 
@@ -89,8 +90,8 @@ local Window = Rayfield:CreateWindow({
 })
 Rayfield:Notify({
    Title = "Infinity Hub",
-   Content = "Hello "..game.Players.LocalPlayer.Name..", I hope you like it, have fun!",
-   Duration = 5,
+   Content = "Hello ".. game.Players.LocalPlayer.Name ..", I hope you enjoy using Infinity Hub v2, have fun! ❤️",
+   Duration = 8,
    Image = 10723415766
 })
 
@@ -652,6 +653,10 @@ local Button = VisualTab:CreateButton({
 
 
 
+local Paragraph = ItemTab:CreateParagraph({
+    Title = "Quick warning",
+    Content = "If some functions such as auto buy enchant relic, which are functions where the purchase is made by the NPC, do not work at the time the code is executed, in order for them to work, simply start the dialogue with the NPC. This will be fixed soon in future updates 😉."
+})
 local Section = ItemTab:CreateSection("[ Auto Sell Items ]")
 local Toggle = ItemTab:CreateToggle({
    Name = "Auto sell all",
@@ -1153,7 +1158,12 @@ local Button = EventTab:CreateButton({
 
 
 -- settings
-local Section = SettingsTab:CreateSection("[ Script Settings ]")
+local Section = SettingsTab:CreateSection("[ Information ]")
+SettingsTab:CreateLabel("Owner: Lmy77")
+SettingsTab:CreateLabel("Scripter: Lmy77")
+SettingsTab:CreateLabel("Ui Library: Rayfield | Shlexr")
+SettingsTab:CreateLabel("Script Version: "..scriptVersion)
+local Section = SettingsTab:CreateSection("[ Library Settings ]")
 local ThemesDropdown = SettingsTab:CreateDropdown({
    Name = "Select theme",
    Options = {'Default', 'AmberGlow', 'Amethyst', 'Bloom', 'DarkBlue', 'Green', 'Light', 'Ocean', 'Serenity'},
