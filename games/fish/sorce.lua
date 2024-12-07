@@ -665,7 +665,7 @@ local Toggle = ItemTab:CreateToggle({
          for _, v in pairs(workspace.world.npcs:GetChildren()) do
             if v:IsA('Model') and v.Name == 'Marc Merchant' then
                fireproximityprompt(v.dialogprompt)
-               wait
+               wait()
                v:WaitForChild("merchant"):WaitForChild("sellall"):InvokeServer()
             end
          end
