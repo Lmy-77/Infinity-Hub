@@ -665,6 +665,7 @@ local Toggle = ItemTab:CreateToggle({
          for _, v in pairs(workspace.world.npcs:GetChildren()) do
             if v:IsA('Model') and v.Name == 'Marc Merchant' then
                fireproximityprompt(v.dialogprompt)
+               wait
                v:WaitForChild("merchant"):WaitForChild("sellall"):InvokeServer()
             end
          end
@@ -690,6 +691,7 @@ local Toggle = ItemTab:CreateToggle({
                for _, v in pairs(workspace.world.npcs:GetChildren()) do
                   if v:IsA('Model') and v.Name == 'Marc Merchant' then
                      fireproximityprompt(v.dialogprompt)
+                     wait()
                      local remote = v.merchant.sell
                      local arguments = {}
                      local results = remote:InvokeServer(unpack(arguments))
@@ -839,7 +841,7 @@ local Button = ItemTab:CreateButton({
    end,
 })
 local PositionLabel = ItemTab:CreateLabel("Ancient Fragment is caught fishing", false)
-local Section = ItemTab:CreateSection("[ Auto Chest ]")
+local Section = ItemTab:CreateSection("[ Auto Chest Settings]")
 local Toggle = ItemTab:CreateToggle({
    Name = "Auto repair map",
    CurrentValue = false,
@@ -848,8 +850,6 @@ local Toggle = ItemTab:CreateToggle({
       autochest = bool
       if autochest then
          game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-2827.480224609375, 214.8001708984375, 1518.3900146484375)
-         wait(.5)
-         vim:SendKeyEvent(true, "E", false, game)
       end
       while autochest do task.wait()
          if not autochest then
@@ -861,6 +861,7 @@ local Toggle = ItemTab:CreateToggle({
                wait(.5)
                for _, jack in pairs(workspace.world.npcs:GetChildren()) do
                   if jack:IsA('Model') and jack.Name == 'Jack Marrow' then
+                  fireproximityprompt(v.dialogprompt)
                     local remote = jack.treasure.repairmap
                     local arguments = {}
                     local results = remote:InvokeServer(unpack(arguments))
@@ -960,14 +961,13 @@ local Toggle = ItemTab:CreateToggle({
       autobuyrelic = bool
       if autobuyrelic then
          game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-931.4317016601562, 225.73080444335938, -993.3056030273438)
-         wait(.5)
-         vim:SendKeyEvent(true, "E", false, game)
       end
       wait(.5)
       while autobuyrelic do task.wait(.2)
          for _, v in pairs(workspace.world.npcs:GetChildren()) do
             if v:IsA('Model') and v.Name == 'Merlin' then
                fireproximityprompt(v.dialogprompt)
+               wait()
                local remote = v.Merlin.power
                local arguments = {}
                local results = remote:InvokeServer(unpack(arguments))
@@ -991,13 +991,12 @@ local Toggle = ItemTab:CreateToggle({
       autobuyrelic = bool
       if autobuyrelic then
          game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-931.4317016601562, 225.73080444335938, -993.3056030273438)
-         wait(.5)
-         vim:SendKeyEvent(true, "E", false, game)
       end
       while autobuyrelic do task.wait(.2)
          for _, v in pairs(workspace.world.npcs:GetChildren()) do
             if v:IsA('Model') and v.Name == 'Merlin' then
                fireproximityprompt(v.dialogprompt)
+               wait()
                local remote = v.Merlin.luck
                local arguments = {}
                local results = remote:InvokeServer(unpack(arguments))
