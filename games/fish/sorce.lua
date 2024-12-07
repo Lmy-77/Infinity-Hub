@@ -425,6 +425,10 @@ local Button = LPlayerTab:CreateButton({
 
 
 
+local Paragraph = PlayersTab:CreateParagraph({
+    Title = "Auto trade waring",
+    Content = "If you sent the auto trade to a player and when you send it again it doesn't work. Just press the ‘Refresh dropdown’ button and it will work normally."
+})
 local Section = PlayersTab:CreateSection("[ Players Settings ]")
 local PlayerDropdown = PlayersTab:CreateDropdown({
    Name = "Select Player",
