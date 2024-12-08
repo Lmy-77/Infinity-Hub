@@ -69,6 +69,13 @@ local function removePlatform()
         platform = nil
     end
 end
+function fireprompt(Prompt)
+   local PromptTime = Prompt.HoldDuration
+   Prompt.HoldDuration = 0
+   Prompt:InputHoldBegin()
+   Prompt:InputHoldEnd()
+   Prompt.HoldDuration = PromptTime
+end
 local vim = game:GetService("VirtualInputManager")
 local Signals = {"Activated", "MouseButton1Down", "MouseButton2Down", "MouseButton1Click", "MouseButton2Click"}
 local scriptVersion = '2.0'
@@ -101,6 +108,7 @@ Rayfield:Notify({
 local FischTab = Window:CreateTab("Fish")
 local RodTab = Window:CreateTab("Rod")
 local ItemTab = Window:CreateTab("Item")
+local NotifyTab = Window:CreateTab("Notify")
 local TeleportTab = Window:CreateTab("Teleport")
 local LPlayerTab = Window:CreateTab("Local Player")
 local PlayersTab = Window:CreateTab("Players")
@@ -656,10 +664,70 @@ local Button = VisualTab:CreateButton({
 
 
 
-local Paragraph = ItemTab:CreateParagraph({
-    Title = "Quick warning",
-    Content = "If some functions such as auto buy enchant relic, which are functions where the purchase is made by the NPC, do not work at the time the code is executed, in order for them to work, simply start the dialogue with the NPC. This will be fixed soon in future updates 😉."
+local Section = NotifyTab:CreateSection("[ Notify Options ]")
+local Toggle = NotifyTab:CreateToggle({
+   Name = "Notify if travelling merchant",
+   CurrentValue = false,
+   Flag = "",
+   Callback = function(bool)
+      notifymerchant = bool
+      game:GetService('Workspace').DescendantAdded:Connect(function(Descendant)
+         if notifymerchant then
+            if Descendant:IsA('Model') and Descendant.Name == 'Travelling Merchant' then
+               Rayfield:Notify({
+                  Title = "Infinity Hub",
+                  Content = "Travelling Merchant spawned!",
+                  Duration = 8,
+                  Image = 10723415766
+               })
+            end
+         end
+      end)
+   end,
 })
+local Toggle = NotifyTab:CreateToggle({
+   Name = "Notify if megalodon spawned",
+   CurrentValue = false,
+   Flag = "",
+   Callback = function(bool)
+      notifymegalodon = bool
+      game:GetService('Workspace').DescendantAdded:Connect(function(Descendant)
+         if notifymegalodon then
+            if Descendant:IsA("Part") and Descendant.Name == 'Megalodon Default' then
+               Rayfield:Notify({
+                  Title = "Infinity Hub",
+                  Content = "Megalodon spawned!",
+                  Duration = 8,
+                  Image = 10723415766
+               })
+            end
+         end
+      end)
+   end,
+})
+local Toggle = NotifyTab:CreateToggle({
+   Name = "Notify if ancient serpent",
+   CurrentValue = false,
+   Flag = "",
+   Callback = function(bool)
+      notifyserpent = bool
+      game:GetService('Workspace').DescendantAdded:Connect(function(child)
+         if notifyserpent then
+            if child:IsA("Part") and child.Name == 'The Depths - Serpent' then
+               Rayfield:Notify({
+                  Title = "Infinity Hub",
+                  Content = "Ancient Depth Serpent spawned!",
+                  Duration = 8,
+                  Image = 10723415766
+               })
+            end
+         end
+      end)
+   end,
+})
+
+
+
 local Section = ItemTab:CreateSection("[ Auto Sell Items ]")
 local Toggle = ItemTab:CreateToggle({
    Name = "Auto sell all",
@@ -669,11 +737,15 @@ local Toggle = ItemTab:CreateToggle({
       sellall = bool
       if sellall then
          game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(466.2166442871094, 150.62973022460938, 230.4716796875);
-         wait(3.5)
+      end
+      while sellall do task.wait(.5)
          for _, v in pairs(workspace.world.npcs:GetChildren()) do
             if v:IsA('Model') and v.Name == 'Marc Merchant' then
-               fireproximityprompt(v.dialogprompt)
-               wait()
+               fireprompt(v.dialogprompt)
+            end
+         end
+         for _, v in pairs(workspace.world.npcs:GetChildren()) do
+            if v:IsA('Model') and v.Name == 'Marc Merchant' then
                v:WaitForChild("merchant"):WaitForChild("sellall"):InvokeServer()
             end
          end
@@ -860,8 +932,11 @@ local Toggle = ItemTab:CreateToggle({
          game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-2827.480224609375, 214.8001708984375, 1518.3900146484375)
       end
       while autochest do task.wait()
-         if not autochest then
-            return
+         if not autochest then return end
+         for _, v in pairs(workspace.world.npcs:GetChildren()) do
+            if v:IsA('Model') and v.Name == 'Jack Marrow' then
+               fireprompt(v.dialogprompt)
+            end
          end
          for _, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
             if v:IsA('Tool') and v.Name == 'Treasure Map' then
@@ -869,7 +944,6 @@ local Toggle = ItemTab:CreateToggle({
                wait(.5)
                for _, jack in pairs(workspace.world.npcs:GetChildren()) do
                   if jack:IsA('Model') and jack.Name == 'Jack Marrow' then
-                  fireproximityprompt(v.dialogprompt)
                     local remote = jack.treasure.repairmap
                     local arguments = {}
                     local results = remote:InvokeServer(unpack(arguments))
@@ -947,8 +1021,6 @@ local Toggle = ItemTab:CreateToggle({
          for _, Enchant in pairs(workspace.world.interactables:GetChildren()) do
             if Enchant:IsA('Model') and Enchant.Name == 'Enchant Altar' then
                Enchant.ProximityPrompt.HoldDuration = 0
-               fireproximityprompt(Enchant.ProximityPrompt)
-               wait(.2)
                for _, Button in pairs(game:GetService("Players").LocalPlayer.PlayerGui.over:GetDescendants()) do
                   if Button:IsA("ImageButton") or Button:IsA("TextButton") and Button.Name == 'confirm' then
                      for i, Signal in pairs(Signals) do
@@ -970,12 +1042,14 @@ local Toggle = ItemTab:CreateToggle({
       if autobuyrelic then
          game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-931.4317016601562, 225.73080444335938, -993.3056030273438)
       end
-      wait(.5)
       while autobuyrelic do task.wait(.2)
          for _, v in pairs(workspace.world.npcs:GetChildren()) do
             if v:IsA('Model') and v.Name == 'Merlin' then
-               fireproximityprompt(v.dialogprompt)
-               wait()
+               fireprompt(v.dialogprompt)
+            end
+         end
+         for _, v in pairs(workspace.world.npcs:GetChildren()) do
+            if v:IsA('Model') and v.Name == 'Merlin' then
                local remote = v.Merlin.power
                local arguments = {}
                local results = remote:InvokeServer(unpack(arguments))
@@ -1003,8 +1077,6 @@ local Toggle = ItemTab:CreateToggle({
       while autobuyrelic do task.wait(.2)
          for _, v in pairs(workspace.world.npcs:GetChildren()) do
             if v:IsA('Model') and v.Name == 'Merlin' then
-               fireproximityprompt(v.dialogprompt)
-               wait()
                local remote = v.Merlin.luck
                local arguments = {}
                local results = remote:InvokeServer(unpack(arguments))
