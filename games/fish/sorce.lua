@@ -1,7 +1,13 @@
 -- detect service
 local UserInputService = game:GetService("UserInputService")
 if UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled and not UserInputService.MouseEnabled then
-	print('Mobile device')
+	print('[infinity Hub]: [   SUCCESS   ] - Script loaded 🟢')
+   print('[infinity Hub]: [   GAME   ] - Fisch 🐟')
+   print('[infinity Hub]: [   SERVICE   ] - Mobile 📱')
+else
+	print('[infinity Hub]: [   SUCCESS   ] - Script loaded 🟢')
+   print('[infinity Hub]: [   GAME   ] - Fisch 🐟')
+   print('[infinity Hub]: [   SERVICE   ] - Computer 💻')
 end
 
 
@@ -458,7 +464,7 @@ local Toggle = PlayersTab:CreateToggle({
             if v:IsA('Tool') and table.find(getFish(), v.Name) then
                if not autotrade then return end
                game.Players.LocalPlayer.Character.Humanoid:EquipTool(v)
-               wait(.2)
+               wait()
                local remote = game.Players.LocalPlayer.Character[v.Name].offer
                local arguments = {
                   [1] = game:GetService("Players")[playersName]
@@ -931,7 +937,7 @@ local Toggle = ItemTab:CreateToggle({
       if autochest then
          game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-2827.480224609375, 214.8001708984375, 1518.3900146484375)
       end
-      while autochest do task.wait()
+      while autochest do task.wait(.2)
          if not autochest then return end
          for _, v in pairs(workspace.world.npcs:GetChildren()) do
             if v:IsA('Model') and v.Name == 'Jack Marrow' then
@@ -941,7 +947,7 @@ local Toggle = ItemTab:CreateToggle({
          for _, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
             if v:IsA('Tool') and v.Name == 'Treasure Map' then
                game.Players.LocalPlayer.Character.Humanoid:EquipTool(v)
-               wait(.5)
+               wait()
                for _, jack in pairs(workspace.world.npcs:GetChildren()) do
                   if jack:IsA('Model') and jack.Name == 'Jack Marrow' then
                     local remote = jack.treasure.repairmap
@@ -1075,6 +1081,11 @@ local Toggle = ItemTab:CreateToggle({
          game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-931.4317016601562, 225.73080444335938, -993.3056030273438)
       end
       while autobuyrelic do task.wait(.2)
+         for _, v in pairs(workspace.world.npcs:GetChildren()) do
+            if v:IsA('Model') and v.Name == 'Merlin' then
+               fireprompt(v.dialogprompt)
+            end
+         end
          for _, v in pairs(workspace.world.npcs:GetChildren()) do
             if v:IsA('Model') and v.Name == 'Merlin' then
                local remote = v.Merlin.luck
