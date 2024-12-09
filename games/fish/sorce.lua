@@ -848,6 +848,7 @@ local Toggle = ItemTab:CreateToggle({
                end
             end
          end
+         wait(.02)
          for _, v in pairs(game:GetService("Players").LocalPlayer.PlayerGui.over:GetDescendants()) do
             if v:IsA("ImageButton") or v:IsA("TextButton") and v.Name == 'confirm' then
                for i, Signal in pairs(Signals) do
@@ -859,11 +860,18 @@ local Toggle = ItemTab:CreateToggle({
    end,
 })
 local Toggle = ItemTab:CreateToggle({
-   Name = "Auto place crab cage (shift lock)",
+   Name = "Auto place crab cage [ shift lock ]",
    CurrentValue = false,
    Flag = "",
    Callback = function(bool)
       placecage = bool
+      if placecage then
+         for _, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+            if v:IsA('Tool') and v.Name == 'Crab Cage' then
+               game.Players.LocalPlayer.Character.Humanoid:EquipTool(v)
+            end
+         end
+      end
       while placecage do task.wait()
          for _, v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
             if v:IsA('Tool') and v.Name == 'Crab Cage' then
