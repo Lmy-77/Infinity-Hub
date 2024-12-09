@@ -643,34 +643,28 @@ local Button = VisualTab:CreateButton({
    end,
 })
 local Section = VisualTab:CreateSection("[ Character Options ]")
-local oldLevel = ''
-local oldLevelText = ''
 local Button = VisualTab:CreateButton({
    Name = "Infinite level",
    Callback = function()
-      for _, v in pairs(game:GetDescendants()) do
+      for _, v in pairs(game:GetService("Players").LocalPlayer.leaderstats:GetChildren()) do
          if v:IsA('NumberValue') and v.Name == 'Level' then
-            oldLevel = v.Value
             wait(.2)
             v.Value = 9e9
          end
       end
-      oldLevelText = oldLevel
       game.Players.LocalPlayer.Character.HumanoidRootPart.user.level.Text = '9000000000'
-      print(oldLevel)
-      print(oldLevelText)
    end,
 })
 local Button = VisualTab:CreateButton({
    Name = "Infinite streak",
    Callback = function()
-      workspace.Lmy7745.HumanoidRootPart.user.user.Text = '9000000000'
+      workspace.Reset43354776.HumanoidRootPart.user.streak.Text = '9000000000'
    end,
 })
 
 
 
-local Section = NotifyTab:CreateSection("[ Notify Options ]")
+local Section = NotifyTab:CreateSection("[ Notify Options Beta ]")
 local Toggle = NotifyTab:CreateToggle({
    Name = "Notify if travelling merchant",
    CurrentValue = false,
@@ -679,7 +673,7 @@ local Toggle = NotifyTab:CreateToggle({
       notifymerchant = bool
       game:GetService('Workspace').DescendantAdded:Connect(function(Descendant)
          if notifymerchant then
-            if Descendant:IsA('Model') and Descendant.Name == 'Travelling Merchant' then
+            if Descendant:IsA('Model') and Descendant.Name == 'Merchant Boat' then
                Rayfield:Notify({
                   Title = "Infinity Hub",
                   Content = "Travelling Merchant spawned!",
@@ -1046,15 +1040,19 @@ local Toggle = ItemTab:CreateToggle({
       end
    end,
 })
+local Button = ItemTab:CreateButton({
+   Name = "Teleport to altar",
+   Callback = function()
+      game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(1309.2786865234375, -802.427001953125, -83.36397552490234)
+   end,
+})
+local Section = ItemTab:CreateSection("[ Merlin Shop ]")
 local Toggle = ItemTab:CreateToggle({
    Name = "Auto buy enchant relic",
    CurrentValue = false,
    Flag = "",
    Callback = function(bool)
       autobuyrelic = bool
-      if autobuyrelic then
-         game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-931.4317016601562, 225.73080444335938, -993.3056030273438)
-      end
       while autobuyrelic do task.wait(.2)
          for _, v in pairs(workspace.world.npcs:GetChildren()) do
             if v:IsA('Model') and v.Name == 'Merlin' then
@@ -1071,23 +1069,13 @@ local Toggle = ItemTab:CreateToggle({
       end
    end,
 })
-local Button = ItemTab:CreateButton({
-   Name = "Teleport to altar",
-   Callback = function()
-      game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(1309.2786865234375, -802.427001953125, -83.36397552490234)
-   end,
-})
-local Section = ItemTab:CreateSection("[ Luck Settings ]")
 local Toggle = ItemTab:CreateToggle({
    Name = "Auto buy luck",
    CurrentValue = false,
    Flag = "",
    Callback = function(bool)
-      autobuyrelic = bool
-      if autobuyrelic then
-         game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-931.4317016601562, 225.73080444335938, -993.3056030273438)
-      end
-      while autobuyrelic do task.wait(.2)
+      autobuyluck = bool
+      while autobuyluck do task.wait(.2)
          for _, v in pairs(workspace.world.npcs:GetChildren()) do
             if v:IsA('Model') and v.Name == 'Merlin' then
                fireprompt(v.dialogprompt)
@@ -1101,6 +1089,12 @@ local Toggle = ItemTab:CreateToggle({
             end
          end
       end
+   end,
+})
+local Button = ItemTab:CreateButton({
+   Name = "Teleport to merlin [ first ]",
+   Callback = function()
+      game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-931.4317016601562, 225.73080444335938, -993.3056030273438)
    end,
 })
 local Section = ItemTab:CreateSection("[ Bait Settings ]")
@@ -1141,6 +1135,7 @@ local Toggle = ItemTab:CreateToggle({
                end
             end
          end
+         wait(.02)
          for _, v in pairs(game:GetService("Players").LocalPlayer.PlayerGui.over:GetDescendants()) do
             if v:IsA("ImageButton") or v:IsA("TextButton") and v.Name == 'confirm' then
                for i, Signal in pairs(Signals) do
@@ -1159,22 +1154,23 @@ local Toggle = ItemTab:CreateToggle({
       buyqualitybait = bool
       while buyqualitybait do task.wait()
          game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-173.23184204101562, 143.21090698242188, 1932.7012939453125)
-         for _, v in pairs(workspace.world.interactables:GetDescendants()) do
-            if v:IsA('Model') and v.Name == 'Quality Bait Crate' then
-               for _, x in pairs(v:GetDescendants()) do
-                  if x:IsA('ProximityPrompt') and x.Name == 'purchaserompt' then
-                     fireproximityprompt(x)
+          for _, v in pairs(workspace.world.interactables:GetDescendants()) do
+             if v:IsA('Model') and v.Name == 'Quality Bait Crate' then
+                for _, x in pairs(v:GetDescendants()) do
+                   if x:IsA('ProximityPrompt') and x.Name == 'purchaserompt' then
+                      fireproximityprompt(x)
+                   end
+                end
+             end
+          end
+          wait(.02)
+          for _, v in pairs(game:GetService("Players").LocalPlayer.PlayerGui.over:GetDescendants()) do
+              if v:IsA("ImageButton") or v:IsA("TextButton") and v.Name == 'confirm' then
+                  for i, Signal in pairs(Signals) do
+                      firesignal(v[Signal])
                   end
-               end
-            end
-         end
-         for _, v in pairs(game:GetService("Players").LocalPlayer.PlayerGui.over:GetDescendants()) do
-            if v:IsA("ImageButton") or v:IsA("TextButton") and v.Name == 'confirm' then
-               for i, Signal in pairs(Signals) do
-                   firesignal(v[Signal])
-               end
-           end
-         end
+              end
+          end
       end
    end,
 })
@@ -1207,6 +1203,7 @@ local Button = SettingsTab:CreateButton({
 local Button = SettingsTab:CreateButton({
    Name = "Destroy hub",
    Callback = function()
+      workspace.safeZone:Destroy()
       Rayfield:Destroy()
    end,
 })
