@@ -691,7 +691,7 @@ local Toggle = NotifyTab:CreateToggle({
    Flag = "",
    Callback = function(bool)
       notifymegalodon = bool
-      game:GetService('Workspace').DescendantAdded:Connect(function(Descendant)
+      workspace.zones.DescendantAdded:Connect(function(Descendant)
          if notifymegalodon then
             if Descendant:IsA("Part") and Descendant.Name == 'Megalodon Default' then
                Rayfield:Notify({
@@ -711,7 +711,7 @@ local Toggle = NotifyTab:CreateToggle({
    Flag = "",
    Callback = function(bool)
       notifyserpent = bool
-      game:GetService('Workspace').DescendantAdded:Connect(function(child)
+      workspace.zones.DescendantAdded:Connect(function(child)
          if notifyserpent then
             if child:IsA("Part") and child.Name == 'The Depths - Serpent' then
                Rayfield:Notify({
