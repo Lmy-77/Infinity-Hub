@@ -1004,10 +1004,19 @@ local Toggle = ItemTab:CreateToggle({
    Callback = function(bool)
       autoenchant = bool
       local enchantF = table.unpack(EnchantsDropdown.CurrentOption)
-      while autoenchant do task.wait()
-         if not autoenchant then
+      if autoenchant then
+        if enchantF == '' then
+            Rayfield:Notify({
+               Title = "Infinity Hub",
+               Content = "Please select enchant first",
+               Duration = 5,
+               Image = 10723415766
+            })
             return
-         end
+        end
+      end
+      while autoenchant do task.wait()
+         if not autoenchant then return end
          if game:GetService("ReplicatedStorage").playerstats[game.Players.LocalPlayer.Name].Rods[getRod()].Value == enchantF then
             Rayfield:Notify({
                Title = "Infinity Hub",
@@ -1026,7 +1035,7 @@ local Toggle = ItemTab:CreateToggle({
          wait(.2)
          for _, Enchant in pairs(workspace.world.interactables:GetChildren()) do
             if Enchant:IsA('Model') and Enchant.Name == 'Enchant Altar' then
-               Enchant.ProximityPrompt.HoldDuration = 0
+               fireprompt(Enchant.ProximityPrompt)
                for _, Button in pairs(game:GetService("Players").LocalPlayer.PlayerGui.over:GetDescendants()) do
                   if Button:IsA("ImageButton") or Button:IsA("TextButton") and Button.Name == 'confirm' then
                      for i, Signal in pairs(Signals) do
