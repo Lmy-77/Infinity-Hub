@@ -768,15 +768,13 @@ local Toggle = ItemTab:CreateToggle({
          game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(466.2166442871094, 150.62973022460938, 230.4716796875);
          for _, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
             if v:IsA('Tool') and table.find(getFish(), v.Name) then
-               if not sellhand then
-                  return
-               end
+               if not sellhand then return end
                wait(.2)
                game.Players.LocalPlayer.Character.Humanoid:EquipTool(v)
                wait(.2)
                for _, v in pairs(workspace.world.npcs:GetChildren()) do
                   if v:IsA('Model') and v.Name == 'Marc Merchant' then
-                     fireproximityprompt(v.dialogprompt)
+                     fireprompt(v.dialogprompt)
                      wait()
                      local remote = v.merchant.sell
                      local arguments = {}
