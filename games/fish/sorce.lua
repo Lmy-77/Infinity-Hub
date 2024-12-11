@@ -13,6 +13,13 @@ end
 
 
 -- variables
+function gethub()
+   for _, v in pairs(game:GetService('Players').LocalPlayer.PlayerGui:GetChildren()) do
+      if v:IsA('ScreenGui') and v.Name == 'reel' then
+         return v
+      end
+   end
+end
 function getRod()
    for _, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
       if v:IsA('Tool') and v.Name:lower():find('rod') then
@@ -156,12 +163,14 @@ local Toggle = FischTab:CreateToggle({
       game.Players.LocalPlayer.PlayerGui.DescendantAdded:Connect(function(Descendant)
          if autoshake then
              if Descendant.Name == 'button' and Descendant.Parent.Name == 'safezone' then
-                 game:GetService('GuiService').SelectedObject = Descendant
-                 task.wait(0.20)
-                 vim:SendKeyEvent(true, Enum.KeyCode.Return, false, game)
-                 vim:SendKeyEvent(false, Enum.KeyCode.Return, false, game)
-                 task.wait()
-                 game:GetService('GuiService').SelectedObject = nil
+               repeat task.wait()
+                  game:GetService('GuiService').SelectedObject = Descendant
+                  task.wait(.02)
+                  vim:SendKeyEvent(true, Enum.KeyCode.Return, false, game)
+                  vim:SendKeyEvent(false, Enum.KeyCode.Return, false, game)
+                  task.wait()
+                  game:GetService('GuiService').SelectedObject = nil
+               until gethub() or autoshake == false
              end
          end
       end)
@@ -273,7 +282,7 @@ local Button = TeleportTab:CreateButton({
 local Section = TeleportTab:CreateSection("[ Teleport Zones ]")
 local ZonesDropdown = TeleportTab:CreateDropdown({
    Name = "Select zone",
-   Options = {'Safe Whirlpool', 'Great White Shark', 'Great Hammerhead Shark', 'Whale Shark', 'The Depths - Serpent', 'Megalodon Default'},
+   Options = {'Safe Whirlpool', 'Great White Shark', 'Great Hammerhead Shark', 'Whale Shark', 'The Depths - Serpent', 'Megalodon Default', 'Megalodon Ancient'},
    CurrentOption = '',
    MultipleOptions = false,
    Flag = "",
@@ -693,7 +702,7 @@ local Toggle = NotifyTab:CreateToggle({
       notifymegalodon = bool
       workspace.zones.DescendantAdded:Connect(function(Descendant)
          if notifymegalodon then
-            if Descendant:IsA("Part") and Descendant.Name == 'Megalodon Default' then
+            if Descendant:IsA("Part") and Descendant.Name == 'Megalodon Default' or Descendant.Name == 'Megalodon Ancient' then
                Rayfield:Notify({
                   Title = "Infinity Hub",
                   Content = "Megalodon spawned!",
