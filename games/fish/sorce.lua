@@ -1,11 +1,11 @@
 -- detect service
 local UserInputService = game:GetService("UserInputService")
 if UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled and not UserInputService.MouseEnabled then
-	print('[infinity Hub]: [   SUCCESS   ] - Script loaded 🟢')
+   print('[infinity Hub]: [   SUCCESS   ] - Script loaded 🟢')
    print('[infinity Hub]: [   GAME   ] - Fisch 🐟')
    print('[infinity Hub]: [   SERVICE   ] - Mobile 📱')
 else
-	print('[infinity Hub]: [   SUCCESS   ] - Script loaded 🟢')
+   print('[infinity Hub]: [   SUCCESS   ] - Script loaded 🟢')
    print('[infinity Hub]: [   GAME   ] - Fisch 🐟')
    print('[infinity Hub]: [   SERVICE   ] - Computer 💻')
 end
@@ -822,7 +822,7 @@ local Button = ItemTab:CreateButton({
    end,
 })
 local Button = ItemTab:CreateButton({
-   Name = "Equip totem",
+   Name = "Use totem",
    Callback = function()
       local totem = table.unpack(TotemsDropdown.CurrentOption)
       for _, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
@@ -830,9 +830,26 @@ local Button = ItemTab:CreateButton({
             game.Players.LocalPlayer.Character.Humanoid:EquipTool(v)
          end
       end
+      wait(.1)
+      for _, v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
+         if v:IsA('Tool') and v.Name == totem then
+             v:Activate()
+         end
+      end
    end,
 })
 local Section = ItemTab:CreateSection("[ Meteor Spawn ]")
+local Button = ItemTab:CreateButton({
+   Name = "Collect meteor item",
+   Callback = function()
+      for _, v in pairs(workspace.MeteorItems:GetChildren()) do
+         if v:IsA('Model') then
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.handle.CFrame
+            fireprompt(v.Center.prompt)
+         end
+      end
+   end,
+})
 local Button = ItemTab:CreateButton({
    Name = "Teleport to meteor",
    Callback = function()
