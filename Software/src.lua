@@ -1,5 +1,5 @@
 local games = {
-    [{16732694052}] = 'https://raw.githubusercontent.com/Lmy-77/Infinity-Hub/refs/heads/scripts/games/fish/sorce.lua'
+    [{16732694052}] = 'https://raw.githubusercontent.com/Lmy-77/Infinity-Hub/refs/heads/scripts/games/fish/src.lua'
 }
 
 for ids, url in next, games do
