@@ -121,8 +121,9 @@ Rayfield:Notify({
 local FischTab = Window:CreateTab("Fish")
 local RodTab = Window:CreateTab("Rod")
 local ItemTab = Window:CreateTab("Item")
-local NotifyTab = Window:CreateTab("Notify")
 local TeleportTab = Window:CreateTab("Teleport")
+local CheckEventTab = Window:CreateTab("Check Events")
+local TotemTab = Window:CreateTab("Auto Totem")
 local LPlayerTab = Window:CreateTab("Local Player")
 local PlayersTab = Window:CreateTab("Players")
 local VisualTab = Window:CreateTab("Visual")
@@ -226,7 +227,7 @@ local Button = FischTab:CreateButton({
 local Section = TeleportTab:CreateSection("[ Teleport Island ]")
 local IslandsDropdown = TeleportTab:CreateDropdown({
    Name = "Select islands",
-   Options = {'Moosewood', 'Roslit Bay', 'Snowcap Island', 'Terrapin Island', 'Statue Of Sovereignty', 'Mushgrove', 'Sunstone Island', 'Forsaken Shores', 'Vertigo', 'The Depths', 'Desolate Deep', 'Brine Pool', 'Ancient Isle', 'Ancient Archives', 'Lantern'},
+   Options = {'Moosewood', 'Roslit Bay', 'Snowcap Island', 'Terrapin Island', 'Statue Of Sovereignty', 'Mushgrove', 'Sunstone Island', 'Forsaken Shores', 'Vertigo', 'The Depths', 'Desolate Deep', 'Brine Pool', 'Ancient Isle', 'Ancient Archives', 'Winter Village', 'Lantern'},
    CurrentOption = '',
    MultipleOptions = false,
    Flag = "",
@@ -274,6 +275,8 @@ local Button = TeleportTab:CreateButton({
          game:GetService('Players').LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(6060.2119140625, 195.1801300048828, 288.9572448730469)
       elseif islands == 'Ancient Archives' then
          game:GetService('Players').LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-3160.580078125, -747.21044921875, 1706.7183837890625)
+      elseif islands == 'Winter Village' then
+         game:GetService('Players').LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(25.33557891845703, 364.6358337402344, -9582.041015625)
       elseif islands == 'Lantern' then
          game:GetService('Players').LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-39.32403564453125, -246.57000732421875, 202.68121337890625)
       end
@@ -540,6 +543,13 @@ local Button = RodTab:CreateButton({
     game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-1477.8162841796875, -225.71067810058594, -2350.163330078125)
    end,
 })
+local Section = RodTab:CreateSection("[ Candy Cane Rod ]")
+local Button = RodTab:CreateButton({
+   Name = "Teleport to candy cane rod",
+   Callback = function()
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-188.8999481201172, 367.0196533203125, -9449.46484375)
+   end,
+})
 local Section = RodTab:CreateSection("[ Phoenix Rod ]")
 local Button = RodTab:CreateButton({
    Name = "Teleport to phoenix rod",
@@ -673,65 +683,52 @@ local Button = VisualTab:CreateButton({
 
 
 
-local Section = NotifyTab:CreateSection("[ Notify Options Beta ]")
-local Toggle = NotifyTab:CreateToggle({
-   Name = "Notify if travelling merchant",
-   CurrentValue = false,
-   Flag = "",
-   Callback = function(bool)
-      notifymerchant = bool
-      game:GetService('Workspace').DescendantAdded:Connect(function(Descendant)
-         if notifymerchant then
-            if Descendant:IsA('Model') and Descendant.Name == 'Merchant Boat' then
-               Rayfield:Notify({
-                  Title = "Infinity Hub",
-                  Content = "Travelling Merchant spawned!",
-                  Duration = 8,
-                  Image = 10723415766
-               })
-            end
+local Section = CheckEventTab:CreateSection("[ Check Options ]")
+local Button = CheckEventTab:CreateButton({
+   Name = "Check if travelling merchant",
+   Callback = function()
+      for _, v in pairs(game:GetService('Workspace'):GetDescendants()) do
+         if v:IsA('Model') and v.Name == 'Travelling Merchant' then
+            Rayfield:Notify({
+               Title = "Infinity Hub",
+               Content = "Travelling Merchant spawned!",
+               Duration = 8,
+               Image = 10723415766
+            })
          end
-      end)
+      end
    end,
 })
-local Toggle = NotifyTab:CreateToggle({
-   Name = "Notify if megalodon spawned",
+local Button = CheckEventTab:CreateButton({
+   Name = "Check if megalodon spawned",
    CurrentValue = false,
-   Flag = "",
-   Callback = function(bool)
-      notifymegalodon = bool
-      workspace.zones.DescendantAdded:Connect(function(Descendant)
-         if notifymegalodon then
-            if Descendant:IsA("Part") and Descendant.Name == 'Megalodon Default' or Descendant.Name == 'Megalodon Ancient' then
-               Rayfield:Notify({
-                  Title = "Infinity Hub",
-                  Content = "Megalodon spawned!",
-                  Duration = 8,
-                  Image = 10723415766
-               })
-            end
+   Callback = function()
+      for _, v in pairs(game:GetService('Workspace'):GetDescendants()) do
+         if v:IsA('Part') and v.Name == 'Megalodon Default' or v.Name == 'Megalodon Ancient' then
+            Rayfield:Notify({
+               Title = "Infinity Hub",
+               Content = "Megalodon spawned!",
+               Duration = 8,
+               Image = 10723415766
+            })
          end
-      end)
+      end
    end,
 })
-local Toggle = NotifyTab:CreateToggle({
-   Name = "Notify if ancient serpent",
-   CurrentValue = false,
+local Button = CheckEventTab:CreateButton({
+   Name = "Check if ancient serpent",
    Flag = "",
-   Callback = function(bool)
-      notifyserpent = bool
-      workspace.zones.DescendantAdded:Connect(function(child)
-         if notifyserpent then
-            if child:IsA("Part") and child.Name == 'The Depths - Serpent' then
-               Rayfield:Notify({
-                  Title = "Infinity Hub",
-                  Content = "Ancient Depth Serpent spawned!",
-                  Duration = 8,
-                  Image = 10723415766
-               })
-            end
+   Callback = function()
+      for _, v in pairs(game:GetService('Workspace'):GetDescendants()) do
+         if v:IsA('Part') and v.Name == 'The Depths - Serpent' then
+            Rayfield:Notify({
+               Title = "Infinity Hub",
+               Content = "Ancient Serpent spawned!",
+               Duration = 8,
+               Image = 10723415766
+            })
          end
-      end)
+      end
    end,
 })
 
@@ -744,9 +741,6 @@ local Toggle = ItemTab:CreateToggle({
    Flag = "",
    Callback = function(bool)
       sellall = bool
-      if sellall then
-         game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(466.2166442871094, 150.62973022460938, 230.4716796875);
-      end
       while sellall do task.wait(.5)
          for _, v in pairs(workspace.world.npcs:GetChildren()) do
             if v:IsA('Model') and v.Name == 'Marc Merchant' then
@@ -768,7 +762,6 @@ local Toggle = ItemTab:CreateToggle({
    Callback = function(bool)
       sellhand = bool
       if sellhand then
-         game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(466.2166442871094, 150.62973022460938, 230.4716796875);
          for _, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
             if v:IsA('Tool') and table.find(getFish(), v.Name) then
                if not sellhand then return end
@@ -788,6 +781,12 @@ local Toggle = ItemTab:CreateToggle({
             end
          end
       end
+   end,
+})
+local Button = ItemTab:CreateButton({
+   Name = "Teleport to seller [ first ]",
+   Callback = function()
+      game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(466.2166442871094, 150.62973022460938, 230.4716796875);
    end,
 })
 local Section = ItemTab:CreateSection("[ Buy Totems ]")
@@ -1206,6 +1205,94 @@ local Toggle = ItemTab:CreateToggle({
                   end
               end
           end
+      end
+   end,
+})
+local Toggle = ItemTab:CreateToggle({
+   Name = "Auto buy festive bait crate",
+   CurrentValue = false,
+   Flag = "",
+   Callback = function(bool)
+      buyqualitybait = bool
+      while buyqualitybait do task.wait()
+         game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-13.25971508026123, 364.63580322265625, -9587.4033203125)
+          for _, v in pairs(workspace.world.interactables:GetDescendants()) do
+             if v:IsA('Model') and v.Name == 'Festive Bait Crate' then
+                for _, x in pairs(v:GetDescendants()) do
+                   if x:IsA('ProximityPrompt') and x.Name == 'purchaserompt' then
+                      fireproximityprompt(x)
+                   end
+                end
+             end
+          end
+          wait(.02)
+          for _, v in pairs(game:GetService("Players").LocalPlayer.PlayerGui.over:GetDescendants()) do
+              if v:IsA("ImageButton") or v:IsA("TextButton") and v.Name == 'confirm' then
+                  for i, Signal in pairs(Signals) do
+                      firesignal(v[Signal])
+                  end
+              end
+          end
+      end
+   end,
+})
+
+
+
+local Section = TotemTab:CreateSection("[ Auto Use Totem Settings ]")
+local TotemsDropdownTwo = TotemTab:CreateDropdown({
+   Name = "Select totem",
+   Options = {'Tempest Totem', 'Smokescreen Totem', 'Sundial Totem', 'Aurora Totem', 'Windset Totem', 'Eclipse Totem', 'Meteor Totem'},
+   CurrentOption = '',
+   MultipleOptions = false,
+   Flag = "",
+   Callback = function(Options)
+   end,
+})
+local CycleDropdown = TotemTab:CreateDropdown({
+   Name = "Select cycle",
+   Options = {'Day', 'Night'},
+   CurrentOption = '',
+   MultipleOptions = false,
+   Flag = "",
+   Callback = function(Options)
+   end,
+})
+local Toggle = TotemTab:CreateToggle({
+   Name = "Auto use totem",
+   CurrentValue = false,
+   Flag = "",
+   Callback = function(bool)
+      autousetotem = bool
+      local _totem = table.unpack(TotemsDropdownTwo.CurrentOption)
+      local _cycle = table.unpack(CycleDropdown.CurrentOption)
+      local cycle = game:GetService("ReplicatedStorage").world.cycle
+
+      if autousetotem then
+         if _totem == '' or _cycle == '' then
+            Rayfield:Notify({
+               Title = "Infinity Hub",
+               Content = "please select totem or cycle first",
+               Duration = 8,
+               Image = 10723415766
+            })
+            return
+         end
+      end
+      while autousetotem do task.wait(1.5)
+         if cycle.Value == _cycle then
+            for _, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+              if v:IsA('Tool') and v.Name == _totem then
+                 game.Players.LocalPlayer.Character.Humanoid:EquipTool(v)
+              end
+            end
+            wait(.1)
+            for _, v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
+               if v:IsA('Tool') and v.Name == _totem then
+                  v:Activate()
+               end
+            end
+         end
       end
    end,
 })
