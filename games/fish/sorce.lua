@@ -110,7 +110,7 @@ local Window = Rayfield:CreateWindow({
 })
 Rayfield:Notify({
    Title = "Infinity Hub",
-   Content = "Hello ".. game.Players.LocalPlayer.Name ..", I hope you enjoy using Infinity Hub, have fun! ❤️",
+   Content = "Welcome back ".. game.Players.LocalPlayer.Name ..", i hope you enjoy the infinity hub, have fun! ❤️",
    Duration = 8,
    Image = 10723415766
 })
