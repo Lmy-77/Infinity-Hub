@@ -960,25 +960,26 @@ local Toggle = ItemTab:CreateToggle({
    Flag = "",
    Callback = function(bool)
       autochest = bool
-      if autochest then
-         game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-2827.480224609375, 214.8001708984375, 1518.3900146484375)
-      end
       while autochest do task.wait(.2)
          if not autochest then return end
          for _, v in pairs(workspace.world.npcs:GetChildren()) do
             if v:IsA('Model') and v.Name == 'Jack Marrow' then
-               fireprompt(v.dialogprompt)
-            end
-         end
-         for _, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
-            if v:IsA('Tool') and v.Name == 'Treasure Map' then
-               game.Players.LocalPlayer.Character.Humanoid:EquipTool(v)
-               wait()
-               for _, jack in pairs(workspace.world.npcs:GetChildren()) do
-                  if jack:IsA('Model') and jack.Name == 'Jack Marrow' then
-                    local remote = jack.treasure.repairmap
-                    local arguments = {}
-                    local results = remote:InvokeServer(unpack(arguments))
+               for _, x in pairs(v:GetChildren()) do
+                  if x:IsA('ProximityPrompt') and x.Name == 'dialogprompt' then
+                     fireprompt(x)
+                     for _, z in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+                        if z:IsA('Tool') and z.Name == 'Treasure Map' then
+                           game.Players.LocalPlayer.Character.Humanoid:EquipTool(z)
+                           wait()
+                           for _, jack in pairs(workspace.world.npcs:GetChildren()) do
+                              if jack:IsA('Model') and jack.Name == 'Jack Marrow' then
+                                local remote = jack.treasure.repairmap
+                                local arguments = {}
+                                local results = remote:InvokeServer(unpack(arguments))
+                              end
+                           end
+                        end
+                     end
                   end
                end
             end
@@ -1008,7 +1009,7 @@ local Toggle = ItemTab:CreateToggle({
    end,
 })
 local Button = ItemTab:CreateButton({
-   Name = "Teleport to jack",
+   Name = "Teleport to jack [ first ]",
    Callback = function()
        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-2827.480224609375, 214.8001708984375, 1518.3900146484375)
    end,
