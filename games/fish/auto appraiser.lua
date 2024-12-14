@@ -3,6 +3,7 @@
 --     enchantName = '',
 --     enabled = false
 -- }
+-- loadstring(game:HttpGet("https://raw.githubusercontent.com/Lmy-77/Infinity-Hub/refs/heads/scripts/games/fish/auto%20appraiser.lua",true))();
 
 
 
