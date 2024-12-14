@@ -1,6 +1,6 @@
 -- getgenv().Settings = {
---     fishName = 'ancient fragment',
---     enchantName = 'Abyssal',
+--     fishName = '',
+--     enchantName = '',
 --     enabled = false
 -- }
 
