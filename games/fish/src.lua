@@ -91,9 +91,7 @@ function fireprompt(Prompt)
 end
 local vim = game:GetService("VirtualInputManager")
 local Signals = {"Activated", "MouseButton1Down", "MouseButton2Down", "MouseButton1Click", "MouseButton2Click"}
-local scriptVersion = '2.4'
-local x = 580
-local y = 350
+local scriptVersion = '2.5'
 
 
 
@@ -121,6 +119,7 @@ Rayfield:Notify({
 local FischTab = Window:CreateTab("Fish")
 local RodTab = Window:CreateTab("Rod")
 local ItemTab = Window:CreateTab("Item")
+local SkinsTab = Window:CreateTab("Skins")
 local EventTab = Window:CreateTab("Events")
 local TeleportTab = Window:CreateTab("Teleport")
 local AprraiserTab = Window:CreateTab("Appraiser")
@@ -133,6 +132,70 @@ local SettingsTab = Window:CreateTab("Settings")
 
 
 -- code
+local Section = SkinsTab:CreateSection("[ Skins Options ]")
+local SkinsDropdown = SkinsTab:CreateDropdown({
+   Name = "Select skin crate",
+   Options = {'Moosewood', 'Ancient', 'Desolate'},
+   CurrentOption = '',
+   MultipleOptions = false,
+   Flag = "",
+   Callback = function()
+   end,
+})
+local Toggle = SkinsTab:CreateToggle({
+   Name = "Auto open crate",
+   CurrentValue = false,
+   Flag = "",
+   Callback = function(bool)
+      autoopenskincrate = bool
+      for _, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+         if v:IsA('Tool') and v.Name == 'Skin Crate' then
+            game.Players.LocalPlayer.Character.Humanoid:EquipTool(v)
+         end
+      end
+      wait(.1)
+      for _, v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
+         if v:IsA('Tool') and v.Name == 'Skin Crate' then
+            v:Activate()
+         end
+      end
+      game.Players.LocalPlayer.PlayerGui.DescendantAdded:Connect(function(Descendant)
+         if autoopenskincrate then
+             if Descendant.ClassName == 'TextButton' and Descendant.Name == 'Spin' and Descendant.Parent.Parent.Parent == 'SkinCrate' then
+               repeat task.wait()
+                  game:GetService('GuiService').SelectedObject = Descendant
+                  task.wait(.02)
+                  vim:SendKeyEvent(true, Enum.KeyCode.Return, false, game)
+                  vim:SendKeyEvent(false, Enum.KeyCode.Return, false, game)
+                  task.wait()
+                  game:GetService('GuiService').SelectedObject = nil
+               until gethub() or autoopenskincrate == false
+             end
+         end
+      end)
+   end,
+})
+local Button = SkinsTab:CreateButton({
+   Name = "Buy skin crate",
+   Callback = function()
+      local skinscrateName = table.unpack(SkinsDropdown.CurrentOption)
+      if skinscrateName == '' then
+         Rayfield:Notify({
+            Title = "Infinity Hub",
+            Content = "Please, select a skin crate first",
+            Duration = 6,
+            Image = 10723415766
+         })
+         return
+      else
+         local args = {[1] = skinscrateName}
+         game:GetService("ReplicatedStorage"):WaitForChild("packages"):WaitForChild("Net"):WaitForChild("RF/SkinCrates/Purchase"):InvokeServer(unpack(args))        
+      end
+   end,
+})
+
+
+
 local Section = AprraiserTab:CreateSection("[ Auto Appraiser ]")
 local FishNameIput = AprraiserTab:CreateInput({
    Name = "Fish Name",
@@ -146,15 +209,6 @@ local FishNameIput = AprraiserTab:CreateInput({
 local EnchantNameDropdown = AprraiserTab:CreateDropdown({
    Name = "Choose Mutation",
    Options = {'Aurora', 'Amber', 'Darkened', 'Frozen', 'Nuclear', 'Subspace', 'Midas', 'Greedy', 'Glossy', 'Schorched', 'Revitalized', 'Sunken', 'Solarblaze', 'Albino', 'Purified', 'Seasonal', 'Mosaic', 'Fossilized', 'Silver', 'Atlantean', 'Sandy', 'Translucent', 'Electric', 'Sinister', 'Ghastly', 'Anomalous', 'Unsellable', 'Blessed', 'Hexed', 'Abyssal', 'Celestial', 'Mythical', 'Lunar', 'Negative', 'Festive', 'Jolly', 'Minty'},
-   CurrentOption = '',
-   MultipleOptions = true,
-   Flag = "",
-   Callback = function()
-   end,
-})
-local WeightDropdown = AprraiserTab:CreateDropdown({
-   Name = "Choose Weight Name",
-   Options = {'Big', 'Giant'},
    CurrentOption = '',
    MultipleOptions = true,
    Flag = "",
@@ -1501,6 +1555,32 @@ local Toggle = ItemTab:CreateToggle({
                   end
               end
           end
+      end
+   end,
+})
+local baitsCrate = {'Bait Crate', 'Quality Bait Crate', 'Festive Bait Crate'}
+local Toggle = ItemTab:CreateToggle({
+   Name = "Auto open all bait crate",
+   CurrentValue = false,
+   Flag = "",
+   Callback = function(bool)
+      autoopencrate = bool
+      while autoopencrate do task.wait()
+         for _, v in pairs(game:GetService('Players').LocalPlayer.Backpack:GetChildren()) do
+            for _, baitName in ipairs(baitsCrate) do
+               if v.Name == baitName then
+                  game:GetService('Players').LocalPlayer.Character.Humanoid:EquipTool(v)
+               end
+            end
+         end
+         wait(.1)
+         for _, v in pairs(game:GetService('Players').LocalPlayer.Character:GetChildren()) do
+            for _, baitName in ipairs(baitsCrate) do
+               if v.Name == baitName then
+                  v:Activate()
+               end
+            end
+         end
       end
    end,
 })
