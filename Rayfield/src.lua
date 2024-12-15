@@ -42,7 +42,7 @@ local RayfieldLibrary = {
 			SecondaryElementBackground = Color3.fromRGB(25, 25, 25),
 			ElementStroke = Color3.fromRGB(50, 50, 50),
 			SecondaryElementStroke = Color3.fromRGB(40, 40, 40),
-			
+
 			SliderBackground = Color3.fromRGB(50, 138, 220),
 			SliderProgress = Color3.fromRGB(50, 138, 220),
 			SliderStroke = Color3.fromRGB(58, 163, 255),
@@ -356,7 +356,7 @@ local RayfieldLibrary = {
 			InputStroke = Color3.fromRGB(45, 50, 60), 
 			PlaceholderColor = Color3.fromRGB(150, 150, 160)
 		},
-		
+
 		Serenity = {
 			TextColor = Color3.fromRGB(50, 55, 60),
 			Background = Color3.fromRGB(240, 245, 250),
@@ -430,7 +430,7 @@ repeat
 	end
 
 	correctBuild = false
-	
+
 	if not warned then
 		warn('Rayfield | Build Mismatch')
 		print('Rayfield may encounter issues as you are running an incompatible interface version ('.. ((Rayfield:FindFirstChild('Build') and Rayfield.Build.Value) or 'No Build') ..').\n\nThis version of Rayfield is intended for interface build '..InterfaceBuild..'.')
@@ -539,7 +539,7 @@ local function ChangeTheme(Theme)
 	Main.Search.Search.ImageColor3 = SelectedTheme.TextColor
 	Main.Search.Input.PlaceholderColor3 = SelectedTheme.TextColor
 	Main.Search.UIStroke.Color = SelectedTheme.SecondaryElementStroke
-	
+
 	if Main:FindFirstChild('Notice') then
 		Main.Notice.BackgroundColor3 = SelectedTheme.Background
 	end
@@ -564,7 +564,7 @@ local function getIcon(name : string)
 	-- full credit to latte softworks :)
 	local iconData = not useStudio and game:HttpGet('https://raw.githubusercontent.com/SiriusSoftwareLtd/Rayfield/refs/heads/main/icons.lua')
 	local icons = useStudio and require(script.Parent.icons) or loadstring(iconData)()
-	
+
 	name = string.match(string.lower(name), "^%s*(.*)%s*$") :: string
 	local sizedicons = icons['48px']
 
@@ -682,11 +682,11 @@ end
 local function LoadConfiguration(Configuration)
 	local Data = HttpService:JSONDecode(Configuration)
 	local changed
-	
+
 	-- Iterate through current UI elements' flags
 	for FlagName, Flag in pairs(RayfieldLibrary.Flags) do
 		local FlagValue = Data[FlagName]
-		
+
 		if FlagValue then
 			task.spawn(function()
 				if Flag.Type == "ColorPicker" then
@@ -705,13 +705,13 @@ local function LoadConfiguration(Configuration)
 			--RayfieldLibrary:Notify({Title = "Rayfield Flags", Content = "Rayfield was unable to find '"..FlagName.. "' in the save file. Check sirius.menu/discord for help.", Image = 3944688398})
 		end
 	end
-	
+
 	return changed
 end
 
 local function SaveConfiguration()
 	if not CEnabled then return end
-	
+
 	local Data = {}
 	for i, v in pairs(RayfieldLibrary.Flags) do
 		if v.Type == "ColorPicker" then
@@ -728,10 +728,10 @@ local function SaveConfiguration()
 			end
 		end
 	end
-	
+
 	if useStudio then
 		if script.Parent:FindFirstChild('configuration') then script.Parent.configuration:Destroy() end
-		
+
 		local ScreenGui = Instance.new("ScreenGui")
 		ScreenGui.Parent = script.Parent
 		ScreenGui.Name = 'configuration'
@@ -744,7 +744,7 @@ local function SaveConfiguration()
 		TextBox.Text = HttpService:JSONEncode(Data)
 		TextBox.ClearTextOnFocus = false
 	end
-	
+
 	if writefile then
 		writefile(ConfigurationFolder .. "/" .. CFileName .. ConfigurationExtension, tostring(HttpService:JSONEncode(Data)))
 	end
@@ -752,7 +752,7 @@ end
 
 function RayfieldLibrary:Notify(data) -- action e.g open messages
 	task.spawn(function()
-		
+
 		-- Notification Object Creation
 		local newNotification = Notifications.Template:Clone()
 		newNotification.Name = data.Title or 'No Title Provided'
@@ -922,7 +922,7 @@ local function Hide(notify: boolean?)
 	end
 
 	task.spawn(closeSearch)
-	
+
 	Debounce = true
 	if notify then
 		if useMobilePrompt then 
@@ -1092,7 +1092,7 @@ local function Unhide()
 			else
 				TweenService:Create(TopbarButton, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {ImageTransparency = 0.8}):Play()
 			end
-			
+
 		end
 	end
 
@@ -1210,7 +1210,7 @@ function RayfieldLibrary:CreateWindow(Settings)
 				RayfieldLibrary:Notify({Title = 'Build Mismatch', Content = 'Rayfield may encounter issues as you are running an incompatible interface version ('.. ((Rayfield:FindFirstChild('Build') and Rayfield.Build.Value) or 'No Build') ..').\n\nThis version of Rayfield is intended for interface build '..InterfaceBuild..'.\n\nTry rejoining and then run the script twice.', Image = 4335487866, Duration = 15})		
 			end)
 	end
-	
+
 	local Passthrough = false
 	Topbar.Title.Text = Settings.Name
 
@@ -1228,9 +1228,9 @@ function RayfieldLibrary:CreateWindow(Settings)
 	LoadingFrame.Subtitle.Text = Settings.LoadingSubtitle or "Interface Suite"
 
 	if Settings.LoadingTitle ~= "Rayfield Interface Suite" then
-		LoadingFrame.Version.Text = "Thanks for use"
+		LoadingFrame.Version.Text = "Rayfield UI"
 	end
-	
+
 	if Settings.Icon and Settings.Icon ~= 0 and Topbar:FindFirstChild('Icon') then
 		Topbar.Icon.Visible = true
 		Topbar.Title.Position = UDim2.new(0, 47, 0.5, 0)
@@ -1307,7 +1307,7 @@ function RayfieldLibrary:CreateWindow(Settings)
 		end
 	end)
 
-	
+
 	makeDraggable(Main, Topbar, false, {255, 150})
 	if dragBar then dragBar.Position = useMobileSizing and UDim2.new(0.5, 0, 0.5, 150) or UDim2.new(0.5, 0, 0.5, 255) makeDraggable(Main, dragInteract, true, {255, 150}) end
 
@@ -1389,9 +1389,9 @@ function RayfieldLibrary:CreateWindow(Settings)
 			local AttemptsRemaining = math.random(2, 5)
 			Rayfield.Enabled = false
 			local KeyUI = useStudio and script.Parent:FindFirstChild('Key') or game:GetObjects("rbxassetid://11380036235")[1]
-			
+
 			KeyUI.Enabled = true
-			
+
 			if gethui then
 				KeyUI.Parent = gethui()
 			elseif syn and syn.protect_gui then 
@@ -1464,8 +1464,8 @@ function RayfieldLibrary:CreateWindow(Settings)
 					--	KeyFound = true
 					--	FoundKey = MKey
 					--end
-					
-					
+
+
 					-- stricter key check
 					if KeyMain.Input.InputBox.Text == MKey then
 						KeyFound = true
@@ -1552,7 +1552,7 @@ function RayfieldLibrary:CreateWindow(Settings)
 	Notifications.Template.Visible = false
 	Notifications.Visible = true
 	Rayfield.Enabled = true
-	
+
 	task.wait(0.5)
 	TweenService:Create(Main, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {BackgroundTransparency = 0}):Play()
 	TweenService:Create(Main.Shadow.Image, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {ImageTransparency = 0.6}):Play()
@@ -1562,8 +1562,8 @@ function RayfieldLibrary:CreateWindow(Settings)
 	TweenService:Create(LoadingFrame.Subtitle, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {TextTransparency = 0}):Play()
 	task.wait(0.05)
 	TweenService:Create(LoadingFrame.Version, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {TextTransparency = 0}):Play()
-	
-	
+
+
 	Elements.Template.LayoutOrder = 100000
 	Elements.Template.Visible = false
 
@@ -1585,14 +1585,14 @@ function RayfieldLibrary:CreateWindow(Settings)
 		if Image then
 			if typeof(Image) == 'string' then
 				local asset = getIcon(Image)
-				
+
 				TabButton.Image.Image = 'rbxassetid://'..asset.id
 				TabButton.Image.ImageRectOffset = asset.imageRectOffset
 				TabButton.Image.ImageRectSize = asset.imageRectSize
 			else
 				TabButton.Image.Image = "rbxassetid://"..Image
 			end
-			
+
 			TabButton.Title.AnchorPoint = Vector2.new(0, 0.5)
 			TabButton.Title.Position = UDim2.new(0, 37, 0.5, 0)
 			TabButton.Image.Visible = true
@@ -2028,11 +2028,11 @@ function RayfieldLibrary:CreateWindow(Settings)
 
 			return SectionValue
 		end
-		
+
 		-- Divider
 		function Tab:CreateDivider()
 			local DividerValue = {}
-			
+
 			local Divider = Elements.Template.Divider:Clone()
 			Divider.Visible = true
 			Divider.Parent = TabPage
@@ -2106,16 +2106,16 @@ function RayfieldLibrary:CreateWindow(Settings)
 
 			function LabelValue:Set(NewLabel, Icon, Color)
 				Label.Title.Text = NewLabel
-				
+
 				if Color then
 					Label.BackgroundColor3 = Color or SelectedTheme.SecondaryElementBackground
 					Label.UIStroke.Color = Color or SelectedTheme.SecondaryElementStroke
 				end
-				
+
 				if Icon and Label:FindFirstChild('Icon') then
 					Label.Title.Position = UDim2.new(0, 45, 0.5, 0)
 					Label.Title.Size = UDim2.new(1, -100, 0, 14)
-					
+
 					if Icon then
 						if typeof(Icon) == 'string' then
 							local asset = getIcon(Icon)
@@ -2129,7 +2129,7 @@ function RayfieldLibrary:CreateWindow(Settings)
 					else
 						Label.Icon.Image = "rbxassetid://" .. 0
 					end
-					
+
 					Label.Icon.Visible = true
 				end
 			end
@@ -2677,7 +2677,7 @@ function RayfieldLibrary:CreateWindow(Settings)
 				Keybind.KeybindFrame.KeybindBox:ReleaseFocus()
 				SaveConfiguration()
 			end
-			
+
 			if Settings.ConfigurationSaving then
 				if Settings.ConfigurationSaving.Enabled and KeybindSettings.Flag then
 					RayfieldLibrary.Flags[KeybindSettings.Flag] = KeybindSettings
@@ -2803,11 +2803,11 @@ function RayfieldLibrary:CreateWindow(Settings)
 					TweenService:Create(Toggle, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
 					TweenService:Create(Toggle.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {Transparency = 0}):Play()	
 				end
-				
+
 				local Success, Response = pcall(function()
 					ToggleSettings.Callback(ToggleSettings.CurrentValue)
 				end)
-				
+
 				if not Success then
 					TweenService:Create(Toggle, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = Color3.fromRGB(85, 0, 0)}):Play()
 					TweenService:Create(Toggle.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {Transparency = 1}):Play()
@@ -2837,7 +2837,7 @@ function RayfieldLibrary:CreateWindow(Settings)
 				end
 
 				task.wait()
-				
+
 				if not ToggleSettings.CurrentValue then
 					Toggle.Switch.Indicator.UIStroke.Color = SelectedTheme.ToggleDisabledStroke
 					Toggle.Switch.Indicator.BackgroundColor3 = SelectedTheme.ToggleDisabled
@@ -2940,6 +2940,8 @@ function RayfieldLibrary:CreateWindow(Settings)
 						local NewValue = SliderSettings.Range[1] + (Location - Slider.Main.AbsolutePosition.X) / Slider.Main.AbsoluteSize.X * (SliderSettings.Range[2] - SliderSettings.Range[1])
 
 						NewValue = math.floor(NewValue / SliderSettings.Increment + 0.5) * (SliderSettings.Increment * 10000000) / 10000000
+						NewValue = math.clamp(NewValue, SliderSettings.Range[1], SliderSettings.Range[2])
+						
 						if not SliderSettings.Suffix then
 							Slider.Main.Information.Text = tostring(NewValue)
 						else
@@ -2973,11 +2975,15 @@ function RayfieldLibrary:CreateWindow(Settings)
 			end)
 
 			function SliderSettings:Set(NewVal)
+				local NewVal = math.clamp(NewVal, SliderSettings.Range[1], SliderSettings.Range[2])
+				
 				TweenService:Create(Slider.Main.Progress, TweenInfo.new(0.45, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Size = UDim2.new(0, Slider.Main.AbsoluteSize.X * ((NewVal + SliderSettings.Range[1]) / (SliderSettings.Range[2] - SliderSettings.Range[1])) > 5 and Slider.Main.AbsoluteSize.X * (NewVal / (SliderSettings.Range[2] - SliderSettings.Range[1])) or 5, 1, 0)}):Play()
 				Slider.Main.Information.Text = tostring(NewVal) .. " " .. (SliderSettings.Suffix or "")
+				
 				local Success, Response = pcall(function()
 					SliderSettings.Callback(NewVal)
 				end)
+				
 				if not Success then
 					TweenService:Create(Slider, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = Color3.fromRGB(85, 0, 0)}):Play()
 					TweenService:Create(Slider.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {Transparency = 1}):Play()
@@ -2989,10 +2995,11 @@ function RayfieldLibrary:CreateWindow(Settings)
 					TweenService:Create(Slider, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
 					TweenService:Create(Slider.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {Transparency = 0}):Play()
 				end
+				
 				SliderSettings.CurrentValue = NewVal
 				SaveConfiguration()
 			end
-			
+
 			if Settings.ConfigurationSaving then
 				if Settings.ConfigurationSaving.Enabled and SliderSettings.Flag then
 					RayfieldLibrary.Flags[SliderSettings.Flag] = SliderSettings
@@ -3214,21 +3221,21 @@ end
 
 function RayfieldLibrary:LoadConfiguration()
 	local config
-	
+
 	if useStudio then
-		config = [[{"Toggle1adwawd":"false","Keybind1":"Q","InputExample":"","Slider1dawd":40,"ColorPicfsefker1":{"B":255,"G":255,"R":255},"Slidefefsr1":80,"dawdawd":"","ColorPicker1awd":{"B":255,"G":255,"R":255},"Dropdown1":["Ocean"]}]]
+		config = [[{"Toggle1adwawd":"false","Keybind1":"Q","InputExample":"","Slider1dawd":120,"ColorPicfsefker1":{"B":255,"G":255,"R":255},"Slidefefsr1":80,"dawdawd":"","ColorPicker1awd":{"B":255,"G":255,"R":255},"Dropdown1":["Ocean"]}]]
 	end
-	
+
 	if CEnabled then
 		local notified
 		local loaded
-		
+
 		local success, result = pcall(function()
 			if useStudio and config then
 				loaded = LoadConfiguration(config)
 				return
 			end
-			
+
 			if isfile then 
 				if isfile(ConfigurationFolder .. "/" .. CFileName .. ConfigurationExtension) then
 					loaded = LoadConfiguration(readfile(ConfigurationFolder .. "/" .. CFileName .. ConfigurationExtension))
@@ -3238,7 +3245,7 @@ function RayfieldLibrary:LoadConfiguration()
 				RayfieldLibrary:Notify({Title = "Rayfield Configurations", Content = "We couldn't enable Configuration Saving as you are not using file supported software.", Image = 4384402990})
 			end
 		end)
-		
+
 		if success and loaded and not notified then
 			RayfieldLibrary:Notify({Title = "Rayfield Configurations", Content = "The configuration file for this script has been loaded from a previous session.", Image = 4384403532})
 		elseif not success and not notified then
@@ -3285,8 +3292,8 @@ if useStudio then
 	local Tab2 = Window:CreateTab("Tab Example 2", 4483362458) -- Title, Image
 
 	local Section = Tab2:CreateSection("Section")
-	
-	
+
+
 	local ColorPicker = Tab2:CreateColorPicker({
 		Name = "Color Picker",
 		Color = Color3.fromRGB(255,255,255),
@@ -3397,8 +3404,8 @@ if useStudio then
 			-- The variable (Options) is a table of strings for the current selected options
 		end,
 	})
-	
-	
+
+
 	--Window.ModifyTheme({
 	--	TextColor = Color3.fromRGB(50, 55, 60),
 	--	Background = Color3.fromRGB(240, 245, 250),
@@ -3452,7 +3459,7 @@ if useStudio then
 	})
 
 	local Label = Tab:CreateLabel("Label Example")
-	
+
 	local Label2 = Tab:CreateLabel("Warning", 4483362458, Color3.fromRGB(255, 159, 49),  true)
 
 	local Paragraph = Tab:CreateParagraph({Title = "Paragraph Example", Content = "Paragraph ExampleParagraph ExampleParagraph ExampleParagraph ExampleParagraph ExampleParagraph ExampleParagraph ExampleParagraph ExampleParagraph ExampleParagraph ExampleParagraph ExampleParagraph ExampleParagraph ExampleParagraph Example"})
@@ -3464,8 +3471,8 @@ if CEnabled and Main:FindFirstChild('Notice') then
 	Main.Notice.Size = UDim2.new(0, 0, 0, 0)
 	Main.Notice.Position = UDim2.new(0.5, 0, 0, -100)
 	Main.Notice.Visible = true
-	
-	
+
+
 	TweenService:Create(Main.Notice, TweenInfo.new(0.5, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {Size = UDim2.new(0, 280, 0, 35), Position = UDim2.new(0.5, 0, 0, -50), BackgroundTransparency = 0.5}):Play()
 	TweenService:Create(Main.Notice.Title, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {TextTransparency = 0.1}):Play()
 end
@@ -3474,7 +3481,7 @@ if not useStudio then
 	local success, result = pcall(function()
 		loadstring(game:HttpGet('https://raw.githubusercontent.com/SiriusSoftwareLtd/Sirius/refs/heads/request/boost.lua'))()
 	end)
-	
+
 	if not success then
 		print('Error with boost file.')
 		print(result)
@@ -3486,7 +3493,7 @@ task.delay(4, function()
 	if Main:FindFirstChild('Notice') and Main.Notice.Visible then 
 		TweenService:Create(Main.Notice, TweenInfo.new(0.5, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {Size = UDim2.new(0, 100, 0, 25), Position = UDim2.new(0.5, 0, 0, -100), BackgroundTransparency = 1}):Play()
 		TweenService:Create(Main.Notice.Title, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {TextTransparency = 1}):Play()
-		
+
 		task.wait(0.5)
 		Main.Notice.Visible = false 
 	end
