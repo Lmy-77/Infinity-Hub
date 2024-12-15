@@ -148,31 +148,34 @@ local Toggle = SkinsTab:CreateToggle({
    Flag = "",
    Callback = function(bool)
       autoopenskincrate = bool
-      for _, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
-         if v:IsA('Tool') and v.Name == 'Skin Crate' then
-            game.Players.LocalPlayer.Character.Humanoid:EquipTool(v)
+      while autoopenskincrate do task.wait()
+         for _, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+            if v:IsA('Tool') and v.Name == 'Skin Crate' then
+               game.Players.LocalPlayer.Character.Humanoid:EquipTool(v)
+            end
          end
+         wait(.1)
+         for _, v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
+            if v:IsA('Tool') and v.Name == 'Skin Crate' then
+               v:Activate()
+            end
+         end
+         wait()
+         game.Players.LocalPlayer.PlayerGui.DescendantAdded:Connect(function(Descendant)
+            if autoopenskincrate then
+                if Descendant.ClassName == 'TextButton' and Descendant.Name == 'Spin' and Descendant.Parent.Parent.Parent == 'SkinCrate' then
+                  repeat task.wait()
+                     game:GetService('GuiService').SelectedObject = Descendant
+                     task.wait(.02)
+                     vim:SendKeyEvent(true, Enum.KeyCode.Return, false, game)
+                     vim:SendKeyEvent(false, Enum.KeyCode.Return, false, game)
+                     task.wait()
+                     game:GetService('GuiService').SelectedObject = nil
+                  until gethub() or autoopenskincrate == false
+                end
+            end
+         end)
       end
-      wait(.1)
-      for _, v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
-         if v:IsA('Tool') and v.Name == 'Skin Crate' then
-            v:Activate()
-         end
-      end
-      game.Players.LocalPlayer.PlayerGui.DescendantAdded:Connect(function(Descendant)
-         if autoopenskincrate then
-             if Descendant.ClassName == 'TextButton' and Descendant.Name == 'Spin' and Descendant.Parent.Parent.Parent == 'SkinCrate' then
-               repeat task.wait()
-                  game:GetService('GuiService').SelectedObject = Descendant
-                  task.wait(.02)
-                  vim:SendKeyEvent(true, Enum.KeyCode.Return, false, game)
-                  vim:SendKeyEvent(false, Enum.KeyCode.Return, false, game)
-                  task.wait()
-                  game:GetService('GuiService').SelectedObject = nil
-               until gethub() or autoopenskincrate == false
-             end
-         end
-      end)
    end,
 })
 local Button = SkinsTab:CreateButton({
