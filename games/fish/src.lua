@@ -161,22 +161,22 @@ local Toggle = SkinsTab:CreateToggle({
             end
          end
          wait()
-         repeat task.wait()
-            for _, v in pairs(game:GetService('Players').LocalPlayer.PlayerGui:GetChildren()) do
-               if v:IsA('ScreenGui') and v.Name == 'SkinCrate' then
-                  for _, Descendant in pairs(v:GetDescendants()) do
-                     if Descendant:IsA('TextButton') and v.Name == 'Spin' then
+         for _, v in pairs(game:GetService('Players').LocalPlayer.PlayerGui:GetChildren()) do
+            if v:IsA('ScreenGui') and v.Name == 'SkinCrate' then
+               for _, Descendant in pairs(v:GetDescendants()) do
+                  if Descendant:IsA('TextButton') and v.Name == 'Spin' then
+                     repeat task.wait()
                         game:GetService('GuiService').SelectedObject = Descendant
                         task.wait(.02)
                         vim:SendKeyEvent(true, Enum.KeyCode.Return, false, game)
                         vim:SendKeyEvent(false, Enum.KeyCode.Return, false, game)
                         task.wait()
                         game:GetService('GuiService').SelectedObject = nil
-                     end
+                     until autoopenskincrate == false
                   end
                end
             end
-         until autoopenskincrate == false
+         end
       end
    end,
 })
