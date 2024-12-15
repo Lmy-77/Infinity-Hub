@@ -91,20 +91,20 @@ function fireprompt(Prompt)
 end
 local vim = game:GetService("VirtualInputManager")
 local Signals = {"Activated", "MouseButton1Down", "MouseButton2Down", "MouseButton1Click", "MouseButton2Click"}
-local scriptVersion = '2.0'
+local scriptVersion = '2.4'
 local x = 580
 local y = 350
 
 
 
 -- library settings
-local Rayfield = loadstring(game:HttpGet('https://raw.githubusercontent.com/InfinityMercury77/Library/refs/heads/main/Rayfield/source.lua'))()
+local Rayfield = loadstring(game:HttpGet('https://raw.githubusercontent.com/Lmy-77/Infinity-Hub/refs/heads/library/Rayfield/src.lua'))()
 local Window = Rayfield:CreateWindow({
    Name = "Infinity Hub | Fisch 🐟",
    Icon = 0,
    LoadingTitle = "Infinity Hub v2",
    LoadingSubtitle = "by Lmy77",
-   Theme = 'AmberGlow',
+   Theme = 'DarkBlue',
    DisableRayfieldPrompts = true,
    DisableBuildWarnings = false,
 })
@@ -121,8 +121,9 @@ Rayfield:Notify({
 local FischTab = Window:CreateTab("Fish")
 local RodTab = Window:CreateTab("Rod")
 local ItemTab = Window:CreateTab("Item")
+local EventTab = Window:CreateTab("Events")
 local TeleportTab = Window:CreateTab("Teleport")
-local CheckEventTab = Window:CreateTab("Check Events")
+local FischSettingsTab = Window:CreateTab("Appraiser")
 local TotemTab = Window:CreateTab("Auto Totem")
 local LPlayerTab = Window:CreateTab("Local Player")
 local PlayersTab = Window:CreateTab("Players")
@@ -130,7 +131,79 @@ local VisualTab = Window:CreateTab("Visual")
 local SettingsTab = Window:CreateTab("Settings")
 
 
+
 -- code
+local Section = FischSettingsTab:CreateSection("[ Auto Appraiser ]")
+local FishNameIput = FischSettingsTab:CreateInput({
+   Name = "Fish Name",
+   CurrentValue = "",
+   PlaceholderText = "...",
+   RemoveTextAfterFocusLost = false,
+   Flag = "",
+   Callback = function(Text)
+   end,
+})
+local EnchantNameDropdown = FischSettingsTab:CreateDropdown({
+   Name = "Choose Mutation",
+   Options = {'Aurora', 'Amber', 'Darkened', 'Frozen', 'Nuclear', 'Subspace', 'Midas', 'Greedy', 'Glossy', 'Schorched', 'Revitalized', 'Sunken', 'Solarblaze', 'Albino', 'Purified', 'Seasonal', 'Mosaic', 'Fossilized', 'Silver', 'Atlantean', 'Sandy', 'Translucent', 'Electric', 'Sinister', 'Ghastly', 'Anomalous', 'Unsellable', 'Blessed', 'Hexed', 'Abyssal', 'Celestial', 'Mythical', 'Lunar', 'Negative', 'Festive', 'Jolly', 'Minty'},
+   CurrentOption = '',
+   MultipleOptions = true,
+   Flag = "",
+   Callback = function()
+   end,
+})
+local WeightDropdown = FischSettingsTab:CreateDropdown({
+   Name = "Choose Weight Name",
+   Options = {'Big', 'Giant'},
+   CurrentOption = '',
+   MultipleOptions = true,
+   Flag = "",
+   Callback = function()
+   end,
+})
+local Toggle = FischSettingsTab:CreateToggle({
+   Name = "Auto appraiser",
+   CurrentValue = false,
+   Flag = "",
+   Callback = function(bool)
+      autoappraiser = bool
+      enchantName = EnchantNameDropdown.CurrentOption
+      while autoappraiser do task.wait()
+         for _, v in pairs(game:GetService("ReplicatedStorage").playerstats[game.Players.LocalPlayer.Name].Inventory:GetChildren()) do
+            if v:IsA('StringValue') and v.Name:lower():find(FishNameIput.CurrentValue) then
+                for _, x in pairs(v:GetChildren()) do
+                    if x:IsA('StringValue') and x.Name == 'Mutation' then
+                       for _, value in ipairs(enchantName) do
+                          if x.Value == value then
+                             Rayfield:Notify({
+                                Title = "Infinity Hub",
+                                Content = "Acquired enchantment",
+                                Duration = 6,
+                                Image = 10723415766
+                             })
+                             return
+                          end
+                       end
+                    end
+                end
+            end
+        end
+         for _, v in pairs(game:GetService("ReplicatedStorage").playerstats[game.Players.LocalPlayer.Name].Inventory:GetChildren()) do
+             if v:IsA('StringValue') and v.Name:lower():find(FishNameIput.CurrentValue) then
+                 for _, x in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+                     if x:IsA('Tool') and x.Name == v.Value then
+                         game.Players.LocalPlayer.Character.Humanoid:EquipTool(x)
+                     end
+                 end
+             end
+         end
+         workspace.world.npcs.Appraiser.appraiser.appraise:InvokeServer()
+     end
+   end,
+})
+
+
+
 local Section = FischTab:CreateSection("[ Fish Farm ]")
 local Toggle = FischTab:CreateToggle({
    Name = "Auto cast",
@@ -285,7 +358,7 @@ local Button = TeleportTab:CreateButton({
 local Section = TeleportTab:CreateSection("[ Teleport Zones ]")
 local ZonesDropdown = TeleportTab:CreateDropdown({
    Name = "Select zone",
-   Options = {'Safe Whirlpool', 'Great White Shark', 'Great Hammerhead Shark', 'Whale Shark', 'The Depths - Serpent', 'Megalodon Default', 'Megalodon Ancient'},
+   Options = {'Safe Whirlpool', 'Great White Shark', 'Great Hammerhead Shark', 'Whale Shark'},
    CurrentOption = '',
    MultipleOptions = false,
    Flag = "",
@@ -424,7 +497,7 @@ local Button = LPlayerTab:CreateButton({
       loadstring(game:HttpGet("https://raw.githubusercontent.com/InfinityMercury77/InfinityHub/refs/heads/main/modules/FullBright/source.lua",true))()
    end,
 })
-local Section = LPlayerTab:CreateSection("[ Farm Settings ]")
+local Section = LPlayerTab:CreateSection("[ Server Settings ]")
 local Toggle = LPlayerTab:CreateToggle({
    Name = "Anti Afk",
    CurrentValue = false,
@@ -437,6 +510,12 @@ local Toggle = LPlayerTab:CreateToggle({
             game:service('VirtualUser'):ClickButton2(Vector2.new())
          end)
       end
+   end,
+})
+local Button = LPlayerTab:CreateButton({
+   Name = "Reset character [ if a bug happens ]",
+   Callback = function()
+      game:GetService('Players').LocalPlayer.Character.Head:Destroy()
    end,
 })
 local Button = LPlayerTab:CreateButton({
@@ -683,50 +762,194 @@ local Button = VisualTab:CreateButton({
 
 
 
-local Section = CheckEventTab:CreateSection("[ Check Options ]")
-local Button = CheckEventTab:CreateButton({
-   Name = "Check if travelling merchant",
-   Callback = function()
-      for _, v in pairs(game:GetService('Workspace'):GetDescendants()) do
-         if v:IsA('Model') and v.Name == 'Travelling Merchant' then
-            Rayfield:Notify({
-               Title = "Infinity Hub",
-               Content = "Travelling Merchant spawned!",
-               Duration = 8,
-               Image = 10723415766
-            })
-         end
-      end
-   end,
-})
-local Button = CheckEventTab:CreateButton({
-   Name = "Check if megalodon spawned",
+local Section = EventTab:CreateSection("[ Megalodon ]")
+local Toggle = EventTab:CreateToggle({
+   Name = "Notify if megalodon spawned",
    CurrentValue = false,
-   Callback = function()
-      for _, v in pairs(game:GetService('Workspace'):GetDescendants()) do
-         if v:IsA('Part') and v.Name == 'Megalodon Default' or v.Name == 'Megalodon Ancient' then
+   Flag = "",
+   Callback = function(bool)
+      notifymegalodon = bool
+      game.Workspace.DescendantAdded:Connect(function(Descendant)
+         if notifymegalodon and Descendant:IsA("Part") and Descendant.Name == 'Megalodon Default' then
             Rayfield:Notify({
                Title = "Infinity Hub",
-               Content = "Megalodon spawned!",
-               Duration = 8,
+               Content = "Megalodon spawned",
+               Duration = 6,
+               Image = 10723415766
+            })
+         end
+      end)
+   end,
+})
+local Toggle = EventTab:CreateToggle({
+   Name = "Auto spawn megalodon",
+   CurrentValue = false,
+   Flag = "",
+   Callback = function(bool)
+      automegalogon = bool
+      while automegalogon do task.wait()
+         for _, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+            if v:IsA('Tool') and v.Name == 'Sundial Totem' then
+               game.Players.LocalPlayer.Character.Humanoid:EquipTool(v)
+            end
+         end
+         wait(.1)
+         for _, v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
+            if v:IsA('Tool') and v.Name == 'Sundial Totem' then
+                v:Activate()
+            end
+         end
+      end
+   end,
+})
+local Button = EventTab:CreateButton({
+   Name = "Check if megalodon are already spawned",
+   Callback = function()
+      for _, v in pairs(workspace:GetDescendants()) do
+         if v:IsA('Part') and v.Name == 'Megalodon Default' then
+            Rayfield:Notify({
+               Title = "Infinity Hub",
+               Content = "Megalodon is already spawned",
+               Duration = 6,
                Image = 10723415766
             })
          end
       end
    end,
 })
-local Button = CheckEventTab:CreateButton({
-   Name = "Check if ancient serpent",
-   Flag = "",
+local Button = EventTab:CreateButton({
+   Name = "Teleport to megalodon",
    Callback = function()
-      for _, v in pairs(game:GetService('Workspace'):GetDescendants()) do
+      for _, v in pairs(workspace.active:GetChildren()) do
+         if v.Name == 'Megalodon Default' then
+            if v:IsA('Part') then
+               game:GetService('Players').LocalPlayer.Character.HumanoidRootPart.CFrame = v.CFrame
+            else
+               game:GetService('Players').LocalPlayer.Character.HumanoidRootPart:PivotTo(v:GetPivot())
+            end
+         end
+      end
+      for _, v in pairs(workspace.zones.fishing:GetDescendants()) do
+         if v.Name == 'Megalodon Default' then
+            if v:IsA('Part') then
+               game:GetService('Players').LocalPlayer.Character.HumanoidRootPart.CFrame = v.CFrame
+            else
+               game:GetService('Players').LocalPlayer.Character.HumanoidRootPart:PivotTo(v:GetPivot())
+            end
+         end
+      end
+   end,
+})
+local Section = EventTab:CreateSection("[ Ancient Serpent ]")
+local Toggle = EventTab:CreateToggle({
+   Name = "Notify if ancient serpent spawned",
+   CurrentValue = false,
+   Flag = "",
+   Callback = function(bool)
+      notifyserpent = bool
+      game.Workspace.DescendantAdded:Connect(function(Descendant)
+         if notifyserpent and Descendant:IsA("Part") and Descendant.Name == 'The Depths - Serpent' then
+            Rayfield:Notify({
+               Title = "Infinity Hub",
+               Content = "Ancient Serpent spawned",
+               Duration = 6,
+               Image = 10723415766
+            })
+         end
+      end)
+   end,
+})
+local Button = EventTab:CreateButton({
+   Name = "Check if ancient serpent are already spawned",
+   Callback = function()
+      for _, v in pairs(workspace:GetDescendants()) do
          if v:IsA('Part') and v.Name == 'The Depths - Serpent' then
             Rayfield:Notify({
                Title = "Infinity Hub",
-               Content = "Ancient Serpent spawned!",
-               Duration = 8,
+               Content = "Ancient serpent is already spawned",
+               Duration = 6,
                Image = 10723415766
             })
+         end
+      end
+   end,
+})
+local Button = EventTab:CreateButton({
+   Name = "Teleport to ancient serpent",
+   Callback = function()
+      for _, v in pairs(workspace.active:GetChildren()) do
+         if v.Name == 'The Depths - Serpent' then
+            if v:IsA('Part') then
+               game:GetService('Players').LocalPlayer.Character.HumanoidRootPart.CFrame = v.CFrame
+            else
+               game:GetService('Players').LocalPlayer.Character.HumanoidRootPart:PivotTo(v:GetPivot())
+            end
+         end
+      end
+      for _, v in pairs(workspace.zones.fishing:GetDescendants()) do
+         if v.Name == 'The Depths - Serpent' then
+            if v:IsA('Part') then
+               game:GetService('Players').LocalPlayer.Character.HumanoidRootPart.CFrame = v.CFrame
+            else
+               game:GetService('Players').LocalPlayer.Character.HumanoidRootPart:PivotTo(v:GetPivot())
+            end
+         end
+      end
+   end,
+})
+local Section = EventTab:CreateSection("[ Travelling Merchant ]")
+local Toggle = EventTab:CreateToggle({
+   Name = "Notify if travelling merchant spawned",
+   CurrentValue = false,
+   Flag = "",
+   Callback = function(bool)
+      notifymerchant = bool
+      game.Workspace.DescendantAdded:Connect(function(Descendant)
+         if notifymerchant and Descendant:IsA("Model") and Descendant.Name == 'Merchant Boat' then
+            Rayfield:Notify({
+               Title = "Infinity Hub",
+               Content = "Travelling merchant spawned",
+               Duration = 6,
+               Image = 10723415766
+            })
+         end
+      end)
+   end,
+})
+local Button = EventTab:CreateButton({
+   Name = "Check if travelling merchant are already spawned",
+   Callback = function()
+      for _, v in pairs(workspace:GetDescendants()) do
+         if v:IsA('Model') and v.Name == 'Merchant Boat' then
+            Rayfield:Notify({
+               Title = "Infinity Hub",
+               Content = "Travelling merchant is already spawned",
+               Duration = 6,
+               Image = 10723415766
+            })
+         end
+      end
+   end,
+})
+local Button = EventTab:CreateButton({
+   Name = "Teleport to travelling merchant",
+   Callback = function()
+      for _, v in pairs(workspace.active:GetChildren()) do
+         if v.Name == 'Merchant Boat' then
+            if v:IsA('Part') then
+               game:GetService('Players').LocalPlayer.Character.HumanoidRootPart.CFrame = v.CFrame
+            else
+               game:GetService('Players').LocalPlayer.Character.HumanoidRootPart:PivotTo(v:GetPivot())
+            end
+         end
+      end
+      for _, v in pairs(workspace.zones.fishing:GetDescendants()) do
+         if v.Name == 'Merchant Boat' then
+            if v:IsA('Part') then
+               game:GetService('Players').LocalPlayer.Character.HumanoidRootPart.CFrame = v.CFrame
+            else
+               game:GetService('Players').LocalPlayer.Character.HumanoidRootPart:PivotTo(v:GetPivot())
+            end
          end
       end
    end,
@@ -1301,15 +1524,23 @@ local Toggle = TotemTab:CreateToggle({
 
 -- settings
 local Section = SettingsTab:CreateSection("[ Information ]")
-SettingsTab:CreateLabel("Owner: Lmy77")
-SettingsTab:CreateLabel("Scripter: Lmy77")
-SettingsTab:CreateLabel("Ui Library: Rayfield | Shlexr")
-SettingsTab:CreateLabel("Script Version: "..scriptVersion)
+local Paragraph = SettingsTab:CreateParagraph({
+    Title = "Script Owner:",
+    Content = "Lmy77"
+})
+local Paragraph = SettingsTab:CreateParagraph({
+    Title = "Ui Library:",
+    Content = "Rayfield | Shlexr"
+})
+local Paragraph = SettingsTab:CreateParagraph({
+    Title = "Script Version:",
+    Content = scriptVersion
+})
 local Section = SettingsTab:CreateSection("[ Library Settings ]")
 local ThemesDropdown = SettingsTab:CreateDropdown({
    Name = "Select theme",
    Options = {'Default', 'AmberGlow', 'Amethyst', 'Bloom', 'DarkBlue', 'Green', 'Light', 'Ocean', 'Serenity'},
-   CurrentOption = 'AmberGlow',
+   CurrentOption = 'DarkBlue',
    MultipleOptions = false,
    Flag = "",
    Callback = function()
