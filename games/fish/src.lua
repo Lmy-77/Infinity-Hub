@@ -27,7 +27,7 @@ function getRod()
       end
    end
 end
-getgenv().Fish = {"Abyssacuda", "Acanthodii", "Alligator", "Alligator Gar", "Amberjack", "Amblypterus", "Amethyst", "Anchovy", "Ancient Depth Serpent", "Ancient Eel", "Ancient Fragment", "Ancient Megalodon", "Ancient Serpent Skull", "Ancient Serpent Spine", "Ancient Wood", "Angelfish", "Anglerfish", "Anomalocaris", "Arapaima", "Arctic Char", "Aurora Pearl", "Axolotl", "Baby Pond Emperor", "Bait Crate", "Banditfish", "Barbed Shark", "Barracuda", "Barracuda's Spine", "Barreleye Fish", "Basalt", "Birgeria", "Black Dragon Fish", "Blackfish", "Blue Tang", "Bluefin Tuna", "Bluefish", "Bluegill", "Bone", "Boot", "Bowfin", "Bream", "Brine Phantom", "Brine Shrimp", "Buccaneer Barracuda", "Bull Shark", "Burbot", "Butterflyfish", "Candy Fish", "Captain's Goldfish", "Carbon Crate", "Carp", "Catfish", "Chinfish", "Chinook Salmon", "Chub", "Cladoselache", "Clam", "Claw Gill", "Clownfish", "Cobia", "Cockatoo Squid", "Cod", "Coelacanth", "Colossal Squid", "Common Crate", "Cookiecutter Shark", "Coral Geode", "Corsair Grouper", "Crab", "Crown Bass", "Cursed Eel", "Cutlass Fish", "Deep Pearl", "Deep Sea Fragment", "Deep-sea Dragonfish", "Deep-sea Hatchetfish", "Depth Octopus", "Destroyed Fossil", "Diplurus", "Dolphin", "Driftwood", "Dumbo Octopus", "Dunkleosteus", "Dweller Catfish", "Earth Fragment", "Eel", "Ember Perch", "Ember Snapper", "Emperor Jellyfish", "Enchant Relic", "Eyefestation", "Fangborn Gar", "Fish Barrel", "Floppy", "Flounder", "Flying Fish", "Fossil Fan", "Frilled Shark", "Fungal Cluster", "Galleon Goliath", "Gazerfish", "Ghoulfish", "Gilded Pearl", "Ginsu Shark", "Glacier Pike", "Glacierfish", "Glassfish", "Globe Jellyfish", "Goblin Shark", "Golden Sea Pearl", "Golden Seahorse", "Golden Smallmouth Bass", "Goldfish", "Grayling", "Great Hammerhead Shark", "Great White Shark", "Grey Carp", "Gudgeon", "Haddock", "Halibut", "Hallucigenia", "Handfish", "Helicoprion", "Herring", "Horseshoe Crab", "Hyneria", "Ice", "Inferno Wood", "Isonade", "Keepers Guardian", "King Oyster", "Lapis Lazuli", "Lapisjack", "Largemouth Bass", "Leedsichthys", "Lepidotes", "Lingcod", "Lobster", "Log", "Longtail Bass", "Luminescent Minnow", "Lurkerfish", "Mackerel", "Magma Tang", "Mahi Mahi", "Manta Ray", "Marsh Gar", "Mauve Pearl", "Meg's Fang", "Meg's Spine", "Megalodon", "Midnight Axolotl", "Minnow", "Molten Banshee", "Moon Wood", "Moonfish", "Moonstone", "Mosasaurus", "Mullet", "Mushgrove Crab", "Mussel", "Mutated Shark", "Mythic Fish", "Napoleonfish", "Nautilus", "Nessie", "Nessie's Spine", "Night Shrimp", "Nurse Shark", "Oarfish", "Obsidian Salmon", "Obsidian Swordfish", "Olm", "Onychodus", "Opal", "Oyster", "Palaeoniscum", "Palaeoniscus", "Pale Tang", "Pearl", "Perch", "Phanerorhynchus", "Phantom Megalodon", "Phantom Ray", "Pike", "Piranha", "Pollock", "Pond Emperor", "Porgy", "Prawn", "Pufferfish", "Pumpkinseed", "Pyrogrub", "Quality Bait Crate", "Rabbitfish", "Red Drum", "Red Snapper", "Red Tang", "Redeye Bass", "Reefrunner Snapper", "Ribbon Eel", "Ringle", "Rock", "Rockstar Hermit Crab", "Rose Pearl", "Rubber Ducky", "Ruby", "Sailfish", "Salmon", "Sand Dollar", "Sardine", "Sawfish", "Scallop", "Scrap Metal", "Scurvy Sailfish", "Sea Bass", "Sea Mine", "Sea Pickle", "Sea Snake", "Sea Turtle", "Sea Urchin", "Seaweed", "Shark Fang", "Shipwreck Barracuda", "Shortfin Mako Shark", "Shrimp", "Skelefish", "Skipjack Tuna", "Slate Tuna", "Small Spine Chimera", "Smallmouth Bass", "Snook", "Sockeye Salmon", "Solar Fragment", "Spectral Serpent", "Spider Crab", "Spiderfish", "Spine Blade", "Spine Bone", "Spined Fin", "Squid", "Stalactite", "Starfish", "Stingray", "Sturgeon", "Suckermouth Catfish", "Sunfish", "Swamp Bass", "Swamp Scallop", "Sweetfish", "Swordfish", "The Depths Key", "Three-eyed Fish", "Tire", "Trout", "Trumpetfish", "Turkey", "Twilight Eel", "Umbral Shark", "Void Wood", "Voidfin Mahi", "Volcanic Geode", "Voltfish", "Walleye", "Whale Shark", "Whiptail Catfish", "Whisker Bill", "White Bass", "White Perch", "Wiifish", "Xiphactinus", "Yellow Boxfish", "Yellowfin Tuna", "Zombiefish"}
+getgenv().Fish = {"Abyssacuda", "Acanthodii", "Alligator", "Alligator Gar", "Amberjack", "Amblypterus", "Amethyst", "Anchovy", "Ancient Depth Serpent", "Ancient Eel", "Ancient Fragment", "Ancient Megalodon", "Ancient Serpent Skull", "Ancient Serpent Spine", "Ancient Wood", "Angelfish", "Anglerfish", "Anomalocaris", "Arapaima", "Arctic Char", "Aurora Pearl", "Axolotl", "Baby Pond Emperor", "Bait Crate", "Banditfish", "Barbed Shark", "Barracuda", "Barracuda's Spine", "Barreleye Fish", "Basalt", "Basic Present", "Birgeria", "Black Dragon Fish", "Blackfish", "Blue Tang", "Bluefin Tuna", "Bluefish", "Bluegill", "Bone", "Boot", "Bowfin", "Bream", "Brine Phantom", "Brine Shrimp", "Buccaneer Barracuda", "Bull Shark", "Burbot", "Butterflyfish", "Candy Cane Carp", "Candy Fish", "Captain's Goldfish", "Carbon Crate", "Carp", "Catfish", "Chinfish", "Chinook Salmon", "Chub", "Cladoselache", "Clam", "Claw Gill", "Clownfish", "Cobia", "Cockatoo Squid", "Cod", "Coelacanth", "Colossal Squid", "Common Crate", "Cookie", "Cookiecutter Shark", "Coral Geode", "Corsair Grouper", "Crab", "Crown Bass", "Cursed Eel", "Cutlass Fish", "Deep Pearl", "Deep Sea Fragment", "Deep-sea Dragonfish", "Deep-sea Hatchetfish", "Depth Octopus", "Destroyed Fossil", "Diplurus", "Dolphin", "Driftwood", "Dumbo Octopus", "Dunkleosteus", "Dweller Catfish", "Earth Fragment", "Eel", "Ember Perch", "Ember Snapper", "Emperor Jellyfish", "Enchant Relic", "Eyefestation", "Fangborn Gar", "Festive Bait Crate", "Fish Barrel", "Floppy", "Flounder", "Flying Fish", "Fossil Fan", "Frilled Shark", "Fungal Cluster", "Galleon Goliath", "Gazerfish", "Ghoulfish", "Gilded Pearl", "Gingerbread Fish", "Ginsu Shark", "Glacier Pike", "Glacierfish", "Glass of Milk", "Glassfish", "Globe Jellyfish", "Goblin Shark", "Golden Sea Pearl", "Golden Seahorse", "Golden Smallmouth Bass", "Goldfish", "Grayling", "Great Hammerhead Shark", "Great White Shark", "Grey Carp", "Gudgeon", "Haddock", "Halibut", "Hallucigenia", "Handfish", "Helicoprion", "Herring", "Horseshoe Crab", "Hyneria", "Ice", "Icicle", "Inferno Wood", "Isonade", "Keepers Guardian", "King Oyster", "Lapis Lazuli", "Lapisjack", "Largemouth Bass", "Leedsichthys", "Lepidotes", "Lingcod", "Lobster", "Log", "Longtail Bass", "Luminescent Minnow", "Lurkerfish", "Mackerel", "Magma Tang", "Mahi Mahi", "Manta Ray", "Marsh Gar", "Mauve Pearl", "Meg's Fang", "Meg's Spine", "Megalodon", "Midnight Axolotl", "Minnow", "Molten Banshee", "Moon Wood", "Moonfish", "Moonstone", "Mosasaurus", "Mullet", "Mushgrove Crab", "Mussel", "Mutated Shark", "Mythic Fish", "Napoleonfish", "Nautilus", "Nessie", "Nessie's Spine", "Night Shrimp", "Northstar Serpent", "Nurse Shark", "Oarfish", "Obsidian Salmon", "Obsidian Swordfish", "Olm", "Olmdeer", "Onychodus", "Opal", "Ornament Fish", "Oyster", "Palaeoniscum", "Palaeoniscus", "Pale Tang", "Pearl", "Perch", "Phanerorhynchus", "Phantom Megalodon", "Phantom Ray", "Pike", "Piranha", "Pollock", "Pond Emperor", "Porgy", "Prawn", "Pufferfish", "Pumpkinseed", "Pyrogrub", "Quality Bait Crate", "Rabbitfish", "Red Drum", "Red Snapper", "Red Tang", "Redeye Bass", "Reefrunner Snapper", "Ribbon Eel", "Ringle", "Rock", "Rockstar Hermit Crab", "Rose Pearl", "Rubber Ducky", "Ruby", "Sailfish", "Salmon", "Sand Dollar", "Santa Pufferfish", "Santa Salmon", "Sardine", "Sawfish", "Scallop", "Scrap Metal", "Scurvy Sailfish", "Sea Bass", "Sea Mine", "Sea Pickle", "Sea Snake", "Sea Turtle", "Sea Urchin", "Seaweed", "Shark Fang", "Shipwreck Barracuda", "Shortfin Mako Shark", "Shrimp", "Skelefish", "Skipjack Tuna", "Slate Tuna", "Small Spine Chimera", "Smallmouth Bass", "Snook", "Snowflake Flounder", "Sockeye Salmon", "Solar Fragment", "Spectral Serpent", "Spider Crab", "Spiderfish", "Spine Blade", "Spine Bone", "Spined Fin", "Squid", "Stalactite", "Starfish", "Stingray", "Sturgeon", "Suckermouth Catfish", "Sunfish", "Supreme Present", "Swamp Bass", "Swamp Scallop", "Sweetfish", "Swordfish", "The Depths Key", "Three-eyed Fish", "Tire", "Trout", "Trumpetfish", "Turkey", "Twilight Eel", "Umbral Shark", "Unique Present", "Void Wood", "Voidfin Mahi", "Volcanic Geode", "Voltfish", "Walleye", "Whale Shark", "Whiptail Catfish", "Whisker Bill", "White Bass", "White Perch", "Wiifish", "Xiphactinus", "Yellow Boxfish", "Yellowfin Tuna", "Zombiefish"}
 local _Fish = getgenv().Fish
 function getFish()
    local fishesName = {}
@@ -123,7 +123,7 @@ local RodTab = Window:CreateTab("Rod")
 local ItemTab = Window:CreateTab("Item")
 local EventTab = Window:CreateTab("Events")
 local TeleportTab = Window:CreateTab("Teleport")
-local FischSettingsTab = Window:CreateTab("Appraiser")
+local AprraiserTab = Window:CreateTab("Appraiser")
 local TotemTab = Window:CreateTab("Auto Totem")
 local LPlayerTab = Window:CreateTab("Local Player")
 local PlayersTab = Window:CreateTab("Players")
@@ -133,8 +133,8 @@ local SettingsTab = Window:CreateTab("Settings")
 
 
 -- code
-local Section = FischSettingsTab:CreateSection("[ Auto Appraiser ]")
-local FishNameIput = FischSettingsTab:CreateInput({
+local Section = AprraiserTab:CreateSection("[ Auto Appraiser ]")
+local FishNameIput = AprraiserTab:CreateInput({
    Name = "Fish Name",
    CurrentValue = "",
    PlaceholderText = "...",
@@ -143,7 +143,7 @@ local FishNameIput = FischSettingsTab:CreateInput({
    Callback = function(Text)
    end,
 })
-local EnchantNameDropdown = FischSettingsTab:CreateDropdown({
+local EnchantNameDropdown = AprraiserTab:CreateDropdown({
    Name = "Choose Mutation",
    Options = {'Aurora', 'Amber', 'Darkened', 'Frozen', 'Nuclear', 'Subspace', 'Midas', 'Greedy', 'Glossy', 'Schorched', 'Revitalized', 'Sunken', 'Solarblaze', 'Albino', 'Purified', 'Seasonal', 'Mosaic', 'Fossilized', 'Silver', 'Atlantean', 'Sandy', 'Translucent', 'Electric', 'Sinister', 'Ghastly', 'Anomalous', 'Unsellable', 'Blessed', 'Hexed', 'Abyssal', 'Celestial', 'Mythical', 'Lunar', 'Negative', 'Festive', 'Jolly', 'Minty'},
    CurrentOption = '',
@@ -152,7 +152,7 @@ local EnchantNameDropdown = FischSettingsTab:CreateDropdown({
    Callback = function()
    end,
 })
-local WeightDropdown = FischSettingsTab:CreateDropdown({
+local WeightDropdown = AprraiserTab:CreateDropdown({
    Name = "Choose Weight Name",
    Options = {'Big', 'Giant'},
    CurrentOption = '',
@@ -161,13 +161,25 @@ local WeightDropdown = FischSettingsTab:CreateDropdown({
    Callback = function()
    end,
 })
-local Toggle = FischSettingsTab:CreateToggle({
+local Toggle = AprraiserTab:CreateToggle({
    Name = "Auto appraiser",
    CurrentValue = false,
    Flag = "",
    Callback = function(bool)
       autoappraiser = bool
       enchantName = EnchantNameDropdown.CurrentOption
+      if autoappraiser then
+         checkenchantName = table.unpack(EnchantNameDropdown.CurrentOption)
+         if FishNameIput.CurrentValue == '' or checkenchantName.CurrentOption == '' then
+            Rayfield:Notify({
+               Title = "Infinity Hub",
+               Content = "Please, select a fish name or mutation first",
+               Duration = 6,
+               Image = 10723415766
+            })
+            return
+         end
+      end
       while autoappraiser do task.wait()
          for _, v in pairs(game:GetService("ReplicatedStorage").playerstats[game.Players.LocalPlayer.Name].Inventory:GetChildren()) do
             if v:IsA('StringValue') and v.Name:lower():find(FishNameIput.CurrentValue) then
@@ -187,7 +199,7 @@ local Toggle = FischSettingsTab:CreateToggle({
                     end
                 end
             end
-        end
+         end
          for _, v in pairs(game:GetService("ReplicatedStorage").playerstats[game.Players.LocalPlayer.Name].Inventory:GetChildren()) do
              if v:IsA('StringValue') and v.Name:lower():find(FishNameIput.CurrentValue) then
                  for _, x in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
@@ -197,8 +209,35 @@ local Toggle = FischSettingsTab:CreateToggle({
                  end
              end
          end
+         wait(.02)
          workspace.world.npcs.Appraiser.appraiser.appraise:InvokeServer()
      end
+   end,
+})
+local Button = AprraiserTab:CreateButton({
+   Name = "Appraiser fish [ manual ]",
+   Callback = function()
+      if FishNameIput.CurrentValue == '' then
+         Rayfield:Notify({
+            Title = "Infinity Hub",
+            Content = "Please, select a fish name first",
+            Duration = 6,
+            Image = 10723415766
+         })
+         return
+      else
+         for _, v in pairs(game:GetService("ReplicatedStorage").playerstats[game.Players.LocalPlayer.Name].Inventory:GetChildren()) do
+            if v:IsA('StringValue') and v.Name:lower():find(FishNameIput.CurrentValue) then
+                for _, x in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+                    if x:IsA('Tool') and x.Name == v.Value then
+                        game.Players.LocalPlayer.Character.Humanoid:EquipTool(x)
+                    end
+                end
+            end
+         end
+         wait(.02)
+         workspace.world.npcs.Appraiser.appraiser.appraise:InvokeServer()
+      end
    end,
 })
 
@@ -269,6 +308,12 @@ local Button = FischTab:CreateButton({
    Callback = function()
       SavePos = game:GetService('Players').LocalPlayer.Character.HumanoidRootPart.Position
       PositionLabel:Set('-> Saved position: '..tostring(game:GetService('Players').LocalPlayer.Character.HumanoidRootPart.Position), false)
+      Rayfield:Notify({
+         Title = "Infinity Hub",
+         Content = "Saved position",
+         Duration = 6,
+         Image = 10723415766
+      })
    end,
 })
 local Button = FischTab:CreateButton({
