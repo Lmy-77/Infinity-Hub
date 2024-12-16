@@ -47,15 +47,6 @@ function getBait()
    end
    return baitName
 end
-function SafeZone()
-   local safeZone = Instance.new('Part')
-   safeZone.Name = 'safeZone'
-   safeZone.Parent = workspace
-   safeZone.Anchored = true
-   safeZone.CFrame = CFrame.new(3345, 136, -165)
-   safeZone.Size = Vector3.new(10, 1, 10)
-end
-SafeZone()
 function getPlayers()
    local playerName = {}
    for _, v in pairs(game:GetService('Players'):GetPlayers()) do
@@ -89,9 +80,25 @@ function fireprompt(Prompt)
    Prompt:InputHoldEnd()
    Prompt.HoldDuration = PromptTime
 end
+local function EnsureInstance(Instance: Instance?): boolean
+   return (Instance and Instance:IsDescendantOf(game))
+end
+local Debugging = true
+local function dbgwarn(...)
+   if Debugging then
+       warn("[Debugging]", ...)
+   end
+end
+local Collection = {}
+local function Collect(Item: RBXScriptConnection | thread)
+   table.insert(Collection, Item)
+end
+local RunService = game:GetService('RunService')
+local GuiService = game:GetService('GuiService')
 local vim = game:GetService("VirtualInputManager")
 local Signals = {"Activated", "MouseButton1Down", "MouseButton2Down", "MouseButton1Click", "MouseButton2Click"}
-local scriptVersion = '2.5'
+local scriptVersion = '2.7'
+local Utils = {}
 
 
 
@@ -118,11 +125,11 @@ Rayfield:Notify({
 -- tabs
 local FischTab = Window:CreateTab("Fish")
 local RodTab = Window:CreateTab("Rod")
-local ItemTab = Window:CreateTab("Item")
+local ItemTab = Window:CreateTab("Items")
 local SkinsTab = Window:CreateTab("Skins")
-local EventTab = Window:CreateTab("Events")
 local TeleportTab = Window:CreateTab("Teleport")
 local AprraiserTab = Window:CreateTab("Appraiser")
+local EventTab = Window:CreateTab("Fish Events")
 local TotemTab = Window:CreateTab("Auto Totem")
 local LPlayerTab = Window:CreateTab("Local Player")
 local PlayersTab = Window:CreateTab("Players")
@@ -132,176 +139,6 @@ local SettingsTab = Window:CreateTab("Settings")
 
 
 -- code
-local Section = SkinsTab:CreateSection("[ Skins Options ]")
-local SkinsDropdown = SkinsTab:CreateDropdown({
-   Name = "Select skin crate",
-   Options = {'Moosewood', 'Ancient', 'Desolate'},
-   CurrentOption = '',
-   MultipleOptions = false,
-   Flag = "",
-   Callback = function()
-   end,
-})
-local Toggle = SkinsTab:CreateToggle({
-   Name = "Auto open crate",
-   CurrentValue = false,
-   Flag = "",
-   Callback = function(bool)
-      autoopenskincrate = bool
-      while autoopenskincrate do task.wait()
-         for _, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
-            if v:IsA('Tool') and v.Name == 'Skin Crate' then
-               game.Players.LocalPlayer.Character.Humanoid:EquipTool(v)
-            end
-         end
-         wait(.1)
-         for _, v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
-            if v:IsA('Tool') and v.Name == 'Skin Crate' then
-               v:Activate()
-            end
-         end
-         wait()
-         for _, v in pairs(game:GetService('Players').LocalPlayer.PlayerGui:GetChildren()) do
-            if v:IsA('ScreenGui') and v.Name == 'SkinCrate' then
-               for _, Descendant in pairs(v:GetDescendants()) do
-                  if Descendant:IsA('TextButton') and v.Name == 'Spin' then
-                     repeat task.wait()
-                        game:GetService('GuiService').SelectedObject = Descendant
-                        task.wait(.02)
-                        vim:SendKeyEvent(true, Enum.KeyCode.Return, false, game)
-                        vim:SendKeyEvent(false, Enum.KeyCode.Return, false, game)
-                        task.wait()
-                        game:GetService('GuiService').SelectedObject = nil
-                     until autoopenskincrate == false
-                  end
-               end
-            end
-         end
-      end
-   end,
-})
-local Button = SkinsTab:CreateButton({
-   Name = "Buy skin crate",
-   Callback = function()
-      local skinscrateName = table.unpack(SkinsDropdown.CurrentOption)
-      if skinscrateName == '' then
-         Rayfield:Notify({
-            Title = "Infinity Hub",
-            Content = "Please, select a skin crate first",
-            Duration = 6,
-            Image = 10723415766
-         })
-         return
-      else
-         local args = {[1] = skinscrateName}
-         game:GetService("ReplicatedStorage"):WaitForChild("packages"):WaitForChild("Net"):WaitForChild("RF/SkinCrates/Purchase"):InvokeServer(unpack(args))        
-      end
-   end,
-})
-
-
-
-local Section = AprraiserTab:CreateSection("[ Auto Appraiser ]")
-local FishNameIput = AprraiserTab:CreateInput({
-   Name = "Fish Name",
-   CurrentValue = "",
-   PlaceholderText = "...",
-   RemoveTextAfterFocusLost = false,
-   Flag = "",
-   Callback = function(Text)
-   end,
-})
-local EnchantNameDropdown = AprraiserTab:CreateDropdown({
-   Name = "Choose Mutation",
-   Options = {'Aurora', 'Amber', 'Darkened', 'Frozen', 'Nuclear', 'Subspace', 'Midas', 'Greedy', 'Glossy', 'Schorched', 'Revitalized', 'Sunken', 'Solarblaze', 'Albino', 'Purified', 'Seasonal', 'Mosaic', 'Fossilized', 'Silver', 'Atlantean', 'Sandy', 'Translucent', 'Electric', 'Sinister', 'Ghastly', 'Anomalous', 'Unsellable', 'Blessed', 'Hexed', 'Abyssal', 'Celestial', 'Mythical', 'Lunar', 'Negative', 'Festive', 'Jolly', 'Minty'},
-   CurrentOption = '',
-   MultipleOptions = true,
-   Flag = "",
-   Callback = function()
-   end,
-})
-local Toggle = AprraiserTab:CreateToggle({
-   Name = "Auto appraiser",
-   CurrentValue = false,
-   Flag = "",
-   Callback = function(bool)
-      autoappraiser = bool
-      enchantName = EnchantNameDropdown.CurrentOption
-      if autoappraiser then
-         checkenchantName = table.unpack(EnchantNameDropdown.CurrentOption)
-         if FishNameIput.CurrentValue == '' or checkenchantName.CurrentOption == '' then
-            Rayfield:Notify({
-               Title = "Infinity Hub",
-               Content = "Please, select a fish name or mutation first",
-               Duration = 6,
-               Image = 10723415766
-            })
-            return
-         end
-      end
-      while autoappraiser do task.wait()
-         for _, v in pairs(game:GetService("ReplicatedStorage").playerstats[game.Players.LocalPlayer.Name].Inventory:GetChildren()) do
-            if v:IsA('StringValue') and v.Name:lower():find(FishNameIput.CurrentValue) then
-                for _, x in pairs(v:GetChildren()) do
-                    if x:IsA('StringValue') and x.Name == 'Mutation' then
-                       for _, value in ipairs(enchantName) do
-                          if x.Value == value then
-                             Rayfield:Notify({
-                                Title = "Infinity Hub",
-                                Content = "Acquired enchantment",
-                                Duration = 6,
-                                Image = 10723415766
-                             })
-                             return
-                          end
-                       end
-                    end
-                end
-            end
-         end
-         for _, v in pairs(game:GetService("ReplicatedStorage").playerstats[game.Players.LocalPlayer.Name].Inventory:GetChildren()) do
-             if v:IsA('StringValue') and v.Name:lower():find(FishNameIput.CurrentValue) then
-                 for _, x in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
-                     if x:IsA('Tool') and x.Name == v.Value then
-                         game.Players.LocalPlayer.Character.Humanoid:EquipTool(x)
-                     end
-                 end
-             end
-         end
-         wait(.02)
-         workspace.world.npcs.Appraiser.appraiser.appraise:InvokeServer()
-     end
-   end,
-})
-local Button = AprraiserTab:CreateButton({
-   Name = "Appraiser fish [ manual ]",
-   Callback = function()
-      if FishNameIput.CurrentValue == '' then
-         Rayfield:Notify({
-            Title = "Infinity Hub",
-            Content = "Please, select a fish name first",
-            Duration = 6,
-            Image = 10723415766
-         })
-         return
-      else
-         for _, v in pairs(game:GetService("ReplicatedStorage").playerstats[game.Players.LocalPlayer.Name].Inventory:GetChildren()) do
-            if v:IsA('StringValue') and v.Name:lower():find(FishNameIput.CurrentValue) then
-                for _, x in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
-                    if x:IsA('Tool') and x.Name == v.Value then
-                        game.Players.LocalPlayer.Character.Humanoid:EquipTool(x)
-                    end
-                end
-            end
-         end
-         wait(.02)
-         workspace.world.npcs.Appraiser.appraiser.appraise:InvokeServer()
-      end
-   end,
-})
-
-
-
 local Section = FischTab:CreateSection("[ Fish Farm ]")
 local Toggle = FischTab:CreateToggle({
    Name = "Auto cast",
@@ -332,20 +169,56 @@ local Toggle = FischTab:CreateToggle({
    Flag = "",
    Callback = function(bool)
       autoshake = bool
-      game.Players.LocalPlayer.PlayerGui.DescendantAdded:Connect(function(Descendant)
-         if autoshake then
-             if Descendant.Name == 'button' and Descendant.Parent.Name == 'safezone' then
-               repeat task.wait()
-                  game:GetService('GuiService').SelectedObject = Descendant
-                  task.wait(.02)
-                  vim:SendKeyEvent(true, Enum.KeyCode.Return, false, game)
-                  vim:SendKeyEvent(false, Enum.KeyCode.Return, false, game)
-                  task.wait()
-                  game:GetService('GuiService').SelectedObject = nil
-               until gethub() or autoshake == false
+      function Utils.MountShakeUI(ShakeUI: ScreenGui)
+         local SafeZone: Frame? = ShakeUI:WaitForChild("safezone", 5) :: Frame?
+         local function HandleButton(Button: ImageButton)
+             Button.Selectable = true -- For some reason this is false for the first 0.2 seconds.
+             GuiService.AutoSelectGuiEnabled = false
+             GuiService.GuiNavigationEnabled = true
+             if EnsureInstance(Button) then
+                 GuiService.SelectedObject = Button
+                 task.wait()
+                 vim:SendKeyEvent(true, Enum.KeyCode.Return, false, game)
+                 vim:SendKeyEvent(false, Enum.KeyCode.Return, false, game)
+                 task.wait()
              end
+             GuiService.AutoSelectGuiEnabled = true
+             GuiService.GuiNavigationEnabled = false
+             GuiService.SelectedObject = nil
          end
-      end)
+         if not SafeZone then
+             dbgwarn("Unable to mount shake UI.")
+             return
+         end
+         if autoshake then
+            local Connection = SafeZone.ChildAdded:Connect(function(Child)
+            if Child:IsA("ImageButton") then
+               local Done = false
+               task.spawn(function()
+                     repeat
+                        RunService.RenderStepped:Wait()
+                        HandleButton(Child)
+                     until Done
+               end)
+               task.spawn(function()
+                  repeat
+                     RunService.RenderStepped:Wait()
+                  until (not Child) or (not Child:IsDescendantOf(SafeZone))
+                  Done = true
+                  end)
+               end
+            end)
+            repeat
+               wait()
+            until not SafeZone:IsDescendantOf(game.Players.LocalPlayer.PlayerGui)
+            Connection:Disconnect()
+         end
+      end
+      Collect(game.Players.LocalPlayer.PlayerGui.ChildAdded:Connect(function(Child: Instance)
+         if Child.Name == "shakeui" and Child:IsA("ScreenGui") then
+            Utils.MountShakeUI(Child)
+         end
+      end))
    end,
 })
 local Toggle = FischTab:CreateToggle({
@@ -506,6 +379,107 @@ local Button = TeleportTab:CreateButton({
 
 
 
+local Section = AprraiserTab:CreateSection("[ Auto Appraiser ]")
+local FishNameIput = AprraiserTab:CreateInput({
+   Name = "Fish Name",
+   CurrentValue = "",
+   PlaceholderText = "...",
+   RemoveTextAfterFocusLost = false,
+   Flag = "",
+   Callback = function(Text)
+   end,
+})
+local EnchantNameDropdown = AprraiserTab:CreateDropdown({
+   Name = "Choose Mutation",
+   Options = {'Aurora', 'Amber', 'Darkened', 'Frozen', 'Nuclear', 'Subspace', 'Midas', 'Greedy', 'Glossy', 'Schorched', 'Revitalized', 'Sunken', 'Solarblaze', 'Albino', 'Purified', 'Seasonal', 'Mosaic', 'Fossilized', 'Silver', 'Atlantean', 'Sandy', 'Translucent', 'Electric', 'Sinister', 'Ghastly', 'Anomalous', 'Unsellable', 'Blessed', 'Hexed', 'Abyssal', 'Celestial', 'Mythical', 'Lunar', 'Negative', 'Festive', 'Jolly', 'Minty'},
+   CurrentOption = '',
+   MultipleOptions = true,
+   Flag = "",
+   Callback = function()
+   end,
+})
+local Toggle = AprraiserTab:CreateToggle({
+   Name = "Auto appraiser",
+   CurrentValue = false,
+   Flag = "",
+   Callback = function(bool)
+      autoappraiser = bool
+      enchantName = EnchantNameDropdown.CurrentOption
+      if autoappraiser then
+         checkenchantName = table.unpack(EnchantNameDropdown.CurrentOption)
+         if FishNameIput.CurrentValue == '' or checkenchantName.CurrentOption == '' then
+            Rayfield:Notify({
+               Title = "Infinity Hub",
+               Content = "Please, select a fish name or mutation first",
+               Duration = 6,
+               Image = 10723415766
+            })
+            return
+         end
+      end
+      while autoappraiser do task.wait()
+         for _, v in pairs(game:GetService("ReplicatedStorage").playerstats[game.Players.LocalPlayer.Name].Inventory:GetChildren()) do
+            if v:IsA('StringValue') and v.Name:lower():find(FishNameIput.CurrentValue) then
+                for _, x in pairs(v:GetChildren()) do
+                    if x:IsA('StringValue') and x.Name == 'Mutation' then
+                       for _, value in ipairs(enchantName) do
+                          if x.Value == value then
+                             Rayfield:Notify({
+                                Title = "Infinity Hub",
+                                Content = "Acquired enchantment",
+                                Duration = 6,
+                                Image = 10723415766
+                             })
+                             return
+                          end
+                       end
+                    end
+                end
+            end
+         end
+         for _, v in pairs(game:GetService("ReplicatedStorage").playerstats[game.Players.LocalPlayer.Name].Inventory:GetChildren()) do
+             if v:IsA('StringValue') and v.Name:lower():find(FishNameIput.CurrentValue) then
+                 for _, x in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+                     if x:IsA('Tool') and x.Name == v.Value then
+                         game.Players.LocalPlayer.Character.Humanoid:EquipTool(x)
+                     end
+                 end
+             end
+         end
+         wait(.02)
+         workspace.world.npcs.Appraiser.appraiser.appraise:InvokeServer()
+     end
+   end,
+})
+local Button = AprraiserTab:CreateButton({
+   Name = "Appraiser fish [ manual ]",
+   Callback = function()
+      if FishNameIput.CurrentValue == '' then
+         Rayfield:Notify({
+            Title = "Infinity Hub",
+            Content = "Please, select a fish name first",
+            Duration = 6,
+            Image = 10723415766
+         })
+         return
+      else
+         for _, v in pairs(game:GetService("ReplicatedStorage").playerstats[game.Players.LocalPlayer.Name].Inventory:GetChildren()) do
+            if v:IsA('StringValue') and v.Name:lower():find(FishNameIput.CurrentValue) then
+                for _, x in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+                    if x:IsA('Tool') and x.Name == v.Value then
+                        game.Players.LocalPlayer.Character.Humanoid:EquipTool(x)
+                    end
+                end
+            end
+         end
+         wait(.02)
+         workspace.world.npcs.Appraiser.appraiser.appraise:InvokeServer()
+      end
+   end,
+})
+
+
+
 local Section = LPlayerTab:CreateSection("[ Character Settings ]")
 local WalkSpeedInput = LPlayerTab:CreateInput({
    Name = "WalkSpeed",
@@ -537,6 +511,42 @@ local Toggle = LPlayerTab:CreateToggle({
       else
          game:GetService('Players').LocalPlayer.Character.Humanoid.WalkSpeed = 16
          game:GetService('Players').LocalPlayer.Character.Humanoid.JumpPower = 50
+      end
+   end,
+})
+local Toggle = LPlayerTab:CreateToggle({
+   Name = "Frozen character",
+   CurrentValue = false,
+   Flag = "",
+   Callback = function(bool)
+      frozen = bool
+      local bodyPosition, bodyGyro
+
+      while frozen do task.wait()
+          if frozen then
+              if not bodyPosition then
+                  bodyPosition = Instance.new("BodyPosition")
+                  bodyPosition.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+                  bodyPosition.Position = game.Players.LocalPlayer.Character.HumanoidRootPart.Position
+                  bodyPosition.P = 100000
+                  bodyPosition.D = 1000
+                  bodyPosition.Parent = game.Players.LocalPlayer.Character.HumanoidRootPart
+              else
+                  bodyPosition.Position = game.Players.LocalPlayer.Character.HumanoidRootPart.Position
+              end
+              if not bodyGyro then
+                  bodyGyro = Instance.new("BodyGyro")
+                  bodyGyro.MaxTorque = Vector3.new(math.huge, math.huge, math.huge)
+                  bodyGyro.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+                  bodyGyro.P = 3000
+                  bodyGyro.Parent = game.Players.LocalPlayer.Character.HumanoidRootPart
+              else
+                  bodyGyro.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+              end
+         else
+            game.Players.LocalPlayer.Character.HumanoidRootPart.BodyGyro:Destroy()
+            game.Players.LocalPlayer.Character.HumanoidRootPart.BodyPosition:Destroy()
+         end
       end
    end,
 })
@@ -1068,10 +1078,16 @@ local Toggle = ItemTab:CreateToggle({
    Flag = "",
    Callback = function(bool)
       sellall = bool
+      if sellall then
+         game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(466.2166442871094, 150.62973022460938, 230.4716796875);
+      end
       while sellall do task.wait(.5)
-         for _, v in pairs(workspace.world.npcs:GetChildren()) do
-            if v:IsA('Model') and v.Name == 'Marc Merchant' then
-               fireprompt(v.dialogprompt)
+         if workspace.world.npcs:WaitForChild('Marc Merchant') then
+            wait(.5)
+            for _, v in pairs(workspace.world.npcs:GetChildren()) do
+               if v:IsA('Model') and v.Name == 'Marc Merchant' then
+                  fireprompt(v.dialogprompt)
+               end
             end
          end
          for _, v in pairs(workspace.world.npcs:GetChildren()) do
@@ -1089,6 +1105,9 @@ local Toggle = ItemTab:CreateToggle({
    Callback = function(bool)
       sellhand = bool
       if sellhand then
+         game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(466.2166442871094, 150.62973022460938, 230.4716796875);
+      end
+      if sellhand then
          for _, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
             if v:IsA('Tool') and table.find(getFish(), v.Name) then
                if not sellhand then return end
@@ -1097,6 +1116,7 @@ local Toggle = ItemTab:CreateToggle({
                wait(.2)
                for _, v in pairs(workspace.world.npcs:GetChildren()) do
                   if v:IsA('Model') and v.Name == 'Marc Merchant' then
+                     wait(.5)
                      fireprompt(v.dialogprompt)
                      wait()
                      local remote = v.merchant.sell
@@ -1108,12 +1128,6 @@ local Toggle = ItemTab:CreateToggle({
             end
          end
       end
-   end,
-})
-local Button = ItemTab:CreateButton({
-   Name = "Teleport to seller [ first ]",
-   Callback = function()
-      game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(466.2166442871094, 150.62973022460938, 230.4716796875);
    end,
 })
 local Section = ItemTab:CreateSection("[ Buy Totems ]")
@@ -1285,23 +1299,29 @@ local Toggle = ItemTab:CreateToggle({
    CurrentValue = false,
    Flag = "",
    Callback = function(bool)
-      autochest = bool
-      while autochest do task.wait(.2)
-         if not autochest then return end
-         for _, v in pairs(workspace.world.npcs:GetChildren()) do
-            if v:IsA('Model') and v.Name == 'Jack Marrow' then
-               for _, x in pairs(v:GetChildren()) do
-                  if x:IsA('ProximityPrompt') and x.Name == 'dialogprompt' then
-                     fireprompt(x)
-                     for _, z in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
-                        if z:IsA('Tool') and z.Name == 'Treasure Map' then
-                           game.Players.LocalPlayer.Character.Humanoid:EquipTool(z)
-                           wait()
-                           for _, jack in pairs(workspace.world.npcs:GetChildren()) do
-                              if jack:IsA('Model') and jack.Name == 'Jack Marrow' then
-                                local remote = jack.treasure.repairmap
-                                local arguments = {}
-                                local results = remote:InvokeServer(unpack(arguments))
+      autorepair = bool
+      if autorepair then
+         game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-2827.480224609375, 214.8001708984375, 1518.3900146484375);
+      end
+      while autorepair do task.wait(.2)
+         if not autorepair then return end
+         if workspace.world.npcs:WaitForChild('Jack Marrow') then
+            for _, v in pairs(workspace.world.npcs:GetChildren()) do
+               if v:IsA('Model') and v.Name == 'Jack Marrow' then
+                  for _, x in pairs(v:GetChildren()) do
+                     if x:IsA('ProximityPrompt') and x.Name == 'dialogprompt' then
+                        wait(.5)
+                        fireprompt(x)
+                        for _, z in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+                           if z:IsA('Tool') and z.Name == 'Treasure Map' then
+                              game.Players.LocalPlayer.Character.Humanoid:EquipTool(z)
+                              wait()
+                              for _, jack in pairs(workspace.world.npcs:GetChildren()) do
+                                 if jack:IsA('Model') and jack.Name == 'Jack Marrow' then
+                                   local remote = jack.treasure.repairmap
+                                   local arguments = {}
+                                   local results = remote:InvokeServer(unpack(arguments))
+                                 end
                               end
                            end
                         end
@@ -1332,12 +1352,6 @@ local Toggle = ItemTab:CreateToggle({
             end
          end
       end
-   end,
-})
-local Button = ItemTab:CreateButton({
-   Name = "Teleport to jack [ first ]",
-   Callback = function()
-       game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-2827.480224609375, 214.8001708984375, 1518.3900146484375)
    end,
 })
 local Section = ItemTab:CreateSection("[ Auto Enchant Settings ]")
@@ -1415,9 +1429,12 @@ local Toggle = ItemTab:CreateToggle({
    Callback = function(bool)
       autobuyrelic = bool
       while autobuyrelic do task.wait(.2)
-         for _, v in pairs(workspace.world.npcs:GetChildren()) do
-            if v:IsA('Model') and v.Name == 'Merlin' then
-               fireprompt(v.dialogprompt)
+         if workspace.world.npcs:WaitForChild('Merlin') then
+            wait(.5)
+            for _, v in pairs(workspace.world.npcs:GetChildren()) do
+               if v:IsA('Model') and v.Name == 'Merlin' then
+                  fireprompt(v.dialogprompt)
+               end
             end
          end
          for _, v in pairs(workspace.world.npcs:GetChildren()) do
@@ -1436,10 +1453,16 @@ local Toggle = ItemTab:CreateToggle({
    Flag = "",
    Callback = function(bool)
       autobuyluck = bool
-      while autobuyluck do task.wait(.2)
-         for _, v in pairs(workspace.world.npcs:GetChildren()) do
-            if v:IsA('Model') and v.Name == 'Merlin' then
-               fireprompt(v.dialogprompt)
+      if autobuyluck then
+         game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-931.4317016601562, 225.73080444335938, -993.3056030273438)
+      end
+      while autobuyluck do task.wait()
+         if workspace.world.npcs:WaitForChild('Merlin') then
+            wait(.5)
+            for _, v in pairs(workspace.world.npcs:GetChildren()) do
+               if v:IsA('Model') and v.Name == 'Merlin' then
+                  fireprompt(v.dialogprompt)
+               end
             end
          end
          for _, v in pairs(workspace.world.npcs:GetChildren()) do
@@ -1450,12 +1473,6 @@ local Toggle = ItemTab:CreateToggle({
             end
          end
       end
-   end,
-})
-local Button = ItemTab:CreateButton({
-   Name = "Teleport to merlin [ first ]",
-   Callback = function()
-      game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-931.4317016601562, 225.73080444335938, -993.3056030273438)
    end,
 })
 local Section = ItemTab:CreateSection("[ Bait Settings ]")
@@ -1592,6 +1609,43 @@ local Toggle = ItemTab:CreateToggle({
 
 
 
+local Section = SkinsTab:CreateSection("[ Skins Options ]")
+local SkinsDropdown = SkinsTab:CreateDropdown({
+   Name = "Select skin crate",
+   Options = {'Moosewood', 'Ancient', 'Desolate'},
+   CurrentOption = '',
+   MultipleOptions = false,
+   Flag = "",
+   Callback = function()
+   end,
+})
+local Button = SkinsTab:CreateButton({
+   Name = "Buy skin crate",
+   Callback = function()
+      local skinscrateName = table.unpack(SkinsDropdown.CurrentOption)
+      if skinscrateName == '' then
+         Rayfield:Notify({
+            Title = "Infinity Hub",
+            Content = "Please, select a skin crate first",
+            Duration = 6,
+            Image = 10723415766
+         })
+         return
+      else
+         local args = {[1] = skinscrateName}
+         game:GetService("ReplicatedStorage"):WaitForChild("packages"):WaitForChild("Net"):WaitForChild("RF/SkinCrates/Purchase"):InvokeServer(unpack(args))        
+      end
+   end,
+})
+local Button = SkinsTab:CreateButton({
+   Name = "Teleport to skin merchant",
+   Callback = function()
+      game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(414.6575622558594, 135.05563354492188, 197.09628295898438)
+   end,
+})
+
+
+
 local Section = TotemTab:CreateSection("[ Auto Use Totem Settings ]")
 local TotemsDropdownTwo = TotemTab:CreateDropdown({
    Name = "Select totem",
@@ -1632,18 +1686,38 @@ local Toggle = TotemTab:CreateToggle({
             return
          end
       end
-      while autousetotem do task.wait(1.5)
-         if cycle.Value == _cycle then
-            for _, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
-              if v:IsA('Tool') and v.Name == _totem then
-                 game.Players.LocalPlayer.Character.Humanoid:EquipTool(v)
-              end
-            end
-            wait(.1)
-            for _, v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
-               if v:IsA('Tool') and v.Name == _totem then
-                  v:Activate()
+      while autousetotem do task.wait()
+         if _cycle == 'Day' then
+            if cycle.Value == 'Day' then
+               for _, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+                  if v:IsA('Tool') and v.Name == _totem then
+                     game.Players.LocalPlayer.Character.Humanoid:EquipTool(v)
+                  end
                end
+               wait(.1)
+               for _, v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
+                  if v:IsA('Tool') and v.Name == _totem then
+                     v:Activate()
+                  end
+               end
+               wait(.1)
+               cycle.Value = 'Night'
+            end
+         elseif _cycle == 'Night' then
+            if cycle.Value == 'Night' then
+               for _, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+                  if v:IsA('Tool') and v.Name == _totem then
+                     game.Players.LocalPlayer.Character.Humanoid:EquipTool(v)
+                  end
+               end
+               wait(.1)
+               for _, v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
+                  if v:IsA('Tool') and v.Name == _totem then
+                     v:Activate()
+                  end
+               end
+               wait(.1)
+               cycle.Value = 'Day'
             end
          end
       end
@@ -1686,7 +1760,6 @@ local Button = SettingsTab:CreateButton({
 local Button = SettingsTab:CreateButton({
    Name = "Destroy hub",
    Callback = function()
-      workspace.safeZone:Destroy()
       Rayfield:Destroy()
    end,
 })
