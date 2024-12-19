@@ -1082,7 +1082,7 @@ local Toggle = ItemTab:CreateToggle({
          game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(466.2166442871094, 150.62973022460938, 230.4716796875);
       end
       while sellall do task.wait(.5)
-         if workspace.world.npcs:WaitForChild('Marc Merchant') then
+         if workspace.world.npcs:WaitForChild('Marc Merchant').HumanoidRootPart then
             wait(.5)
             for _, v in pairs(workspace.world.npcs:GetChildren()) do
                if v:IsA('Model') and v.Name == 'Marc Merchant' then
@@ -1305,7 +1305,7 @@ local Toggle = ItemTab:CreateToggle({
       end
       while autorepair do task.wait(.2)
          if not autorepair then return end
-         if workspace.world.npcs:WaitForChild('Jack Marrow') then
+         if workspace.world.npcs:WaitForChild('Jack Marrow').HumanoidRootPart then
             for _, v in pairs(workspace.world.npcs:GetChildren()) do
                if v:IsA('Model') and v.Name == 'Jack Marrow' then
                   for _, x in pairs(v:GetChildren()) do
@@ -1428,8 +1428,11 @@ local Toggle = ItemTab:CreateToggle({
    Flag = "",
    Callback = function(bool)
       autobuyrelic = bool
+      if autobuyrelic then
+         game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-931.4317016601562, 225.73080444335938, -993.3056030273438)
+      end
       while autobuyrelic do task.wait(.2)
-         if workspace.world.npcs:WaitForChild('Merlin') then
+         if workspace.world.npcs:WaitForChild('Merlin').HumanoidRootPart then
             wait(.5)
             for _, v in pairs(workspace.world.npcs:GetChildren()) do
                if v:IsA('Model') and v.Name == 'Merlin' then
@@ -1457,7 +1460,7 @@ local Toggle = ItemTab:CreateToggle({
          game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-931.4317016601562, 225.73080444335938, -993.3056030273438)
       end
       while autobuyluck do task.wait()
-         if workspace.world.npcs:WaitForChild('Merlin') then
+         if workspace.world.npcs:WaitForChild('Merlin').HumanoidRootPart then
             wait(.5)
             for _, v in pairs(workspace.world.npcs:GetChildren()) do
                if v:IsA('Model') and v.Name == 'Merlin' then
