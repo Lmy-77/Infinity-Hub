@@ -5,18 +5,52 @@ by Sirius
 
 shlex | Designing + Programming
 iRay  | Programming
+Max   | Programming
 
 ]]
 
 
 
-local InterfaceBuild = 'K7GD'
-local Release = "Build 1.54"
-local RayfieldFolder = "Rayfield"
-local ConfigurationFolder = RayfieldFolder.."/Configurations"
-local ConfigurationExtension = ".rfld"
+local InterfaceBuild = '1VEX'
+local Release = "Build 1.55"
+local InfinityFolder = "Infinity Hub"
+local ConfigurationFolder = InfinityFolder.."/Configurations"
+local ConfigurationExtension = ".infy"
 
+local HttpService = game:GetService("HttpService")
+local request = (syn and syn.request) or (fluxus and fluxus.request) or (http and http.request) or http_request or request
 
+local function getExecutor() 
+    if identifyexecutor then 
+        local e, v = identifyexecutor()
+        if e == nil then
+          e = ""
+        end
+
+        if v == nil then
+          v = ""
+        end
+
+        return {["Name"]=e,["Version"]=v}
+    end
+    
+    return {["Name"]="",["Version"]=""}
+end
+
+if request then
+    local reqBody = {
+        ["Executor"] = getExecutor(),
+        ["Script"] = {["Interface"]=InterfaceBuild, ["Release"]=Release}
+    }
+    pcall(function()
+	request({
+		Url = "https://analytics.sirius.menu/v1/report/0193dbf8-7da1-79de-b399-2c0f68b0a9ad",
+		Method = "POST",
+		Body = HttpService:JSONEncode(reqBody),
+		Headers = {["Content-Type"]="application/json"}
+	})
+    end)
+end
 
 local RayfieldLibrary = {
 	Flags = {},
@@ -404,7 +438,6 @@ local RayfieldLibrary = {
 -- Services
 local UserInputService = game:GetService("UserInputService")
 local TweenService = game:GetService("TweenService")
-local HttpService = game:GetService("HttpService")
 local RunService = game:GetService("RunService")
 local Players = game:GetService("Players")
 local CoreGui = game:GetService("CoreGui")
@@ -485,7 +518,6 @@ if UserInputService.TouchEnabled then
 end
 
 
-
 -- Object Variables
 
 local Main = Rayfield.Main
@@ -499,14 +531,17 @@ local dragBar = Rayfield:FindFirstChild('Drag')
 local dragInteract = dragBar and dragBar.Interact or nil
 local dragBarCosmetic = dragBar and dragBar.Drag or nil
 
+local dragOffset = 255
+local dragOffsetMobile = 150
+
 Rayfield.DisplayOrder = 100
 LoadingFrame.Version.Text = Release
 
 
+local Icons = useStudio and require(script.Parent.icons) or loadstring(game:HttpGet('https://raw.githubusercontent.com/SiriusSoftwareLtd/Rayfield/refs/heads/main/icons.lua'))()
 
 -- Variables
 
-local request = (syn and syn.request) or (http and http.request) or http_request
 local CFileName = nil
 local CEnabled = false
 local Minimised = false
@@ -561,16 +596,12 @@ local function ChangeTheme(Theme)
 end
 
 local function getIcon(name : string)
-	-- full credit to latte softworks :)
-	local iconData = not useStudio and game:HttpGet('https://raw.githubusercontent.com/SiriusSoftwareLtd/Rayfield/refs/heads/main/icons.lua')
-	local icons = useStudio and require(script.Parent.icons) or loadstring(iconData)()
-
 	name = string.match(string.lower(name), "^%s*(.*)%s*$") :: string
-	local sizedicons = icons['48px']
+	local sizedicons = Icons['48px']
 
 	local r = sizedicons[name]
 	if not r then
-		error("Lucide Icons: Failed to find icon by the name of \"" .. name .. "\.", 2)
+		error("Lucide Icons: Failed to find icon by the name of \"" .. name .. "\".", 2)
 	end
 
 	local rirs = r[2]
@@ -962,6 +993,8 @@ local function Hide(notify: boolean?)
 			TweenService:Create(tabbtn.UIStroke, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {Transparency = 1}):Play()
 		end
 	end
+	
+	dragInteract.Visible = false
 
 	for _, tab in ipairs(Elements:GetChildren()) do
 		if tab.Name ~= "Template" and tab.ClassName == "ScrollingFrame" and tab.Name ~= "Placeholder" then
@@ -1084,6 +1117,10 @@ local function Unhide()
 	if Minimised then
 		task.spawn(Maximise)
 	end
+	
+	dragBar.Position = useMobileSizing and UDim2.new(0.5, 0, 0.5, dragOffsetMobile) or UDim2.new(0.5, 0, 0.5, dragOffset)
+	
+	dragInteract.Visible = true
 
 	for _, TopbarButton in ipairs(Topbar:GetChildren()) do
 		if TopbarButton.ClassName == "ImageButton" then
@@ -1228,7 +1265,7 @@ function RayfieldLibrary:CreateWindow(Settings)
 	LoadingFrame.Subtitle.Text = Settings.LoadingSubtitle or "Interface Suite"
 
 	if Settings.LoadingTitle ~= "Rayfield Interface Suite" then
-		LoadingFrame.Version.Text = "Thanks for use"
+		LoadingFrame.Version.Text = "Rayfield UI"
 	end
 
 	if Settings.Icon and Settings.Icon ~= 0 and Topbar:FindFirstChild('Icon') then
@@ -1308,8 +1345,8 @@ function RayfieldLibrary:CreateWindow(Settings)
 	end)
 
 
-	makeDraggable(Main, Topbar, false, {255, 150})
-	if dragBar then dragBar.Position = useMobileSizing and UDim2.new(0.5, 0, 0.5, 150) or UDim2.new(0.5, 0, 0.5, 255) makeDraggable(Main, dragInteract, true, {255, 150}) end
+	makeDraggable(Main, Topbar, false, {dragOffset, dragOffsetMobile})
+	if dragBar then dragBar.Position = useMobileSizing and UDim2.new(0.5, 0, 0.5, dragOffsetMobile) or UDim2.new(0.5, 0, 0.5, dragOffset) makeDraggable(Main, dragInteract, true, {dragOffset, dragOffsetMobile}) end
 
 	for _, TabButton in ipairs(TabList:GetChildren()) do
 		if TabButton.ClassName == "Frame" and TabButton.Name ~= "Placeholder" then
@@ -1327,19 +1364,21 @@ function RayfieldLibrary:CreateWindow(Settings)
 
 		if isfile and not isfile(RayfieldFolder.."/Discord Invites".."/"..Settings.Discord.Invite..ConfigurationExtension) then
 			if request then
-				request({
-					Url = 'http://127.0.0.1:6463/rpc?v=1',
-					Method = 'POST',
-					Headers = {
-						['Content-Type'] = 'application/json',
-						Origin = 'https://discord.com'
-					},
-					Body = HttpService:JSONEncode({
-						cmd = 'INVITE_BROWSER',
-						nonce = HttpService:GenerateGUID(false),
-						args = {code = Settings.Discord.Invite}
+				pcall(function()
+					request({
+						Url = 'http://127.0.0.1:6463/rpc?v=1',
+						Method = 'POST',
+						Headers = {
+							['Content-Type'] = 'application/json',
+							Origin = 'https://discord.com'
+						},
+						Body = HttpService:JSONEncode({
+							cmd = 'INVITE_BROWSER',
+							nonce = HttpService:GenerateGUID(false),
+							args = {code = Settings.Discord.Invite}
+						})
 					})
-				})
+				end)
 			end
 
 			if Settings.Discord.RememberJoins then -- We do logic this way so if the developer changes this setting, the user still won't be prompted, only new users
@@ -1509,7 +1548,7 @@ function RayfieldLibrary:CreateWindow(Settings)
 						TweenService:Create(KeyMain.NoteMessage, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {TextTransparency = 1}):Play()
 						TweenService:Create(KeyMain.Hide, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {ImageTransparency = 1}):Play()
 						task.wait(0.45)
-						game.Players.LocalPlayer:Kick("No Attempts Remaining")
+						Players.LocalPlayer:Kick("No Attempts Remaining")
 						game:Shutdown()
 					end
 					KeyMain.Input.InputBox.Text = ""
@@ -1790,7 +1829,7 @@ function RayfieldLibrary:CreateWindow(Settings)
 			ColorPicker.HexInput.UIStroke.Color = SelectedTheme.InputStroke
 
 			local opened = false 
-			local mouse = game.Players.LocalPlayer:GetMouse()
+			local mouse = Players.LocalPlayer:GetMouse()
 			Main.Image = "http://www.roblox.com/asset/?id=11415645739"
 			local mainDragging = false 
 			local sliderDragging = false 
@@ -2941,7 +2980,7 @@ function RayfieldLibrary:CreateWindow(Settings)
 
 						NewValue = math.floor(NewValue / SliderSettings.Increment + 0.5) * (SliderSettings.Increment * 10000000) / 10000000
 						NewValue = math.clamp(NewValue, SliderSettings.Range[1], SliderSettings.Range[2])
-						
+
 						if not SliderSettings.Suffix then
 							Slider.Main.Information.Text = tostring(NewValue)
 						else
@@ -2976,14 +3015,14 @@ function RayfieldLibrary:CreateWindow(Settings)
 
 			function SliderSettings:Set(NewVal)
 				local NewVal = math.clamp(NewVal, SliderSettings.Range[1], SliderSettings.Range[2])
-				
+
 				TweenService:Create(Slider.Main.Progress, TweenInfo.new(0.45, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {Size = UDim2.new(0, Slider.Main.AbsoluteSize.X * ((NewVal + SliderSettings.Range[1]) / (SliderSettings.Range[2] - SliderSettings.Range[1])) > 5 and Slider.Main.AbsoluteSize.X * (NewVal / (SliderSettings.Range[2] - SliderSettings.Range[1])) or 5, 1, 0)}):Play()
 				Slider.Main.Information.Text = tostring(NewVal) .. " " .. (SliderSettings.Suffix or "")
-				
+
 				local Success, Response = pcall(function()
 					SliderSettings.Callback(NewVal)
 				end)
-				
+
 				if not Success then
 					TweenService:Create(Slider, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = Color3.fromRGB(85, 0, 0)}):Play()
 					TweenService:Create(Slider.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {Transparency = 1}):Play()
@@ -2995,7 +3034,7 @@ function RayfieldLibrary:CreateWindow(Settings)
 					TweenService:Create(Slider, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
 					TweenService:Create(Slider.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {Transparency = 0}):Play()
 				end
-				
+
 				SliderSettings.CurrentValue = NewVal
 				SaveConfiguration()
 			end
@@ -3111,6 +3150,7 @@ function RayfieldLibrary:IsVisible(): boolean
 end
 
 function RayfieldLibrary:Destroy()
+	hideHotkeyConnection:Disconnect()
 	Rayfield:Destroy()
 end
 
@@ -3184,7 +3224,7 @@ Topbar.Hide.MouseButton1Click:Connect(function()
 	setVisibility(Hidden, not useMobileSizing)
 end)
 
-UserInputService.InputBegan:Connect(function(input, processed)
+hideHotkeyConnection = UserInputService.InputBegan:Connect(function(input, processed)
 	if (input.KeyCode == Enum.KeyCode.K and not processed) then
 		if Debounce then return end
 		if Hidden then
