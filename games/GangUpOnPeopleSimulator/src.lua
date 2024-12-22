@@ -1,4 +1,13 @@
 -- Variables
+local function CreatePlataform()
+    local model = Instance.new('Model', workspace)
+    model.Name = 'plataform'
+    local plataform = Instance.new('Part', model)
+    plataform.Position = Vector3.new(400.9646301269531, 3.3987059593200684, 157.8434600830078)
+    plataform.Name = 'handle'
+    plataform.Anchored = true
+end
+CreatePlataform()
 local function addRichText(label)
 	label.TextLabel.RichText = true
 end
@@ -40,9 +49,9 @@ Library.AccentColor = Color3.fromRGB(255, 255, 255);
 local ThemeManager = loadstring(game:HttpGet(repo .. 'addons/ThemeManager.lua'))()
 local SaveManager = loadstring(game:HttpGet(repo .. 'addons/SaveManager.lua'))()
 Library:Notify('Script Loaded, Game: '..game:GetService('MarketplaceService'):GetProductInfo(game.PlaceId).Name, 4)
-wait(0.3) Library:Notify('Welcome '..game.Players.LocalPlayer.Name, 4) wait(0.3) Library:Notify('Made by Lmy77', 10) wait(0.3) Library:Notify('Keybind: J', 10)
+wait(0.3) Library:Notify('Welcome '..game.Players.LocalPlayer.Name, 4) wait(0.3) Library:Notify('Made by Lmy77', 4) wait(0.3) Library:Notify('Keybind: J', 4)
 local Window = Library:CreateWindow({
-    Title = 'Infinity Hub - Version 2.2 - '..game:GetService('MarketplaceService'):GetProductInfo(game.PlaceId).Name,
+    Title = 'Infinity Hub - Version 2.4 - '..game:GetService('MarketplaceService'):GetProductInfo(game.PlaceId).Name,
     Center = true,
     AutoShow = true,
     TabPadding = 8,
@@ -104,23 +113,18 @@ FarmingBox:AddToggle('MyToggle', {
     Tooltip = 'Click to start slap farm',
     Callback = function(bool)
         SlapFarm = bool
-        if SlapFarm then
-            Library:Notify('Starting slap farm', 4)
-            task.spawn(function()
-                repeat task.wait()
-                    for i, v in pairs(workspace.Map.GasStation:GetChildren()) do
-                        if v:IsA('Model') and v.Name ~= 'Door' and v.Name ~= 'VestCollector' then
-                            game.Players.LocalPlayer.Character:PivotTo(v:GetPivot())
-                        end
-                    end
-                    EquipTool('Fight')
-                    local A_1 = 'Slap'
-                    local Event = game:GetService("Workspace")[game.Players.LocalPlayer.Name].Fight.FightScript.FightEvent
-                    Event:FireServer(A_1)
-                    FireTool('Fight')
-                until SlapFarm == false
-            end)
-        end
+        Library:Notify('Starting slap farm', 4)
+        repeat task.wait()
+            for i, v in pairs(workspace.Map.GasStation:GetChildren()) do
+                if v:IsA('Model') and v.Name ~= 'Door' and v.Name ~= 'VestCollector' then
+                    game.Players.LocalPlayer.Character:PivotTo(v:GetPivot())
+                end
+            end
+            EquipTool('Fight')
+            local A_1 = 'Slap'
+            local Event = game:GetService("Workspace")[game.Players.LocalPlayer.Name].Fight.FightScript.FightEvent
+            Event:FireServer(A_1)
+        until SlapFarm == false
     end
 })
 FarmingBox:AddLabel('')
@@ -145,6 +149,18 @@ FarmingBox:AddDropdown('MyDropdown', {
     Callback = function(Value)
         getgenv().TypeToFarm = Value
     end
+})
+local MyButton = FarmingBox:AddButton({
+    Text = 'Teleport to player',
+    Func = function()
+        game.Players.LocalPlayer.Character:PivotTo(game.Players[getgenv().PlayerSelected].Character:GetPivot())
+        wait(.1)
+        game.Players.LocalPlayer.Character:PivotTo(game.Players[getgenv().PlayerSelected].Character:GetPivot())
+        wait(.1)
+        game.Players.LocalPlayer.Character:PivotTo(game.Players[getgenv().PlayerSelected].Character:GetPivot())
+    end,
+    DoubleClick = false,
+    Tooltip = ''
 })
 local MyButton = FarmingBox:AddButton({
     Text = 'Refresh Dropdown',
@@ -174,6 +190,36 @@ FarmingBox:AddToggle('MyToggle', {
         end
     end
 })
+oldPos = ''
+FarmingBox:AddToggle('MyToggle', {
+    Text = 'Fling player (beta)',
+    Default = false,
+    Tooltip = '',
+    Callback = function(bool)
+        void = bool
+        if void then
+            oldPos = game.Players.LocalPlayer.Character.HumanoidRootPart.Position
+        end
+        while void do task.wait()
+            game.Players.LocalPlayer.Character:PivotTo(game.Players[getgenv().PlayerSelected].Character:GetPivot())
+            EquipTool('Fight')
+            local A_1 = getgenv().TypeToFarm
+            local Event = game:GetService("Workspace")[game.Players.LocalPlayer.Name].Fight.FightScript.FightEvent
+            Event:FireServer(A_1)
+            for _, v in pairs(game.Players[getgenv().PlayerSelected].Character.Ragdoll:GetChildren()) do
+                if v:IsA('BoolValue') and v.Name == 'Activate' then
+                    if v.Value == true then
+                        FireTool('Fight')
+                        wait(.2)
+                        game.Players.LocalPlayer.Character:PivotTo(workspace.plataform:GetPivot())
+                        FireTool('Fight')
+                        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(oldPos)
+                    end
+                end
+            end
+        end
+    end
+})
 FarmingBox:AddLabel('')
 FarmingBox:AddDivider() 
 addRichText(FarmingBox:AddLabel('<font color="#FFFFFF">         [ More Options ]</font>'))
@@ -195,7 +241,7 @@ local MyButton = FarmingBox:AddButton({
             game.Players.LocalPlayer.Character.Humanoid.PlatformStand = false;
         until game.Players.LocalPlayer.Character.Humanoid.Health == 9e99999999999
     end,
-    DoubleClick = false,
+    DoubleClick = true,
     Tooltip = 'Click to become immune to ragdoll'
 })
 local MyButton = FarmingBox:AddButton({
@@ -494,29 +540,83 @@ FunBox:AddToggle('MyToggle', {
         end
     end
 })
-local MyButton = FunBox:AddButton({
-    Text = 'Big HitBox',
-    Func = function()
-        _G.Size = 20
-        _G.Disabled = true
-        game:GetService('RunService').RenderStepped:connect(function()
-          if _G.Disabled then
-            for i,v in next, game:GetService('Players'):GetPlayers() do
-              if v.Name ~= game:GetService('Players').LocalPlayer.Name then
-                pcall(function()
-                  v.Character.HumanoidRootPart.Size = Vector3.new(_G.Size,_G.Size,_G.Size)
-                  v.Character.HumanoidRootPart.Transparency = 0.7
-                  v.Character.HumanoidRootPart.BrickColor = BrickColor.new("Really red")
-                  v.Character.HumanoidRootPart.Material = "Neon"
-                  v.Character.HumanoidRootPart.CanCollide = false
-                end)
+FunBox:AddToggle('MyToggle', {
+    Text = 'Spam all attack',
+    Default = false,
+    Tooltip = '',
+    Callback = function(Value)
+        AttackAura = Value
+        while AttackAura do task.wait()
+            EquipTool('Fight')
+            local A_1 = 'Slap'
+            local Event = game:GetService("Workspace")[game.Players.LocalPlayer.Name].Fight.FightScript.FightEvent
+            Event:FireServer(A_1)
+            local A_1 = 'Kick'
+            local Event = game:GetService("Workspace")[game.Players.LocalPlayer.Name].Fight.FightScript.FightEvent
+            Event:FireServer(A_1)
+        end
+    end
+})
+FunBox:AddToggle('MyToggle', {
+    Text = 'Big hitbox',
+    Default = false,
+    Tooltip = '',
+    Callback = function(Value)
+        bighitbox = Value
+        if bighitbox then
+            _G.Size = 30
+            _G.Disabled = true
+            game:GetService('RunService').RenderStepped:connect(function()
+              if _G.Disabled then
+                for i,v in next, game:GetService('Players'):GetPlayers() do
+                  if v.Name ~= game:GetService('Players').LocalPlayer.Name then
+                    pcall(function()
+                      v.Character.HumanoidRootPart.Size = Vector3.new(_G.Size,_G.Size,_G.Size)
+                      v.Character.HumanoidRootPart.Transparency = 0.7
+                      v.Character.HumanoidRootPart.BrickColor = BrickColor.new("Really red")
+                      v.Character.HumanoidRootPart.Material = "Neon"
+                      v.Character.HumanoidRootPart.CanCollide = false
+                    end)
+                  end
+                end
               end
+            end)
+        else
+            _G.Size = 5
+            _G.Disabled = true
+            game:GetService('RunService').RenderStepped:connect(function()
+              if _G.Disabled then
+                for i,v in next, game:GetService('Players'):GetPlayers() do
+                  if v.Name ~= game:GetService('Players').LocalPlayer.Name then
+                    pcall(function()
+                      v.Character.HumanoidRootPart.Size = Vector3.new(_G.Size,_G.Size,_G.Size)
+                      v.Character.HumanoidRootPart.Transparency = 1
+                      v.Character.HumanoidRootPart.CanCollide = false
+                    end)
+                  end
+                end
+              end
+            end)
+        end
+    end
+})
+FunBox:AddToggle('Toggle', {
+    Text = 'Delete force field',
+    Default = false,
+    Tooltip = 'Delete force field in others players',
+    Callback = function(Value)
+        repeat task.wait()
+            for _, v in pairs(game:GetService('Players'):GetChildren()) do
+                if v.Name ~= game:GetService('Players') then
+                    for _, x in pairs(v.Character:GetChildren()) do
+                        if x:IsA('ForceField') then
+                            x:Destroy()
+                        end
+                    end
+                end
             end
-          end
-        end)
-    end,
-    DoubleClick = false,
-    Tooltip = ''
+        until Value == false
+    end
 })
 local MyButton = FunBox:AddButton({
     Text = 'Get All Tools',
@@ -621,6 +721,48 @@ local MyButton = OtherBox:AddButton({
     end,
     DoubleClick = false,
     Tooltip = ''
+})
+OtherBox:AddToggle('MyToggle', {
+    Text = 'Loop open/close all doors',
+    Default = false,
+    Tooltip = '',
+    Callback = function(Value)
+        openclosedoor = Value
+        while openclosedoor do task.wait()
+            for i, v in pairs(workspace.Map:GetChildren()) do
+                if v:IsA('Model') and v.Name == 'House' then
+                    for i, x in pairs(v:GetDescendants()) do
+                        if x:IsA('Part') and x.Name == 'Handle' then
+                            local House = v
+                            local ClickDetector = x.ClickDetector
+                            local OpenValue = House.Door.Open
+
+                            if OpenValue.Value == false then
+                                fireclickdetector(ClickDetector)
+                            end
+                        end
+                    end
+                end
+            end
+            wait(.01)
+            for i, v in pairs(workspace.Map:GetChildren()) do
+                if v:IsA('Model') and v.Name == 'House' then
+                    for i, x in pairs(v:GetDescendants()) do
+                        if x:IsA('Part') and x.Name == 'Handle' then
+                            local House = v
+                            local ClickDetector = x.ClickDetector
+                            local OpenValue = House.Door.Open
+
+                            if OpenValue.Value == true then
+                                fireclickdetector(ClickDetector)
+                            end
+                        end
+                    end
+                end
+            end
+            wait(.1)
+        end
+    end
 })
 OtherBox:AddLabel('')
 local MyButton = OtherBox:AddButton({
