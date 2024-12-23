@@ -1,3 +1,14 @@
+-- detect service
+local UserInputService = game:GetService("UserInputService")
+if UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled and not UserInputService.MouseEnabled then
+	print("Mobile device")
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/Lmy-77/Infinity-Hub/refs/heads/scripts/games/FleeTheFacility/Mobile/Button/src.lua",true))()
+elseif not UserInputService.TouchEnabled and UserInputService.KeyboardEnabled and UserInputService.MouseEnabled then
+	print("Computer device")
+end
+
+
+
 -- variables
 local ESPPC = Instance.new("Folder", workspace)
 ESPPC.Name = "ESPComputer"
