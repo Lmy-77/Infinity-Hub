@@ -63,6 +63,7 @@ local KeyPress = function(v)
     return game:GetService("VirtualInputManager"):SendKeyEvent(true, v, false, game)
 end
 local map = workspace:findFirstChild(tostring(game.ReplicatedStorage.CurrentMap.Value))
+local computersLeft = game:GetService("ReplicatedStorage").ComputersLeft.Value
 
 
 
@@ -97,6 +98,7 @@ local Tabs = {
         Icon = ""
     }),
 }
+Window:SelectTab(1)
 
 
 
@@ -116,6 +118,30 @@ Tabs.Game:AddButton({
         for _, v in pairs(workspace:GetDescendants()) do
             if (v:IsA('Model') and v.Name == 'ExitDoor') then
                 game:GetService('Players').LocalPlayer.Character:PivotTo(v:GetPivot())
+            end
+        end
+    end
+})
+Tabs.Game:AddButton({
+    Title = "Teleport to computer",
+    Description = "Risk of kicking, use responsibly",
+    Callback = function()
+        for _, v in pairs(map:GetChildren()) do
+            if v:IsA('Model') and v.Name == 'ComputerTable' then
+                for _, x in pairs(v:GetChildren()) do
+                    if x:IsA('Part') and x.Name:lower():find('computertrigger') then
+                        if x.ActionSign.Value == 20 and v.Screen.Color ~= Color3.fromRGB(40, 127, 71) then
+                            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = x.CFrame
+                            return
+                        elseif computersLeft ~= 0 then
+                            Fluent:Notify{
+                                Title = "All the computers on the map have already been made",
+                                Content = '',
+                                Duration = 4
+                            }
+                        end
+                    end
+                end
             end
         end
     end
@@ -361,8 +387,3 @@ EspComputerToggle:OnChanged(function(bool)
         end
     end
 end)
-
-
-
--- Select Tab
-Window:SelectTab(1)
