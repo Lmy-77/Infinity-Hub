@@ -10,8 +10,6 @@ end
 
 
 -- variables
-local ESPPC = Instance.new("Folder", workspace)
-ESPPC.Name = "ESPComputer"
 function GetSizeOfObject(Obj)
     if Obj:IsA("BasePart") then
         return Obj.Size
@@ -127,7 +125,30 @@ end)
 game:GetService("Players").PlayerRemoving:Connect(function(player)
     removeESP(player)
 end)
-local map = workspace:findFirstChild(tostring(game.ReplicatedStorage.CurrentMap.Value))
+local function updateComputerESP()
+    local map = workspace:FindFirstChild(tostring(game.ReplicatedStorage.CurrentMap.Value))
+    if map then
+        local computerTables = map:GetChildren()
+        for _, table in pairs(computerTables) do
+            if table:IsA("Model") and table.Name == "ComputerTable" then
+                for _, screen in pairs(table:GetDescendants()) do
+                    if (screen:IsA("Part") or screen:IsA("UnionOperation")) and screen.Name == "Screen" then
+                        local billboardGui = screen:FindFirstChild("BillboardGui")
+                        if billboardGui then
+                            local imageLabel = billboardGui:FindFirstChild("ImageLabel")
+                            if imageLabel then
+                                billboardGui.Enabled = ESPComputer
+                                if ESPComputer then
+                                    imageLabel.ImageColor3 = screen.Color
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
+end
 local KeyPress = function(v)
     return game:GetService("VirtualInputManager"):SendKeyEvent(true, v, false, game)
 end
@@ -415,31 +436,26 @@ end)
 local EspComputerToggle = Tabs.Esp:AddToggle("", {Title = "Esp Computers", Default = false })
 EspComputerToggle:OnChanged(function(bool)
     ESPComputer = bool
-    if ESPComputer then
-        local children = map:GetChildren()
-            for i =1, #children do
-            if children[i].Name == "ComputerTable" then
-                local Box = Instance.new("BoxHandleAdornment")
-                Box.Size = GetSizeOfObject(children[i].Screen) + Vector3.new(-0.5, -0.5, -0.5)
-                Box.Name = "ESPPart"
-                Box.Adornee = children[i].Screen
-                spawn (function()
-                    while true do
-                        wait(0.1)
-                        Box.Color3 = children[i].Screen.Color
+    if not ESPComputer then
+        local map = workspace:FindFirstChild(tostring(game.ReplicatedStorage.CurrentMap.Value))
+        if map then
+            local computerTables = map:GetChildren()
+            for _, table in pairs(computerTables) do
+                if table:IsA("Model") and table.Name == "ComputerTable" then
+                    for _, screen in pairs(table:GetDescendants()) do
+                        if (screen:IsA("Part") or screen:IsA("UnionOperation")) and screen.Name == "Screen" then
+                            local billboardGui = screen:FindFirstChild("BillboardGui")
+                            if billboardGui then
+                                billboardGui.Enabled = false
+                            end
+                        end
                     end
-                end)
-                Box.AlwaysOnTop = true
-                Box.ZIndex = 5
-                Box.Transparency = 0.4
-                Box.Parent = ESPPC
+                end
             end
         end
     else
-        for _, v in pairs(workspace.ESPComputer:GetChildren()) do
-            if v:IsA('BoxHandleAdornment') then
-                v:Destroy()
-            end
+        while ESPComputer do task.wait()
+            updateComputerESP()
         end
     end
 end)
