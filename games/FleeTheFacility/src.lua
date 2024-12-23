@@ -186,6 +186,10 @@ local Tabs = {
         Title = "Esp",
         Icon = "view"
     }),
+    EspSettings = Window:AddTab({
+        Title = "Esp Settings",
+        Icon = "settings"
+    }),
 }
 Window:SelectTab(1)
 
@@ -215,6 +219,7 @@ Tabs.Game:AddButton({
     Title = "Teleport to computer",
     Description = "Risk of kicking, use responsibly",
     Callback = function()
+        local map = workspace:FindFirstChild(tostring(game.ReplicatedStorage.CurrentMap.Value))
         for _, v in pairs(map:GetChildren()) do
             if v:IsA('Model') and v.Name == 'ComputerTable' then
                 for _, x in pairs(v:GetChildren()) do
@@ -459,3 +464,30 @@ EspComputerToggle:OnChanged(function(bool)
         end
     end
 end)
+
+
+Tabs.EspSettings:AddSection('[ Configurations ]')
+local InoccentColorPicker = Tabs.EspSettings:AddColorpicker("Colorpicker", {
+    Title = " Set the player's colour",
+    Default = Color3.fromRGB(255, 255, 255)
+})
+InoccentColorPicker:OnChanged(function()
+    InoccentColor = InoccentColorPicker.Value
+end)
+local BeastColorPicker = Tabs.EspSettings:AddColorpicker("Colorpicker", {
+    Title = " Set the beast colour",
+    Default = Color3.fromRGB(255, 0, 0)
+})
+BeastColorPicker:OnChanged(function()
+    BeastColor = BeastColorPicker.Value
+end)
+Tabs.EspSettings:AddButton({
+    Title = "Reset colors",
+    Description = "",
+    Callback = function()
+        BeastColor = Color3.new(255, 0, 0)
+        InoccentColor = Color3.new(255, 255, 255)
+        InoccentColorPicker:SetValueRGB(Color3.fromRGB(255, 255, 255))
+        BeastColorPicker:SetValueRGB(Color3.fromRGB(255, 0, 0))
+    end
+})
