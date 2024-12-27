@@ -493,7 +493,7 @@ killToggle:OnChanged(function(bool)
                 if hrt:IsA('Part') and hrt.Name == 'HumanoidRootPart' then
                     hrt.CFrame = game:GetService('Players')[selectedPlayer].Character.HumanoidRootPart.CFrame
                     wait()
-                    for _, hum in pairs(v:GetChildren()) do
+                    for _, hum in pairs(game:GetService('Players')[selectedPlayer].Character:GetChildren()) do
                         if hum.Name == 'Humanoid' then
                             local ohString1 = "Damage"
                             local ohString2 = "Punch"
@@ -957,3 +957,4 @@ autoActiveStandToggle:OnChanged(function(bool)
         end
     until autoActive == false
 end)
+		
