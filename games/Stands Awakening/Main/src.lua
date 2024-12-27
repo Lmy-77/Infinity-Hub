@@ -17,13 +17,33 @@ function getItems()
     end
     return itemsName
 end
+local function EquipTool(ToolName)
+    for i, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+        if v:IsA('Tool') and v.Name == ToolName then
+            game.Players.LocalPlayer.Character.Humanoid:EquipTool(v);
+        end
+    end
+end
+local function FireTool(ToolName)
+    for i, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+        if v.Name == ToolName then
+            v.Parent = game.Players.LocalPlayer.Character
+        end
+    end
+    for i, v in pairs (game.Players.LocalPlayer.Character:GetChildren()) do
+        if v.Name == ToolName then
+            v:Activate()
+        end
+    end
+end
+local scriptVersion = '2.6a'
 
 
 
 -- library settings
 local Library = loadstring(game:HttpGetAsync("https://github.com/ActualMasterOogway/Fluent-Renewed/releases/latest/download/Fluent.luau"))()
 local Window = Library:CreateWindow{
-    Title = 'Infinity Hub - Stands Awakenig - v8.6',
+    Title = 'Infinity Hub - '.. scriptVersion ..' | Stands Awakenig',
     SubTitle = "by lmy77",
     TabWidth = 120,
     Size = UDim2.fromOffset(830, 525),
@@ -55,6 +75,14 @@ local Tabs = {
     Items = Window:AddTab({
         Title = "Items",
         Icon = "hammer"
+    }),
+    Money = Window:AddTab({
+        Title = "Money",
+        Icon = "banknote"
+    }),
+    Mobs = Window:AddTab({
+        Title = "Mobs",
+        Icon = "ghost"
     }),
     Bosses = Window:AddTab({
         Title = "Bosses",
@@ -667,12 +695,152 @@ autoButItemToggle:OnChanged(function(bool)
 end)
 
 
+_G.banknoteFarm = {
+    wait = nil,
+    fireWait = nil
+}
+Tabs.Money:AddSection('[ Backnotes ]')
+local Input = Tabs.Money:CreateInput("Input", {
+    Title = "Set the waiting time",
+    Description = 'Enter the time you want the loop to take',
+    Default = "0",
+    Placeholder = "...",
+    Numeric = true,
+    Finished = false,
+    Callback = function(Value)
+        _G.banknoteFarm.wait = Value
+    end
+})
+local Input = Tabs.Money:CreateInput("Input", {
+    Title = "Set the fire tool time",
+    Description = 'Waiting time to activate the tool',
+    Default = "0",
+    Placeholder = "...",
+    Numeric = true,
+    Finished = false,
+    Callback = function(Value)
+        _G.banknoteFarm.fireWait = Value
+    end
+})
+local banknoteFarmToggle = Tabs.Money:AddToggle("", {Title = "Auto grab banknote", Description = 'Starts the banknote farm automatically', Default = false })
+banknoteFarmToggle:OnChanged(function(bool)
+    bankNoteFarm = bool
+    repeat task.wait(_G.banknoteFarm.wait)
+        if bankNoteFarm then
+            for _, v in pairs(workspace:GetChildren()) do
+                if v:IsA('Tool') and v.Name == 'Banknote' then
+                    game.Players.LocalPlayer.Character.Humanoid:EquipTool(v);
+                end
+            end
+            wait(.1)
+            EquipTool('Banknote')
+            wait(_G.banknoteFarm.fireWait)
+            FireTool('Banknote')
+        end
+    until bankNoteFarm == false
+end)
+
+
+_G.mobSettings = {
+    Enabled = nil,
+    Distance = nil,
+    Skills = {
+        Enabled = nil,
+        skillName = {'E', 'R', 'T', 'Y', 'F', 'H', 'J'}
+    }
+}
+Tabs.Mobs:AddSection('[ Mob Farm ]')
+local mobsDropdown = Tabs.Mobs:AddDropdown("Dropdown", {
+    Title = "Select mob",
+    Description = 'Select the mob you want to farm',
+    Values = {'Bandit', 'Skeleton', 'Vampire'},
+    Multi = false,
+    Default = nil,
+})
+mobsDropdown:OnChanged(function(value)
+    selectedMob = value
+end)
+local autoFarmMobToggle = Tabs.Mobs:AddToggle("", {Title = "Start", Description = '', Default = false })
+autoFarmMobToggle:OnChanged(function(bool)
+    autoMob = bool
+    local keys = _G.mobSettings.Skills.skillName
+    repeat task.wait()
+        if autoMob then
+            for _, v in pairs(workspace:GetChildren()) do
+                if v:IsA('Model') and v.Name == selectedMob then
+                    for _, x in pairs(v:GetChildren()) do
+                        if x:IsA('Part') and x.Name == 'Head' then
+                            local modelPosition = x.Position
+                            local cframe = CFrame.new(modelPosition + Vector3.new(0, 5, 0)) * CFrame.Angles(math.rad(270), 0, 0)
+                            for _, hrt in pairs(game:GetService('Players').LocalPlayer.Character:GetChildren()) do
+                                if hrt:IsA('Part') and hrt.Name == 'HumanoidRootPart' then
+                                    if v.Humanoid.Health >= 1 then
+                                        hrt.CFrame = cframe
+                                        local ohString1 = "Damage"
+                                        local ohString2 = "Punch"
+                                        local ohNil3 = nil
+                                        local ohNil4 = nil
+                                        local ohInstance5 = v.Humanoid
+                                        local ohCFrame6 = CFrame.new(1087.26624, 402.125397, -639.109497, 0.740708888, 0.661396801, 0.117918789, 0.136537492, 0.0236570835, -0.990352511, -0.657805502, 0.749662995, -0.0727824271)
+                                        game:GetService("ReplicatedStorage").Main.Input:FireServer(ohString1, ohString2, ohNil3, ohNil4, ohInstance5, ohCFrame6)
+                                    end
+                                end
+                            end
+                            if _G.mobSettings.Skills.Enabled then
+                                for _, Keys in next, keys do
+                                    game:GetService('VirtualInputManager'):SendKeyEvent(true, Keys, false, game)
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    until autoMob == false
+end)
+Tabs.Mobs:AddSection('[ Settings ]')
+local Input = Tabs.Mobs:CreateInput("Input", {
+    Title = "Set disctance",
+    Description = 'Enter the distance mob',
+    Default = "5",
+    Placeholder = "...",
+    Numeric = true,
+    Finished = false,
+    Callback = function(Value)
+        _G.mobSettings.Distance = Value
+    end
+})
+local autoUseSkillsMobToggle = Tabs.Mobs:AddToggle("", {Title = "Auto use all skills", Description = 'When it starts it will use all skills', Default = false })
+autoUseSkillsMobToggle:OnChanged(function(bool)
+    _G.mobSettings.Skills.Enabled = bool
+end)
+local autoActiveStandToggleT = Tabs.Mobs:AddToggle("", {Title = "Auto active stand", Description = 'Activates your stand automatically if it is deactivated', Default = false })
+autoActiveStandToggleT:OnChanged(function(bool)
+    autoActiveT = bool
+    repeat task.wait()
+        if autoActiveT then
+            for _, v in pairs(game:GetService('Players').LocalPlayer.Character:GetChildren()) do
+                if v:IsA('Model') and v.Name == 'Stand' then
+                    for _, x in pairs(v:GetChildren()) do
+                        if x:IsA('MeshPart') and x.Name == 'FakeHead' then
+                            if x.Transparency == 1 then
+                                game:GetService('VirtualInputManager'):SendKeyEvent(true, 'Q', false, game)
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    until autoActiveT == false
+end)
+
+
 _G.Settings = {
+    Distance = nil,
     skills = {
         Enabled = nil,
-        skillName = {'E', 'R', 'T', 'F', 'H', 'J'}
+        skillName = {'E', 'R', 'T', 'Y', 'F', 'H', 'J'}
     },
-    autoclick = nil
 }
 Tabs.Bosses:AddSection('[ Farm Boss ]')
 local bossesDropdown = Tabs.Bosses:AddDropdown("Dropdown", {
@@ -696,10 +864,17 @@ autoFarmBossToggle:OnChanged(function(bool)
                     for _, x in pairs(v:GetChildren()) do
                         if x:IsA('Part') and x.Name == 'Head' then
                             local modelPosition = x.Position
-                            local cframe = CFrame.new(modelPosition + Vector3.new(0, 5, 0)) * CFrame.Angles(math.rad(270), 0, 0)
+                            local cframe = CFrame.new(modelPosition + Vector3.new(0, _G.Settings.Distance, 0)) * CFrame.Angles(math.rad(270), 0, 0)
                             for _, hrt in pairs(game:GetService('Players').LocalPlayer.Character:GetChildren()) do
                                 if hrt:IsA('Part') and hrt.Name == 'HumanoidRootPart' then
                                     hrt.CFrame = cframe
+                                    local ohString1 = "Damage"
+                                    local ohString2 = "Punch"
+                                    local ohNil3 = nil
+                                    local ohNil4 = nil
+                                    local ohInstance5 = v.Humanoid
+                                    local ohCFrame6 = CFrame.new(1087.26624, 402.125397, -639.109497, 0.740708888, 0.661396801, 0.117918789, 0.136537492, 0.0236570835, -0.990352511, -0.657805502, 0.749662995, -0.0727824271)
+                                    game:GetService("ReplicatedStorage").Main.Input:FireServer(ohString1, ohString2, ohNil3, ohNil4, ohInstance5, ohCFrame6)
                                 end
                             end
                             if _G.Settings.skills.Enabled then
@@ -715,24 +890,20 @@ autoFarmBossToggle:OnChanged(function(bool)
     until autoBoss == false
 end)
 Tabs.Bosses:AddSection('[ Settings ]')
+local Input = Tabs.Bosses:CreateInput("Input", {
+    Title = "Set disctance",
+    Description = 'Enter the distance boss',
+    Default = "5",
+    Placeholder = "...",
+    Numeric = true,
+    Finished = false,
+    Callback = function(Value)
+        _G.Settings.Distance = Value
+    end
+})
 local autoFarmBossToggle = Tabs.Bosses:AddToggle("", {Title = "Auto use all skills", Description = 'When it starts it will use all skills', Default = false })
 autoFarmBossToggle:OnChanged(function(bool)
     _G.Settings.skills.Enabled = bool
-end)
-local autoClickToggle = Tabs.Bosses:AddToggle("", {Title = "Auto use M1", Description = 'Use m1 automatically', Default = false })
-autoClickToggle:OnChanged(function(bool)
-    _G.Settings.autoclick = bool
-    if _G.Settings.autoclick then
-        repeat task.wait()
-            for _, lscript in pairs(game:GetService('Players').LocalPlayer.Backpack:GetChildren()) do
-                if lscript:IsA('LocalScript') and lscript.Name ~= 'ResetLighting' then
-                    local targetScript = lscript
-                    local scriptSenv = getsenv(targetScript)
-                    scriptSenv.Punch()
-                end
-            end
-        until _G.Settings.autoclick == false
-    end
 end)
 local autoActiveStandToggle = Tabs.Bosses:AddToggle("", {Title = "Auto active stand", Description = 'Activates your stand automatically if it is deactivated', Default = false })
 autoActiveStandToggle:OnChanged(function(bool)
