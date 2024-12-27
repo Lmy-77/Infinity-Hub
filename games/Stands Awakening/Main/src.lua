@@ -498,8 +498,9 @@ killToggle:OnChanged(function(bool)
                     local ohNil3 = nil
                     local ohNil4 = nil
                     local ohInstance5 = game:GetService('Players')[selectedPlayer].Character.Humanoid
-                    local ohCFrame6 = CFrame.new(1087.26624, 402.125397, -639.109497, 0.740708888, 0.661396801, 0.117918789, 0.136537492, 0.0236570835, -0.990352511, -0.657805502, 0.749662995, -0.0727824271)
-                    game:GetService("ReplicatedStorage").Main.Input:FireServer(ohString1, ohString2, ohNil3, ohNil4, ohInstance5, ohCFrame6)
+                    local ohCFrame6 = CFrame.new(1038.02563, 402.826263, -684.448059, -0.192306787, -0.383487046, -0.90330255, 0.964351177, 0.0966612548, -0.24634023, 0.181782663, -0.91847384, 0.351227522)
+                    local ohBoolean7 = false
+                    game:GetService("ReplicatedStorage").Main.Input:FireServer(ohString1, ohString2, ohNil3, ohNil4, ohInstance5, ohCFrame6, ohBoolean7)
                 end
             end
         end
@@ -799,8 +800,9 @@ autoFarmMobToggle:OnChanged(function(bool)
                                         local ohNil3 = nil
                                         local ohNil4 = nil
                                         local ohInstance5 = v.Humanoid
-                                        local ohCFrame6 = CFrame.new(1087.26624, 402.125397, -639.109497, 0.740708888, 0.661396801, 0.117918789, 0.136537492, 0.0236570835, -0.990352511, -0.657805502, 0.749662995, -0.0727824271)
-                                        game:GetService("ReplicatedStorage").Main.Input:FireServer(ohString1, ohString2, ohNil3, ohNil4, ohInstance5, ohCFrame6)
+                                        local ohCFrame6 = CFrame.new(1038.02563, 402.826263, -684.448059, -0.192306787, -0.383487046, -0.90330255, 0.964351177, 0.0966612548, -0.24634023, 0.181782663, -0.91847384, 0.351227522)
+                                        local ohBoolean7 = false
+                                        game:GetService("ReplicatedStorage").Main.Input:FireServer(ohString1, ohString2, ohNil3, ohNil4, ohInstance5, ohCFrame6, ohBoolean7)
                                     end
                                 end
                             end
@@ -891,8 +893,9 @@ autoFarmBossToggle:OnChanged(function(bool)
                                     local ohNil3 = nil
                                     local ohNil4 = nil
                                     local ohInstance5 = v.Humanoid
-                                    local ohCFrame6 = CFrame.new(1087.26624, 402.125397, -639.109497, 0.740708888, 0.661396801, 0.117918789, 0.136537492, 0.0236570835, -0.990352511, -0.657805502, 0.749662995, -0.0727824271)
-                                    game:GetService("ReplicatedStorage").Main.Input:FireServer(ohString1, ohString2, ohNil3, ohNil4, ohInstance5, ohCFrame6)
+                                    local ohCFrame6 = CFrame.new(1038.02563, 402.826263, -684.448059, -0.192306787, -0.383487046, -0.90330255, 0.964351177, 0.0966612548, -0.24634023, 0.181782663, -0.91847384, 0.351227522)
+                                    local ohBoolean7 = false
+                                    game:GetService("ReplicatedStorage").Main.Input:FireServer(ohString1, ohString2, ohNil3, ohNil4, ohInstance5, ohCFrame6, ohBoolean7)
                                 end
                             end
                             if _G.Settings.skills.Enabled then
@@ -911,7 +914,7 @@ Tabs.Bosses:AddSection('[ Settings ]')
 local Input = Tabs.Bosses:CreateInput("Input", {
     Title = "Set disctance",
     Description = 'Enter the distance boss',
-    Default = "5",
+    Default = "6",
     Placeholder = "...",
     Numeric = true,
     Finished = false,
