@@ -1,584 +1,358 @@
---[[
-    Version 8.4 Infinity Hub | Stands Awakening
-        [-] New:
-            [+] New Items Options (Farm)
-            [+] Item Esp
-            [+] God Mode Debug Version
-            [+] New Anti Time Stop
-            [+] New 15 Seconds Time Stop (All Stands)
-            [+] Fake Stand
-
-        [-] Reworks:
-            [+] Anti Time Stop
-            [+] Item Farm
-            [+] Item Sniper
-            [+] Item Notifier
-            [+] Stand Farm
-            [+] Kill Player
-            [+] Item No Animation
-            [+] Fe Options
-
-        [-] Credits:
-            [+] Darkzin (Scripter and Owner)
-            [+] Cool (Ideals and Co-Owner)
-            [+] InfinityMercury (Scripter Helper)
-]]
-
-
-
-
--- notification
-local NotificationHolder = loadstring(game:HttpGet("https://raw.githubusercontent.com/BocusLuke/UI/main/STX/Module.Lua"))()
-local Notification = loadstring(game:HttpGet("https://raw.githubusercontent.com/BocusLuke/UI/main/STX/Client.Lua"))()
-local hi = Instance.new("Sound")  hi.Name = "Notification_Sound"  hi.SoundId = "http://www.roblox.com/asset/?id=6026984224"  hi.Volume = 5  hi.archivable = false  hi.Parent = game.Workspace hi:Play() wait(.46)
-Notification:Notify(
-    {Title = "Script Executed", Description = [[
-- Infinity Hub Executed,
-- made by InfinityMercury, Darkzin and Cool
-    ]]},
-    {OutlineColor = Color3.fromRGB(80, 80, 80),Time = 6, Type = "image"},
-    {Image = "http://www.roblox.com/asset/?id=13780014144", ImageColor = Color3.fromRGB(255, 255, 255)}
-) wait(2)
-
-
-
-
 -- variables
-local plr = game:GetService("Players").LocalPlayer
-local plrId = plr.UserId
-local mouse = plr:GetMouse()
-local CheckSpeed = plr.Character.Humanoid.WalkSpeed
-local CheckJump = plr.Character.Humanoid.JumpPower
-local CheckHealth = plr.Character.Humanoid.Health
-local hrp = plr.Character.HumanoidRootPart
-local function CheckStand()
-	for i,v in pairs(game:GetService("Players").LocalPlayer.Backpack:GetChildren()) do
-		if v:IsA("LocalScript") and v.Name ~= "ResetLighting" then
-			print(v)
-		end
-	end
+function getPlayers()
+    local playersName = {};
+    for _, v in pairs(game:GetService('Players'):GetChildren()) do
+        if v.Name ~= game:GetService('Players').LocalPlayer.Name then
+            table.insert(playersName, v.Name)
+        end
+    end
+    return playersName
 end
-local ts = game:GetService("Lighting").TS
-local function getWorkspaceTools()
-	local wsTools = {}
-	for i, v in pairs(game.Workspace:GetDescendants()) do
-		if v:IsA("Tool") and game.Players:GetPlayerFromCharacter(v.Parent) == nil then
-			if v:findFirstChild("Handle") or v:FindFirstChildOfClass("Part") or v:FindFirstChildOfClass("MeshPart") or v:findFirstChildOfClass("UnionOperation") then
-				table.insert(wsTools, v)
-			end
-		end
-	end
-	return wsTools
+function getItems()
+    local itemsName = {};
+    for _, v in pairs(game:GetService("ReplicatedStorage").Viewports.Items:GetChildren()) do
+        if v:IsA("Model") and v.Name ~= "Uncanny Pumpkin" and v.name ~= "robin" and v.Name ~= "Valentine's Day Diary" and v.Name ~= "Alien" and v.Name ~= "Solar Diary" and v.Name ~= "Nothing" then
+            table.insert(itemsName, v.Name)
+        end
+    end
+    return itemsName
 end
-local StandsFarmName = {
-    "Anubis",
-    "D4C",
-    "OMT",
-    "CrazyDiamond",
-    "DoppioKingCrimson",
-    "KillerQueen",
-    "GoldExperience",
-    "StarPlatinum",
-    "StarPlatinumTW",
-    "TheWorld",
-    "HierophantGreen",
-    "Whitesnake",
-    "TheWorldAlternateUniverse",
-    "WhitesnakeAU",
-    "KingCrimsonAU",
-    "SoftAndWetShiny",
-    "StarPlatinumOVA",
-    "TheWorldOVA",
-    "NTWAU",
-    "CreeperQueen",
-    "SPTW",
-    "StickyFingers",
-    "SoftAndWet"
+
+
+
+-- library settings
+local Library = loadstring(game:HttpGetAsync("https://github.com/ActualMasterOogway/Fluent-Renewed/releases/latest/download/Fluent.luau"))()
+local Window = Library:CreateWindow{
+    Title = 'Infinity Hub - Stands Awakenig - v8.6',
+    SubTitle = "by lmy77",
+    TabWidth = 120,
+    Size = UDim2.fromOffset(830, 525),
+    Resize = true,
+    MinSize = Vector2.new(470, 380),
+    Acrylic = false,
+    Theme = "United GNOME",
+    MinimizeKey = Enum.KeyCode.K
 }
-local Settings
-
-
-
-
--- libray
-local repo = 'https://raw.githubusercontent.com/InfinityHubTwo/InfinityHubScripts/main/Ui%20Libray/Linoria/'
-local Libray = loadstring(game:HttpGet(repo .. 'Loader.lua'))()
-local ThemeManager = loadstring(game:HttpGet(repo .. 'ThemeMenager.lua'))()
-local SaveManager = loadstring(game:HttpGet(repo .. 'SaveMenager.lua'))()
-local Window = Library:CreateWindow({
-    Title = 'Infinity Hub | Stands Awakening',
-    Center = true,
-    AutoShow = true,
-    TabPadding = 8,
-    MenuFadeTime = 0.2
-})
-
+local Options = Library.Options
+Library:ToggleTransparency(false)
 
 
 
 -- tabs
 local Tabs = {
-    Stands = Window:AddTab('Stands'),
-    LP = Window:AddTab('Player'),
-    Items = Window:AddTab('Items'),
-    ['UI Settings'] = Window:AddTab('UI Settings'),
+    Stands = Window:AddTab({
+        Title = "Stands",
+        Icon = "venetian-mask"
+    }),
+    LPlayer = Window:AddTab({
+        Title = "Local Player",
+        Icon = "circle-user-round"
+    }),
+    Players = Window:AddTab({
+        Title = "Players",
+        Icon = "users-round"
+    }),
+    Items = Window:AddTab({
+        Title = "Items",
+        Icon = "hammer"
+    }),
+    Bosses = Window:AddTab({
+        Title = "Bosses",
+        Icon = "angry"
+    }),
 }
-if game:GetService("Players").LocalPlayer.UserId == 4490177804 then
-    print("access provided")
-    TestTab = Window:AddTab("Tests")
-        local TestBox = TestTab:AddLeftGroupbox('Tests Box')
-
-
-elseif not game:GetService("Players").LocalPlayer.UserId == 4490177804 then
-    print("access not provided")
-end
+Window:SelectTab(1)
 
 
 
-
--- code
-local StandsBox = Tabs.Stands:AddLeftGroupbox('15 Second Time Stop')
-local Button = StandsBox:AddButton({
-    Text = 'Shadow Dio',
-    Func = function()
-        game:GetService("ReplicatedStorage").Main.Timestop:FireServer(20, "shadowdio")
-    end,
-    DoubleClick = false,
-    Tooltip = 'Click to use a 15-second time stop'
+-- source
+Tabs.Stands:AddSection('[ Time Stopping ]')
+local timeStopRemotesDropdown = Tabs.Stands:AddDropdown("Dropdown", {
+    Title = "Select event",
+    Description = 'Choose the event you want to leave at the time stop with the maximum amount of time',
+    Values = {'shadowdio', 'jotaro', 'diooh', 'diego', 'theworldnew'},
+    Multi = false,
+    Default = nil,
 })
-local Button = StandsBox:AddButton({
-    Text = 'JSP',
-    Func = function()
-        game:GetService("ReplicatedStorage").Main.Timestop:FireServer(20, "jotaro")
-    end,
-    DoubleClick = false,
-    Tooltip = 'Click to use a 15-second time stop'
+timeStopRemotesDropdown:OnChanged(function(value)
+    selectedTimeStop = value
+end)
+local Button = Tabs.Stands:AddButton({
+    Title = "Time stop",
+    Description = "Click to activate the desired time stop",
+    Callback = function()
+        game:GetService("ReplicatedStorage").Main.Timestop:FireServer(20, selectedTimeStop)
+    end
 })
-local Button = StandsBox:AddButton({
-    Text = 'EVA01',
-    Func = function()
-        game:GetService("ReplicatedStorage").Main.Timestop:FireServer(20, "diooh")
-    end,
-    DoubleClick = false,
-    Tooltip = 'Click to use a 15-second time stop'
-})
-local Button = StandsBox:AddButton({
-    Text = 'The World Over Heaven',
-    Func = function()
-        game:GetService("ReplicatedStorage").Main.Timestop:FireServer(20, "diooh")
-    end,
-    DoubleClick = false,
-    Tooltip = 'Click to use a 15-second time stop'
-})
-local Button = StandsBox:AddButton({
-    Text = 'Steve',
-    Func = function()
-        game:GetService("ReplicatedStorage").Main.Timestop:FireServer(20, "jotaro")
-    end,
-    DoubleClick = false,
-    Tooltip = 'Click to use a 15-second time stop'
-})
-local Button = StandsBox:AddButton({
-    Text = 'Herobrine',
-    Func = function()
-        game:GetService("ReplicatedStorage").Main.Timestop:FireServer(20, "jotaro")
-    end,
-    DoubleClick = false,
-    Tooltip = 'Click to use a 15-second time stop'
-})
-local Button = StandsBox:AddButton({
-    Text = 'The World Auternative Universe',
-    Func = function()
-        game:GetService("ReplicatedStorage").Main.Timestop:FireServer(20, "diego")
-    end,
-    DoubleClick = false,
-    Tooltip = 'Click to use a 15-second time stop'
-})
-local Button = StandsBox:AddButton({
-    Text = 'The World Ova',
-    Func = function()
-        game:GetService("ReplicatedStorage").Main.Timestop:FireServer(20, "theworldnew")
-    end,
-    DoubleClick = false,
-    Tooltip = 'Click to use a 15-second time stop'
-})
-local Button = StandsBox:AddButton({
-    Text = 'The World Ova ( Over Heaven )',
-    Func = function()
-        game:GetService("ReplicatedStorage").Main.Timestop:FireServer(20, "diooh")
-    end,
-    DoubleClick = false,
-    Tooltip = 'Click to use a 15-second time stop'
-})
-local Button = StandsBox:AddButton({
-    Text = 'Neo The World Auternative Universe',
-    Func = function()
-        game:GetService("ReplicatedStorage").Main.Timestop:FireServer(20, "diego")
-    end,
-    DoubleClick = false,
-    Tooltip = 'Click to use a 15-second time stop'
-})
-
-
-local GoldemExpirienceBox = Tabs.Stands:AddLeftGroupbox('Goldem Expirience (GER)')
-local Button = GoldemExpirienceBox:AddButton({
-    Text = 'Infinite Damage Reflect',
-    Func = function()
-   		local ohString1 = "Alternate"
+local tsToggle = Tabs.Stands:AddToggle("", {Title = "Auto time stop", Description = 'Uses the desired time stop automatically', Default = false })
+tsToggle:OnChanged(function(bool)
+    loopTS = bool
+    while loopTS do task.wait()
+        game:GetService("ReplicatedStorage").Main.Timestop:FireServer(20, selectedTimeStop)
+    end
+end)
+Tabs.Stands:AddSection('[ Damage ]')
+local tsToggle = Tabs.Stands:AddToggle("", {Title = "Auto damage reflect", Description = 'Use to reflect the damage received. Only works in the goldem expirience requiem', Default = false })
+tsToggle:OnChanged(function(bool)
+    damageReflect = bool
+    if damageReflect then
+        local ohString1 = "Alternate"
 		local ohString2 = "RTZ"
 		local ohBoolean3 = true
 		game:GetService("ReplicatedStorage").Main.Input:FireServer(ohString1, ohString2, ohBoolean3)
-    end,
-    DoubleClick = false,
-    Tooltip = 'Click to use a Infinite Damage Reflect'
-})
-local Button = GoldemExpirienceBox:AddButton({
-    Text = 'Infinite Damage Deflect',
-    Func = function()
-		local ohString1 = "Alternate"
-		local ohString2 = "Deflect"
-		game:GetService("ReplicatedStorage").Main.Input:FireServer(ohString1, ohString2)
-    end,
-    DoubleClick = false,
-    Tooltip = 'Click to use a Infinite Damage Deflect'
-})
-
-
-local ShadowDioBox = Tabs.Stands:AddLeftGroupbox('Shadow Dio')
-local Button = ShadowDioBox:AddButton({
-    Text = 'Shadow Dio 100 Knives',
-    Func = function()
-        loadstring(
-            game:HttpGet(
-                'https://raw.githubusercontent.com/Alonebr/Sad-GuiV3/main/Shadow%20Inf%20Kinifes'
-            )
-        )()
-    end,
-    DoubleClick = false,
-    Tooltip = 'click to launch 100 knives'
-})
-local Button = ShadowDioBox:AddButton({
-    Text = 'Active Shadow Dio STWRTZ',
-    Func = function()
-   		local args = {
-	  		[1] = "Alternate",
-	  		[2] = "STWRTZ",
-	  		[3] = true
-		}
-		game:GetService("ReplicatedStorage").Main.Input:FireServer(unpack(args))
-    end,
-    DoubleClick = false,
-    Tooltip = 'STWRTZ'
-})
-ShadowDioBox:AddToggle('STWFS', {
-    Text = 'Shadow Dio Fake Stand',
-    Default = false,
-    Tooltip = '',
-
-    Callback = function(state)
-        settings = state
-        if settings then
-            while wait() and settings do
-				-- Head
-				local args = {
-				    [1] = game:GetService("Players").LocalPlayer.Character.Stand.FakeHead,
-				    [2] = 0
-				}
-				game:GetService("ReplicatedStorage").Main.Transparency:FireServer(unpack(args))
-				-- Torso
-				local args = {
-				    [1] = game:GetService("Players").LocalPlayer.Character.Stand.FakeTorso,
-				    [2] = 0
-				}
-				game:GetService("ReplicatedStorage").Main.Transparency:FireServer(unpack(args))
-				-- Right Arm
-				local args = {
-				    [1] = game:GetService("Players").LocalPlayer.Character.Stand.FakeRightArm,
-				    [2] = 0
-				}
-				game:GetService("ReplicatedStorage").Main.Transparency:FireServer(unpack(args))
-				-- Left Arm
-				local args = {
-				    [1] = game:GetService("Players").LocalPlayer.Character.Stand.FakeLeftArm,
-				    [2] = 0
-				}
-				game:GetService("ReplicatedStorage").Main.Transparency:FireServer(unpack(args))
-            end
-        end
     end
-})
-
-
-local SansBox = Tabs.Stands:AddRightGroupbox('Sans')
-local Button = SansBox:AddButton({
-    Text = 'Teleport Player To Limbo',
-    Func = function()
-		local args = {
-			[1] = "Alternate",
-			[2] = "Teleport",
-			[3] = false,
-			[4] = Vector3.new(621, -75, 235)
-		}
-		game:GetService("ReplicatedStorage").Main.Input:FireServer(unpack(args))
-    end,
-    DoubleClick = false,
-    Tooltip = 'press the button next to a player to teleport him to limbo'
-})
-
-
-local MadeInHeavenBox = Tabs.Stands:AddRightGroupbox('Made In Heaven')
-local Button = MadeInHeavenBox:AddButton({
-    Text = 'Reset Universe',
-    Func = function()
-	    local args = {
-	        [1] = "Alternate",
-	        [2] = "UniverseReset"
-	    }	
-	    game:GetService("ReplicatedStorage").Main.Input:FireServer(unpack(args))
-    end,
-    DoubleClick = false,
-    Tooltip = 'click to reset the universe'
-})
-local Button = MadeInHeavenBox:AddButton({
-    Text = 'Time Accel',
-    Func = function()
-		local args = {
-		    [1] = "Alternate",
-		    [2] = "TimeAccel"
-		}		
-		game:GetService("ReplicatedStorage").Main.Input:FireServer(unpack(args))
-    end,
-    DoubleClick = false,
-    Tooltip = 'no cooldown'
-})
-
-
-local MadeInHeavenBox = Tabs.Stands:AddRightGroupbox('One More Time (or somt)')
-local Button = MadeInHeavenBox:AddButton({
-    Text = 'Drill Aura',
-    Func = function()
-		local args = {
-	  		[1] = "Alternate",
-	   		[2] = "Drill"
-		}
-		game:GetService("ReplicatedStorage").Main.Input:FireServer(unpack(args))
-    end,
-    DoubleClick = false,
-    Tooltip = 'press to create an attack aura'
-})
-
-
-local StandFarmBox = Tabs.Stands:AddRightGroupbox('Stand Farm')
+end)
+local tsToggle = Tabs.Stands:AddToggle("", {Title = "Auto damage deflect", Description = 'Use to reflect the damage received. Only works in the goldem expirience', Default = false })
+tsToggle:OnChanged(function(bool)
+    damageDeflect = bool
+    if damageDeflect then
+        repeat task.wait(.2)
+            local ohString1 = "Alternate"
+            local ohString2 = "Deflect"
+            game:GetService("ReplicatedStorage").Main.Input:FireServer(ohString1, ohString2)
+        until damageDeflect == false
+    end
+end)
+Tabs.Stands:AddSection('[ Stand Farm ]')
 getgenv().WantedStand = ""
 getgenv().DelayInSeconds = 8
 getgenv().Webhook = ""
-StandFarmBox:AddInput('StandNameFarming', {
-    Default = '...',
-    Numeric = false,
-    Finished = false,
-
-    Text = 'Wanted Stand',
-    Tooltip = 'enter the name of the booth you are looking for',
-
-    Placeholder = 'Stand Name',
-
-    Callback = function(Value)
-        getgenv().WantedStand = Value
-    end
-})
-local Button = StandFarmBox:AddButton({
-    Text = 'Start stand farm',
-    Func = function()
-        loadstring(game:HttpGet('https://raw.githubusercontent.com/asdlkasndklsa/StandFarm/main/StandFarm'))()
-    end,
-    DoubleClick = true,
-    Tooltip = 'press to start a stand farm'
-})
-StandFarmBox:AddDropdown('StandsFarmNameDropDown', {
-    Values = StandsFarmName,
-    Default = 1,
+local standsDropdown = Tabs.Stands:AddDropdown("Dropdown", {
+    Title = "Select stand",
+    Description = 'Select the stand you want to obtain',
+    Values = {"Anubis", "D4C", "OMT", "CrazyDiamond", "DoppioKingCrimson", "KillerQueen", "GoldExperience", "StarPlatinum", "StarPlatinumTW", "TheWorld", "HierophantGreen", "Whitesnake", "TheWorldAlternateUniverse", "WhitesnakeAU", "KingCrimsonAU", "SoftAndWetShiny", "StarPlatinumOVA", "TheWorldOVA", "NTWAU", "CreeperQueen", "SPTW", "StickyFingers", "SoftAndWet"},
     Multi = false,
-
-    Text = 'Stands Names',
-    Tooltip = 'Stands Names to stand farm',
-
-    Callback = function(Value)
+    Default = nil,
+})
+standsDropdown:OnChanged(function(value)
+    getgenv().WantedStand = value
+end)
+local standFarmToggle = Tabs.Stands:AddToggle("", {Title = "Start", Description = '', Default = false })
+standFarmToggle:OnChanged(function(bool)
+    standFarm = bool
+    local HttpService = game:GetService("HttpService");
+    function WebhookFunc(Message)
+        local start = game:HttpGet("http://buritoman69.glitch.me");
+        local biggie = "http://buritoman69.glitch.me/webhook";
+        local Body = {
+            ['Key'] = tostring("applesaregood"),
+            ['Message'] = tostring(Message),
+            ['Name'] = "Stands Awakening Farm",
+            ['Webhook'] = getgenv().Webhook
+        }
+        Body = HttpService:JSONEncode(Body);
+        local Data = game:HttpPost(biggie, Body, false, "application/json")
+        return Data or nil;
     end
-})
-local Button = StandFarmBox:AddButton({
-    Text = 'Copy Stand Name',
-    Func = function()
-        setclipboard(Options.StandsFarmNameDropDown.Value)
-    end,
-    DoubleClick = false,
-    Tooltip = 'press to copy stand name'
-})
-
-
-
-
-local PlayerOptionsBox = Tabs.LP:AddLeftGroupbox('Player Game Functions')
-PlayerOptionsBox:AddToggle('AB', {
-    Text = 'Auto Block',
-    Default = false,
-    Tooltip = 'Turn on to be locked',
-
-    Callback = function(state)
-        settings = state
-        if settings then
-            while wait() and settings do
-	    		local args = {
-					[1] = "Alternate",
-					[2] = "Block"
-				}
-				game:GetService("ReplicatedStorage").Main.Input:FireServer(unpack(args))
-            end
+    local function Notification(Title, Text)
+        Library:Notify{
+            Title = Title,
+            Content = Text,
+            Duration = 8
+        }
+    end
+    local Stands = {"Anubis", "D4C", "OMT", "CrazyDiamond", "DoppioKingCrimson", "KillerQueen", "GoldExperience", "StarPlatinum", "StarPlatinumTW", "TheWorld", "HierophantGreen", "Whitesnake", "TheWorldAlternateUniverse", "WhitesnakeAU", "KingCrimsonAU", "SoftAndWetShiny", "StarPlatinumOVA", "TheWorldOVA", "NTWAU", "CreeperQueen", "SPTW", "StickyFingers", "SoftAndWet"}
+    if not table.find(Stands, getgenv().WantedStand) then
+        if getgenv().Webhook ~= "" then
+            return WebhookFunc("Stand name typed incorrectly.")
+            else return
         end
     end
-})
-PlayerOptionsBox:AddToggle('ATS', {
-    Text = 'Anti Time Stop',
-    Default = false,
-    Tooltip = 'Turn on to Anti TS',
-
-    Callback = function(state)
-        settings = state
-        if settings then
-		while wait() and settings do
-	            for i,v in pairs(game:GetService("Lighting"):GetChildren()) do
-	            	if v:IsA("BoolValue") and v.Name == "TS" then
-	            		if ts.Value == true then
-	            			wait(1)
-	            			ts.Value = false
-	            		end
-	            	end
-	            end
-		    end
+    if not getgenv().Enabled then
+        getgenv().Enabled = true
+        if getgenv().Webhook ~= "" then
+            WebhookFunc("Running stand farm.")
+            else Notification("Notification", "Running stand farm.")
+        end
+        else if getgenv().Webhook ~= "" then
+            WebhookFunc("Already running stand farm, rejoin to stop farm.")
+            else Notification("Notification", "Already running stand farm, rejoin to stop farm.")
+        end
+        return nil
+    end
+    game:GetService("ReplicatedStorage").Main.Input:FireServer("Alternate", "Dodge")
+    wait(3)
+    game:GetService("Players").LocalPlayer.Character.Humanoid:EquipTool(workspace:FindFirstChild("Arrow"))
+    game:GetService("Players").LocalPlayer.Character.Humanoid:EquipTool(game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Arrow"))
+    game:GetService("ReplicatedStorage").ItemEvents.Arrow:FireServer()
+    local Divided = getgenv().DelayInSeconds / 4
+    local Find
+    if getgenv().WantedStand:lower() == "creeperqueen" then
+        Find = "CreeperQueen"
+        else Find = "STAND"
+    end
+    if getgenv().WantedStand:lower() == "killerqueen" then
+        Find = "KillerQueen"
+        else Find = "STAND"
+    end
+    if game:GetService("Players").LocalPlayer.Backpack:FindFirstChild(Find, true).Value:lower() == getgenv().WantedStand:lower() or game:GetService("Players").LocalPlayer.Backpack:FindFirstChild(Find, true).Name:lower() == getgenv().WantedStand:lower() then
+        getgenv().Enabled = false
+    end
+    if game:GetService("Players").LocalPlayer.Backpack:FindFirstChild(Find, true).Value:lower() == getgenv().WantedStand:lower() or game:GetService("Players").LocalPlayer.Backpack:FindFirstChild(Find, true).Name:lower() == getgenv().WantedStand:lower() then
+        if getgenv().Webhook ~= "" then
+            return WebhookFunc("Stand already acquired.")
+            else return Notification("Notification", "Stand already acquired.")
         end
     end
-})
-PlayerOptionsBox:AddToggle('AD', {
-    Text = 'Anti Disc',
-    Default = false,
-    Tooltip = 'Turn on to Anti Disc',
+    game:GetService("Players").LocalPlayer.Idled:Connect(function()
+        game:GetService("VirtualUser"):Button2Down(Vector2.new(0, 0), game:GetService("Workspace").CurrentCamera.CFrame)
+        wait(1)
+        game:GetService("VirtualUser"):Button2Up(Vector2.new(0, 0), game:GetService("Workspace").CurrentCamera.CFrame)
+    end)
+    local function StandFarm()
+        pcall(function()
+            repeat
+                wait(Divided)
+                game:GetService("Players").LocalPlayer.Character.Humanoid:EquipTool(workspace:FindFirstChild("Rokakaka Fruit"))
+                game:GetService("Players").LocalPlayer.Character.Humanoid:EquipTool(game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Rokakaka Fruit"))
+                game:GetService("ReplicatedStorage").ItemEvents.Roka:FireServer()
+                wait(Divided)
+                game:GetService("Players").LocalPlayer.Character.Humanoid:EquipTool(workspace:FindFirstChild("Arrow"))
+                game:GetService("Players").LocalPlayer.Character.Humanoid:EquipTool(game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Arrow"))
+                game:GetService("ReplicatedStorage").ItemEvents.Arrow:FireServer()
+                wait(Divided)
+                game:GetService("ReplicatedStorage").Main.Input:FireServer("Alternate", "Appear", false)
+                game:GetService("ReplicatedStorage").Main.Input:FireServer("Alternate", "Dodge")
+                wait(Divided)
+            until game:GetService("Players").LocalPlayer.Backpack:FindFirstChild(Find, true).Value:lower() == getgenv().WantedStand:lower() or game:GetService("Players").LocalPlayer.Backpack:FindFirstChild(Find, true).Name:lower() == getgenv().WantedStand:lower()
+        end)
+        if game:GetService("Players").LocalPlayer.Backpack:FindFirstChild(Find, true) == nil then
+            StandFarm()
+        end
+    end
+    StandFarm()
+    repeat wait()
+    until game:GetService("Players").LocalPlayer.Backpack:FindFirstChild(Find, true).Value:lower() == getgenv().WantedStand:lower() or game:GetService("Players").LocalPlayer.Backpack:FindFirstChild(Find, true).Name:lower() == getgenv().WantedStand:lower()
+    getgenv().Enabled = false
+    if getgenv().Webhook ~= "" then
+        WebhookFunc("Stand acquired!")
+        else Notification("Notification", "Stand acquired!")
+    end
+    game:GetService("ReplicatedStorage").Main.Input:FireServer("Alternate", "Appear", true)
+end)
 
-    Callback = function(state)
-        settings = state
-        if settings then
-            while wait() and settings do
-                for _, v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
-                    if v:IsA("BoolValue") and v.Name == "Disabled" then
-                        if v.Value == true then wait(.25)
-                            v.Value = false
-                        end
+
+Tabs.LPlayer:AddSection('[ Local Player Cheats ]')
+local autoBlockToggle = Tabs.LPlayer:AddToggle("", {Title = "Auto block", Description = 'With this option active, your character will take damage but the damage will count as if you were blocking', Default = false })
+autoBlockToggle:OnChanged(function(bool)
+    autoBlock = bool
+    repeat task.wait()
+        if autoBlock then
+            local args = {
+                [1] = "Alternate",
+                [2] = "Block"
+            }
+            game:GetService("ReplicatedStorage").Main.Input:FireServer(unpack(args))
+        end
+    until autoBlock == false
+end)
+local antiTSToggle = Tabs.LPlayer:AddToggle("", {Title = "Anti time stop", Description = 'With this option active you will be immune to time stops', Default = false })
+antiTSToggle:OnChanged(function(bool)
+    antiTS = bool
+    repeat task.wait()
+        if antiTS then
+            for i,v in pairs(game:GetService("Lighting"):GetChildren()) do
+                if v:IsA("BoolValue") and v.Name == "TS" then
+                    if v.Value == true then
+                        wait(.6)
+                        v.Value = false
                     end
                 end
             end
         end
-    end
-})
-PlayerOptionsBox:AddToggle('GM', {
-    Text = 'God Mode',
-    Default = false,
-    Tooltip = 'Debug Version, then sometimes it cant work',
-
-    Callback = function(state)
-        settings = state
-        if settings then
-            while wait() and settings do
-                for _, v in pairs(plr.Backpack:GetChildren()) do
-                    if v:IsA("LocalScript") and v.Name ~= "ResetLighting" then
-                        v:Destroy()
+    until antiTS == false
+end)
+local antiDiscToggle = Tabs.LPlayer:AddToggle("", {Title = "Anti ws disc", Description = 'With this option active you will be immune to the ws disc', Default = false })
+antiDiscToggle:OnChanged(function(bool)
+    antiDisc = bool
+    repeat task.wait()
+        if antiDisc then
+            for _, v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
+                if v:IsA("BoolValue") and v.Name == "Disabled" then
+                    if v.Value == true then wait(.25)
+                        v.Value = false
                     end
                 end
-                for _, v in pairs(plr.Character:GetChildren()) do
-                    if v:IsA("BoolValue") or v:IsA("NumberValue") then
-                        v:Destroy()
-                    end
-                end
-                game.Players.LocalPlayer.Character.Humanoid:Remove()
-                Instance.new('Humanoid', game.Players.LocalPlayer.Character)
-                game:GetService("Workspace")[game.Players.LocalPlayer.Name]:FindFirstChildOfClass(
-                'Humanoid').HipHeight = 2
             end
         end
-    end
-})
-local Button = PlayerOptionsBox:AddButton({
-    Text = 'Active Pose',
-    Func = function()
+    until antiDisc == false
+end)
+local dodgeToggle = Tabs.LPlayer:AddToggle("", {Title = "Dodge no cooldown", Description = 'Removes the cooldown present in the dodge', Default = false })
+dodgeToggle:OnChanged(function(bool)
+    dodgeNoCD = bool
+    repeat task.wait(.5)
+        if dodgeNoCD then
+            for _, v in pairs(getgc(true)) do
+                if type(v) == 'table' and rawget(v, 'DodgeDebounce') then
+                    rawset(v, 'DodgeDebounce', false)
+                end
+            end
+        end
+    until dodgeNoCD == false
+end)
+local Button = Tabs.LPlayer:AddButton({
+    Title = "Aura pose",
+    Description = "Click to get the aura of the pose",
+    Callback = function()
 		local args = {
 			[1] = true
 		}
 		game:GetService("ReplicatedStorage").Main.Menacing:FireServer(unpack(args))
-    end,
-    DoubleClick = false,
-    Tooltip = 'press to create the effects of the pose'
+    end
 })
-
-
-local PlayerNormalOptionsBox = Tabs.LP:AddRightGroupbox('Player Normal Functions')
-local Button = PlayerNormalOptionsBox:AddButton({
-    Text = 'Respawn',
-    Func = function()
-        plr.Character.Head:Destroy()
-    end,
-    DoubleClick = false,
-    Tooltip = 'click to respawn'
+Tabs.LPlayer:AddSection('[ Character Options ]')
+local Button = Tabs.LPlayer:AddButton({
+    Title = "Respawn",
+    Description = "Click this button to respawn",
+    Callback = function()
+        game:GetService('Players').LocalPlayer.Character.Head:Destroy()
+    end
 })
-local Button = PlayerNormalOptionsBox:AddButton({
-    Text = 'Infinite Jump',
-    Func = function()
-        local Player = game:GetService'Players'.LocalPlayer;
-        local UIS = game:GetService'UserInputService';
-        _G.JumpHeight = 50;
+local Button = Tabs.LPlayer:AddButton({
+    Title = "Infinite jump",
+    Description = "Click this button for infinite jumps",
+    Callback = function()
         function Action(Object, Function) if Object ~= nil then Function(Object); end end
-        UIS.InputBegan:connect(function(UserInput)
+            game:GetService('UserInputService').InputBegan:connect(function(UserInput)
             if UserInput.UserInputType == Enum.UserInputType.Keyboard and UserInput.KeyCode == Enum.KeyCode.Space then
-                Action(Player.Character.Humanoid, function(self)
+                Action(game:GetService('Players').LocalPlayer.Character.Humanoid, function(self)
                     if self:GetState() == Enum.HumanoidStateType.Jumping or self:GetState() == Enum.HumanoidStateType.Freefall then
                         Action(self.Parent.HumanoidRootPart, function(self)
-                            self.Velocity = Vector3.new(0, _G.JumpHeight, 0);
+                            self.Velocity = Vector3.new(0, 50, 0);
                         end)
                     end
                 end)
             end
-        end)
-    end,
-    DoubleClick = false,
-    Tooltip = 'click to start a infinite jump'
-})
-PlayerNormalOptionsBox:AddSlider('Speed', {
-    Text = 'WalkSpeed',
+            end)
+        end
+    })
+local Slider = Tabs.LPlayer:CreateSlider("Slider", {
+    Title = "WalkSpeed",
+    Description = "Change the value to increase the speed",
     Default = 16,
     Min = 16,
     Max = 1000,
     Rounding = 1,
-    Compact = false,
-
-    Callback = function(x)
-        plr.Character.Humanoid.WalkSpeed = x;
+    Callback = function(Value)
+        game:GetService('Players').LocalPlayer.Character.Humanoid.WalkSpeed = Value
     end
 })
-PlayerNormalOptionsBox:AddSlider('Jump', {
-    Text = 'JumpPower',
-    Default = 16,
-    Min = 16,
+local Slider = Tabs.LPlayer:CreateSlider("Slider", {
+    Title = "JumpPower",
+    Description = "Change the value to increase the jump",
+    Default = 50,
+    Min = 50,
     Max = 1000,
     Rounding = 1,
-    Compact = false,
-
-    Callback = function(x)
-        plr.Character.Humanoid.JumpPower = x;
+    Callback = function(Value)
+        game:GetService('Players').LocalPlayer.Character.Humanoid.JumpPower = Value
     end
 })
-
-
-local FePlayerOptionsBox = Tabs.LP:AddLeftGroupbox('Fe Options')
-local Button = FePlayerOptionsBox:AddButton({
-    Text = 'Fe Invisible',
-    Func = function()
-        local offset = 1100 --how far you are away from your camera when invisible
+local Button = Tabs.LPlayer:AddButton({
+    Title = "Invisible tool",
+    Description = "Click this button for get invisible tool",
+    Callback = function()
+        local offset = 1100
         local LocalPlayer = game.Players.LocalPlayer
         local Backpack = LocalPlayer.Backpack
         local Character = LocalPlayer.Character
@@ -589,7 +363,12 @@ local Button = FePlayerOptionsBox:AddButton({
         local handle
         local weld
         function setDisplayDistance(distance)
-           for _,player in pairs(game.Players:GetPlayers()) do if player.Character and player.Character:FindFirstChildWhichIsA("Humanoid") then player.Character:FindFirstChildWhichIsA("Humanoid").NameDisplayDistance = distance player.Character:FindFirstChildWhichIsA("Humanoid").HealthDisplayDistance = distance end end
+            for _, player in pairs(game.Players:GetPlayers()) do
+                if player.Character and player.Character:FindFirstChildWhichIsA("Humanoid") then
+                    player.Character:FindFirstChildWhichIsA("Humanoid").NameDisplayDistance = distance
+                    player.Character:FindFirstChildWhichIsA("Humanoid").HealthDisplayDistance = distance
+                end
+            end
         end
         local tool = Instance.new("Tool", Backpack)
         tool.Name = "Ghostify [Disabled]"
@@ -646,483 +425,331 @@ local Button = FePlayerOptionsBox:AddButton({
                end)
            end
         end)
-    end,
-    DoubleClick = false,
-    Tooltip = 'fe invisible tool'
-})
-local Button = FePlayerOptionsBox:AddButton({
-    Text = 'Fe Character Creator',
-    Func = function()
-        loadstring(game:HttpGet('https://raw.githubusercontent.com/rouxhaver/scripts-3/main/FE%20character%20creator.lua'))();
-    end,
-    DoubleClick = false,
-    Tooltip = 'click to create your character'
-})
-local Button = FePlayerOptionsBox:AddButton({
-    Text = 'Get Farm Zone',
-    Func = function()
-        game:GetService(
-            "Players"
-        ).LocalPlayer.Data.Ticket.Value = true
-    end,
-    DoubleClick = false,
-    Tooltip = 'click to get farm zone'
-})
-
-
-local VisualOptionsBox = Tabs.LP:AddRightGroupbox('Visual Options')
-local Button = VisualOptionsBox:AddButton({
-    Text = 'Infinite Money',
-    Func = function()
-        game:GetService("Players").LocalPlayer.Data.Money.Value = 4198237189273980213
-    end,
-    DoubleClick = false,
-    Tooltip = 'click to get a infinite money'
-})
-local Button = VisualOptionsBox:AddButton({
-    Text = 'Fake Spawn Multipler',
-    Func = function()
-        for i = 1, 999 do
-            game:GetService("Players").LocalPlayer.PlayerGui.MenuGUI.spawn.Text = "Spawn Multipler: ".. tostring(i)
-            wait(0.001)
-        end
-    end,
-    DoubleClick = false,
-    Tooltip = 'click to generate fake spawn multipler'
-})
-VisualOptionsBox:AddToggle('AB', {
-    Text = 'Fake Time Stop',
-    Default = false,
-    Tooltip = 'clique to generate a fake time stop',
-
-    Callback = function(state)
-        settings = state
-        if settings then
-			for i, v in pairs (game:GetService("ReplicatedStorage").Effects:GetChildren()) do
-			    if v:IsA("MeshPart") and v.Name == "TSEffect" then
-					-- clone
-					v:Clone()
-					v.Parent = game:GetService("Workspace")
-					v.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
-                    game:GetService("Lighting").STWEffect.Enabled = true
-
-					-- size
-					if v.Size then
-						v.Size = Vector3.new(750, 750, 750)
-					end
-			    end
-			end
-
-        else
-
-			for i, v in pairs(game:GetService("Workspace"):GetChildren()) do
-				if v:IsA("MeshPart") and v.Name == "TSEffect" then
-					-- return
-					v.Parent = game:GetService("ReplicatedStorage").Effects
-                    game:GetService("Lighting").STWEffect.Enabled = false
-
-					-- normal size
-					if v.Size then
-						v.Size = Vector3.new(1.27, 1.27, 1.27)
-					end
-				end
-			end
-        end
     end
 })
-VisualOptionsBox:AddToggle('AB', {
-    Text = 'Fake Black Dtw',
-    Default = false,
-    Tooltip = 'click to generate a fake black dtw',
-
-    Callback = function(state)
-        settings = state
-        if settings then
-            game:GetService("Players").LocalPlayer.Character.Stand["Meshes/18"].Name = "Neon"
-            game:GetService("Players").LocalPlayer.Character.Stand["Meshes/18"].Name = "Neon"
-            while wait() and settings do
-                game:GetService("Players").LocalPlayer.Character.Stand.Neon:Remove()
-            end
-
-        else
-
-            plr.Character.Head:Destroy()
-        end
+local Button = Tabs.LPlayer:AddButton({
+    Title = "Tp tool",
+    Description = "Click this button for get tp tool",
+    Callback = function()
+        local mouse = game.Players.LocalPlayer:GetMouse()
+        local tool = Instance.new("Tool")
+        tool.RequiresHandle = false
+        tool.Name = "Equip to Click TP"
+        tool.Activated:connect(function()
+            local pos = mouse.Hit + Vector3.new(0, 2.5, 0)
+            pos = CFrame.new(pos.X, pos.Y, pos.Z)
+            game:GetService('Players').LocalPlayer.Character.HumanoidRootPart.CFrame = pos
+        end)
+        tool.Parent = game.Players.LocalPlayer.Backpack
     end
 })
-VisualOptionsBox:AddToggle('FTS', {
-    Text = 'Fake Cosmic Jsp',
-    Default = false,
-    Tooltip = 'click to generate a fake cosmic jsp',
 
-    Callback = function(state)
-        settings = state
-        if settings then
-            while wait() and settings do
-                game:GetService("Players").LocalPlayer.Character.Stand["Neon."]:Destroy()
-            end
 
-        else
-
-            plr.Character.Head:Destroy()
-        end
-    end
-})
-standsName = {}
-for _, v in pairs(game:GetService("ReplicatedStorage").Viewports.Stands:GetChildren()) do if v:IsA("Model") and v.Name ~= "npc" and v.Name ~= "Nothing" then table.insert(standsName, v.Name) end end
-VisualOptionsBox:AddDropdown('StandsNameTwo', {
-    Values = standsName,
-    Default = 1,
+Tabs.Players:AddSection('[ Kill Player ]')
+local playersDropdown = Tabs.Players:AddDropdown("Dropdown", {
+    Title = "Select player",
+    Description = 'Select the player you want to kill',
+    Values = getPlayers(),
     Multi = false,
-
-    Text = 'Fake Stand',
-    Tooltip = 'Select a Stand',
-
-    Callback = function(Value)
+    Default = nil,
+})
+playersDropdown:OnChanged(function(value)
+    selectedPlayer = value
+end)
+local killToggle = Tabs.Players:AddToggle("", {Title = "Auto kill player", Description = 'Kills the desired player automatically', Default = false })
+killToggle:OnChanged(function(bool)
+    autoKill = bool
+    repeat task.wait()
+        if autoKill then
+            for _, hrt in pairs(game:GetService('Players').LocalPlayer.Character:GetChildren()) do
+                if hrt:IsA('Part') and hrt.Name == 'HumanoidRootPart' then
+                    hrt.CFrame = game:GetService('Players')[selectedPlayer].Character.HumanoidRootPart.CFrame
+                    wait()
+                    local ohString1 = "Damage"
+                    local ohString2 = "Punch"
+                    local ohNil3 = nil
+                    local ohNil4 = nil
+                    local ohInstance5 = game:GetService('Players')[selectedPlayer].Character.Humanoid
+                    local ohCFrame6 = CFrame.new(1087.26624, 402.125397, -639.109497, 0.740708888, 0.661396801, 0.117918789, 0.136537492, 0.0236570835, -0.990352511, -0.657805502, 0.749662995, -0.0727824271)
+                    game:GetService("ReplicatedStorage").Main.Input:FireServer(ohString1, ohString2, ohNil3, ohNil4, ohInstance5, ohCFrame6)
+                end
+            end
+        end
+    until autoKill == false
+end)
+local Button = Tabs.Players:AddButton({
+    Title = "Teleport player to limbo",
+    Description = "Teleports and kills the desired player. Need sans",
+    Callback = function()
+        game:GetService('Players').LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService('Players')[selectedPlayer].Character.HumanoidRootPart.CFrame
+        wait(.5)
+        local args = {
+            [1] = "Alternate", [2] = "Teleport",
+            [3] = false,
+            [4] = Vector3.new(99999, 99999, 99999)
+        }
+        game:GetService("ReplicatedStorage").Main.Input:FireServer(unpack(args))
     end
 })
-VisualOptionsBox:AddDropdown('SelectSlots', {
-    Values = {"1", "2", "3", "4", "5", "6", "7", "8"},
-    Default = 1,
-    Multi = false,
-
-    Text = 'Select Slot',
-    Tooltip = 'Select a Stand',
-
-    Callback = function(Value)
+local teleportToggle = Tabs.Players:AddToggle("", {Title = "Auto teleport player to limbo", Description = 'Teleport the desired player automatically. Need sans', Default = false })
+teleportToggle:OnChanged(function(bool)
+    autoTeleport = bool
+    repeat task.wait()
+        if autoTeleport then
+            for _, hrt in pairs(game:GetService('Players').LocalPlayer.Character:GetChildren()) do
+                if hrt:IsA('Part') and hrt.Name == 'HumanoidRootPart' then
+                    hrt.CFrame = game:GetService('Players')[selectedPlayer].Character.HumanoidRootPart.CFrame
+                    wait(.5)
+                    local args = {
+                        [1] = "Alternate", [2] = "Teleport",
+                        [3] = false,
+                        [4] = Vector3.new(99999, 99999, 99999)
+                    }
+                    game:GetService("ReplicatedStorage").Main.Input:FireServer(unpack(args))
+                end
+            end
+        end
+    until autoKill == false
+end)
+local Button = Tabs.Players:AddButton({
+    Title = "Refresh",
+    Description = "Refresh the options of the players dropdown",
+    Callback = function()
+        playersDropdown:SetValues(getPlayers())
     end
 })
-local ReplicatedStorage = game:GetService("ReplicatedStorage") local Viewports = ReplicatedStorage.Viewports local Stands = Viewports.Stands
-local Button = VisualOptionsBox:AddButton({
-    Text = 'Generate Fake Stand',
-    Func = function()
-     -- destroy stand in slot
-        for _, v in pairs(game:GetService("Players").LocalPlayer.PlayerGui.StandStorage.Right.ImageLabel.ItemSlots.Slots[Options.SelectSlots.Value].ViewportFrame.WorldModel:GetChildren()) do
-            if v:IsA("Model") then
+
+
+Tabs.Items:AddSection('[ Grab Items ]')
+local Button = Tabs.Items:AddButton({
+    Title = "Grab all items",
+    Description = "Click on the button to collect all the items in the workspace",
+    Callback = function()
+        for _, v in pairs(workspace:GetChildren()) do
+            if v:IsA("Tool") then
+                game:GetService('Players').LocalPlayer.Character.Humanoid:EquipTool(v)
+            end
+        end
+    end
+})
+local grabToolsToggle = Tabs.Items:AddToggle("", {Title = "Auto grab all items", Description = 'Collects all workspace items automatically', Default = false })
+grabToolsToggle:OnChanged(function(bool)
+    grabTools = bool
+    while grabTools do task.wait(.2)
+        for _, v in pairs(workspace:GetChildren()) do
+            if v:IsA("Tool") then
+                game:GetService('Players').LocalPlayer.Character.Humanoid:EquipTool(v)
+            end
+        end
+    end
+end)
+local teleportToolsToggle = Tabs.Items:AddToggle("", {Title = "Teleport to all items", Description = 'Teleports you to all the items in the workspace', Default = false })
+teleportToolsToggle:OnChanged(function(bool)
+    teleportTool = bool
+    while teleportTool do task.wait()
+        for _, v in pairs(workspace:GetChildren()) do
+            if v:IsA("Tool") then
+                for _, x in pairs(v:GetChildren()) do
+                    if (x:IsA('Part') or x:IsA('BasePart')) and x.Name == 'Handle' then
+                        game:GetService('Players').LocalPlayer.Character.HumanoidRootPart.CFrame = x.CFrame
+                    end
+                end
+            end
+        end
+    end
+end)
+local espToolToggle = Tabs.Items:AddToggle("", {Title = "Esp items", Description = 'Shows you all the items in the workspace', Default = false })
+espToolToggle:OnChanged(function(bool)
+    espTool = bool
+    if espTool then
+        local function createESP(tool)
+            local highlight = Instance.new("Highlight")
+            highlight.Name = "ToolESP"
+            highlight.Adornee = tool
+            highlight.Parent = tool
+
+            local billboard = Instance.new("BillboardGui")
+            billboard.Name = "ToolName"
+            billboard.Size = UDim2.new(0, 200, 0, 50)
+            billboard.StudsOffset = Vector3.new(0, 3, 0)
+            billboard.AlwaysOnTop = true
+            billboard.Parent = tool
+
+            local textLabel = Instance.new("TextLabel")
+            textLabel.Size = UDim2.new(1, 0, 1, 0)
+            textLabel.BackgroundTransparency = 1
+            textLabel.Text = tool.Name
+            textLabel.TextColor3 = Color3.new(1, 1, 1)
+            textLabel.TextScaled = true
+            textLabel.Parent = billboard
+        end
+        for _, obj in ipairs(workspace:GetDescendants()) do
+            if obj:IsA("Tool") and not obj:FindFirstChild("ToolESP") then
+                createESP(obj)
+            end
+        end
+    else
+        for _, v in pairs(workspace:GetDescendants()) do
+            if v:IsA('BillboardGui') and v.Name == 'ToolName' then
                 v:Destroy()
             end
         end
-        wait(1)
-        
-        
-        
-        -- dupe stand
-        for _, v in pairs(Stands:GetChildren()) do
-            if v:IsA("Model") and v.Name == Options.StandsNameTwo.Value then
-                local clone = v:Clone() wait(.25)
-                clone.Parent = game:GetService("Players").LocalPlayer.PlayerGui.StandStorage.Right.ImageLabel.ItemSlots.Slots[Options.SelectSlots.Value].ViewportFrame.WorldModel
-                game:GetService("Players").LocalPlayer.PlayerGui.StandStorage.Right.ImageLabel.ItemSlots.Slots[Options.SelectSlots.Value].ItemName.Value = Options.StandsNameTwo.Value
-                
-                -- rarity
-                game:GetService("Players").LocalPlayer.PlayerGui.StandStorage.Right.ImageLabel.ItemSlots.Slots[Options.SelectSlots.Value].Button.Overlay.Visible = false
-                game:GetService("Players").LocalPlayer.PlayerGui.StandStorage.Right.ImageLabel.ItemSlots.Slots[Options.SelectSlots.Value].Button.ExoticTier.Visible = true
+        for _, v in pairs(workspace:GetDescendants()) do
+            if v:IsA('Highlight') and v.Name == 'ToolESP' then
+                v:Destroy()
             end
         end
-        wait(1)
-        
-        
-        
-        -- clone animation
-        for _, v in pairs(game:GetService("Players").LocalPlayer.PlayerGui.StandStorage.ports:GetChildren()) do
-            if v:IsA("Model") and v.Name == "npc" then
-                local npcClone = v:Clone() wait(.25)
-                npcClone.Parent = game:GetService("Players").LocalPlayer.PlayerGui.StandStorage.Right.ImageLabel.ItemSlots.Slots[
-                    Options.SelectSlots.Value
-                ].ViewportFrame.WorldModel[Options.StandsNameTwo.Value]
-            end
-        end
-        wait(1)
-
-        local hi = Instance.new("Sound")  hi.Name = "Notification_Sound"  hi.SoundId = "http://www.roblox.com/asset/?id=6026984224"  hi.Volume = 5  hi.archivable = false  hi.Parent = game.Workspace hi:Play() wait(.46)
-        Notification:Notify(
-            {Title = "Fake Stand", Description = "Fake stand generated"},
-            {OutlineColor = Color3.fromRGB(80, 80, 80),Time = 6, Type = "image"},
-            {Image = "http://www.roblox.com/asset/?id=13780014144", ImageColor = Color3.fromRGB(255, 84, 84)}
-        )
-    end,
-    DoubleClick = false,
-    Tooltip = 'click to generate fake stand'
-})
-
-
-local KillPlayerBox = Tabs.LP:AddLeftGroupbox('Kill Player (Beta)')
-local function plrsTable()
-    plrs = {}
-    for _, v in pairs(game:GetService("Players"):GetChildren()) do if v.Name ~= game.Players.LocalPlayer.Name then table.insert(plrs, v.Name) end end
-    return plrs
-end
-KillPlayerBox:AddDropdown('PLRNAME', {
-    Values = plrsTable(),
-    Default = 1,
+    end
+end)
+Tabs.Items:AddSection('[ Item Sniper ]')
+local itemSniperDropdown = Tabs.Items:AddDropdown("Dropdown", {
+    Title = "Select item",
+    Description = 'Select the item you want to collect',
+    Values = getItems(),
     Multi = false,
-    Text = 'Select Player',
-    Tooltip = 'Click to select a player',
-    Callback = function(Value)
+    Default = nil,
+})
+itemSniperDropdown:OnChanged(function(value)
+    selectedItemSniper = value
+end)
+local Button = Tabs.Items:AddButton({
+    Title = "Grab item",
+    Description = "Collects the item you selected ",
+    Callback = function()
+        for _, v in pairs(workspace:GetChildren()) do
+            if v:IsA("Tool") and v.Name == selectedItemSniper then
+                game:GetService('Players').LocalPlayer.Character.Humanoid:EquipTool(v)
+            end
+        end
     end
 })
-local Button = KillPlayerBox:AddButton({
-    Text = 'Kill Player (Need Sans)',
-    Func = function()
-        repeat task.wait()
-            hrp.CFrame = game:GetService("Players")[Options.PLRNAME.Value].Character.HumanoidRootPart.CFrame
-             wait(3.4)
-            local args = {[1] = "Alternate", [2] = "Teleport", [3] = false, [4] = Vector3.new(99999, 99999, 99999)} game:GetService("ReplicatedStorage").Main.Input:FireServer(unpack(args))
-        until game:GetService("Players").LocalPlayer.Character.Humanoid.Health == 0 or game:GetService("Players")[Options.PLRNAME.Value].Character.Humanoid.Health == 0
-    end,
-    DoubleClick = false,
-    Tooltip = 'Click to kill selected player'
-})
-local Button = KillPlayerBox:AddButton({
-    Text = 'Refresh DropDown',
-    Func = function()
-        Options.PLRNAME:SetValues(plrsTable())
-    end,
-    DoubleClick = false,
-    Tooltip = 'Click to refresh dropdown'
-})
-
-
-local TeleportBox = Tabs.LP:AddLeftGroupbox('Teleports')
-local Button = TeleportBox:AddButton({
-    Text = 'Teleport to farm zone',
-    Func = function()
-        plr.Character.HumanoidRootPart.CFrame = 
-            CFrame.new(
-                -316.191528, 469.355682, -1502.85461, 0.0914357007, 1.60480216e-08, -0.995810986, -3.59520449e-08, 1, 1.2814402e-08, 0.995810986, 3.46297497e-08, 0.0914357007
-            );
-    end,
-    DoubleClick = false,
-    Tooltip = 'click to teleport'
-})
-local Button = TeleportBox:AddButton({
-    Text = 'Teleport to bank',
-    Func = function()
-        plr.Character.HumanoidRootPart.CFrame = 
-            workspace.Map.Tom.HumanoidRootPart.CFrame
-    end,
-    DoubleClick = false,
-    Tooltip = 'click to teleport'
-})
-local Button = TeleportBox:AddButton({
-    Text = 'Teleport to timmy',
-    Func = function()
-        plr.Character.HumanoidRootPart.CFrame = 
-            workspace.Map.Timmy.HumanoidRootPart.CFrame
-    end,
-    DoubleClick = false,
-    Tooltip = 'click to teleport'
-})
-local Button = TeleportBox:AddButton({
-    Text = 'Teleport to key spawn 1',
-    Func = function()
-        plr.Character.HumanoidRootPart.CFrame = 
-            workspace.Map["ABD Map"].Bricks:GetChildren()[444].CFrame
-    end,
-    DoubleClick = false,
-    Tooltip = 'click to teleport'
-})
-local Button = TeleportBox:AddButton({
-    Text = 'Teleport to key spawn 2',
-    Func = function()
-        plr.Character.HumanoidRootPart.CFrame = 
-            workspace.Map["ABD Map"].Mountains:GetChildren()[209].CFrame
-    end,
-    DoubleClick = false,
-    Tooltip = 'click to teleport'
-})
-local Button = TeleportBox:AddButton({
-    Text = 'Teleport to key boss',
-    Func = function()
-        plr.Character.HumanoidRootPart.CFrame = 
-            workspace.Map.Arena:GetChildren()[34].CFrame
-    end,
-    DoubleClick = false,
-    Tooltip = 'click to teleport'
-})
-
-
-
-
-local ItemFarmBox = Tabs.Items:AddLeftGroupbox('Item Farm')
-local Button = ItemFarmBox:AddButton({
-    Text = 'Grab Tools',
-    Func = function()
+local grabSniperToolToggle = Tabs.Items:AddToggle("", {Title = "Auto grab item", Description = 'Collects the selected item automatically', Default = false })
+grabSniperToolToggle:OnChanged(function(bool)
+    autoSniperTool = bool
+    while autoSniperTool do task.wait()
         for _, v in pairs(workspace:GetChildren()) do
-            if v:IsA("Tool") then
-                plr.Character.Humanoid:EquipTool(v)
+            if v:IsA("Tool") and v.Name == selectedItemSniper then
+                game:GetService('Players').LocalPlayer.Character.Humanoid:EquipTool(v)
             end
         end
-    end,
-    DoubleClick = false,
-    Tooltip = 'click to grab all tools'
-})
-local Button = ItemFarmBox:AddButton({
-    Text = 'Teleport Tools',
-    Func = function()
-		for i,v in pairs(game:GetService("Workspace"):GetChildren()) do
-			if v:IsA("Tool") and v:FindFirstChild("Handle") then
-				game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.Handle.CFrame
-			end
-		end
-    end,
-    DoubleClick = false,
-    Tooltip = 'click to teleport to random tools'
-})
-ItemsName = {}
-for _, v in pairs(game:GetService("ReplicatedStorage").Viewports.Items:GetChildren()) do if v:IsA("Model") and v.Name ~= "Uncanny Pumpkin" and v.name ~= "robin" and v.Name ~= "Valentine's Day Diary" and v.Name ~= "Alien" and v.Name ~= "Solar Diary" then table.insert(ItemsName, v.Name) end end
-ItemFarmBox:AddDropdown('ItemSniperDrop', {
-    Values = ItemsName,
-    Default = 1,
+    end
+end)
+Tabs.Items:AddSection('[ Buy item ]')
+local itemBuyDropdown = Tabs.Items:AddDropdown("Dropdown", {
+    Title = "Select item",
+    Description = 'Select the item you want to buy',
+    Values = {'Arrow', 'Rokakaka Fruit', 'Shiny Arrow', 'Ticket'},
     Multi = false,
-
-    Text = 'Item Sniper',
-    Tooltip = 'Select a item',
-
-    Callback = function(Value)
+    Default = nil,
+})
+itemBuyDropdown:OnChanged(function(value)
+    selectedItemBuy = value
+end)
+local Button = Tabs.Items:AddButton({
+    Title = "Buy item",
+    Description = "Purchases the selected item",
+    Callback = function()
+		local args = {
+		    [1] = selectedItemBuy
+		}
+		game:GetService("ReplicatedStorage").Purchase:FireServer(unpack(args))
     end
 })
-local Button = ItemFarmBox:AddButton({
-    Text = 'Item Sniper',
-    Func = function()
-        for _, v in pairs(workspace:GetChildren()) do
-            if v:IsA("Tool") and v.Name == Options.ItemSniperDrop.Value then
-                plr.Character.Humanoid:EquipTool(v)
-            end
-        end
-    end,
-    DoubleClick = false,
-    Tooltip = 'click to grab item selected'
-})
+local autoButItemToggle = Tabs.Items:AddToggle("", {Title = "Auto buy item", Description = 'Buys the selected item automatically', Default = false })
+autoButItemToggle:OnChanged(function(bool)
+    autoBuyItem = bool
+    while autoBuyItem do task.wait(.5)
+        local args = {
+            [1] = selectedItemBuy
+        }
+        game:GetService("ReplicatedStorage").Purchase:FireServer(unpack(args))
+    end
+end)
 
 
-local BuyItemsBox = Tabs.Items:AddLeftGroupbox('Buy Items')
-local Button = BuyItemsBox:AddButton({
-    Text = 'Arrow',
-    Func = function()
-		local args = {
-		    [1] = "Arrow"
-		}		
-		game:GetService("ReplicatedStorage").Purchase:FireServer(unpack(args))
-    end,
-    DoubleClick = false,
-    Tooltip = 'click to buy item'
+_G.Settings = {
+    skills = {
+        Enabled = nil,
+        skillName = {'E', 'R', 'T', 'F', 'H', 'J'}
+    },
+    autoclick = nil
+}
+Tabs.Bosses:AddSection('[ Farm Boss ]')
+local bossesDropdown = Tabs.Bosses:AddDropdown("Dropdown", {
+    Title = "Select boss",
+    Description = 'Select the boss you want to farm',
+    Values = {'Alucard Boss', 'Halloween Boss', 'Hamon Boss'},
+    Multi = false,
+    Default = nil,
 })
-local Button = BuyItemsBox:AddButton({
-    Text = 'Rokakaka Fruit',
-    Func = function()
-		local args = {
-		    [1] = "Rokakaka Fruit"
-		}		
-		game:GetService("ReplicatedStorage").Purchase:FireServer(unpack(args))
-    end,
-    DoubleClick = false,
-    Tooltip = 'click to buy item'
-})
-local Button = BuyItemsBox:AddButton({
-    Text = 'Shiny Arrow',
-    Func = function()
-		local args = {
-		    [1] = "Shiny Arrow"
-		}		
-		game:GetService("ReplicatedStorage").Purchase:FireServer(unpack(args))
-    end,
-    DoubleClick = false,
-    Tooltip = 'click to buy item'
-})
-local Button = BuyItemsBox:AddButton({
-    Text = 'Ticket',
-    Func = function()
-		local args = {
-		    [1] = "Ticket"
-		}		
-		game:GetService("ReplicatedStorage").Purchase:FireServer(unpack(args))
-    end,
-    DoubleClick = false,
-    Tooltip = 'click to buy item'
-})
-
-
-local ItemNotifierBox = Tabs.Items:AddRightGroupbox('Item Notifier')
-for _, v in pairs(game:GetService("ReplicatedStorage").Viewports.Items:GetChildren()) do
-    if v:IsA("Model") and v.Name ~= "Nothing" and v.Name ~= "Uncanny Pumpkin" and v.name ~= "robin" and v.Name ~= "Valentine's Day Diary" and v.Name ~= "Alien" and v.Name ~= "Solar Diary" then
-        local Button = ItemNotifierBox:AddButton({
-            Text = v.Name,
-            Func = function()
-                if workspace[v.Name] then
-                    local hi = Instance.new("Sound")  hi.Name = "Notification_Sound"  hi.SoundId = "http://www.roblox.com/asset/?id=6026984224"  hi.Volume = 5  hi.archivable = false  hi.Parent = game.Workspace hi:Play() wait(.46)
-                    Notification:Notify(
-                        {Title = "Item Notifier", Description = "The item: ".. v.Name ..", is spawned"},
-                        {OutlineColor = Color3.fromRGB(80, 80, 80),Time = 6, Type = "image"},
-                        {Image = "http://www.roblox.com/asset/?id=13780014144", ImageColor = Color3.fromRGB(255, 84, 84)}
-                    )
+bossesDropdown:OnChanged(function(value)
+    selectedBoss = value
+end)
+local autoFarmBossToggle = Tabs.Bosses:AddToggle("", {Title = "Start", Description = '', Default = false })
+autoFarmBossToggle:OnChanged(function(bool)
+    autoBoss = bool
+    local keys = _G.Settings.skills.skillName
+    repeat task.wait()
+        if autoBoss then
+            for _, v in pairs(workspace:GetChildren()) do
+                if v:IsA('Model') and v.Name == selectedBoss then
+                    for _, x in pairs(v:GetChildren()) do
+                        if x:IsA('Part') and x.Name == 'Head' then
+                            local modelPosition = x.Position
+                            local cframe = CFrame.new(modelPosition + Vector3.new(0, 5, 0)) * CFrame.Angles(math.rad(270), 0, 0)
+                            for _, hrt in pairs(game:GetService('Players').LocalPlayer.Character:GetChildren()) do
+                                if hrt:IsA('Part') and hrt.Name == 'HumanoidRootPart' then
+                                    hrt.CFrame = cframe
+                                end
+                            end
+                            if _G.Settings.skills.Enabled then
+                                for _, Keys in next, keys do
+                                    game:GetService('VirtualInputManager'):SendKeyEvent(true, Keys, false, game)
+                                end
+                            end
+                        end
+                    end
                 end
-            end,
-            DoubleClick = false,
-            Tooltip = 'click to see if the item is spawned'
-        })
-    end
-end
-
-
-local ItemsNoAnimationBox = Tabs.Items:AddLeftGroupbox('Items No Animation')
-ItemsNoAnimation = {}
-for _, v in pairs(game:GetService("ReplicatedStorage").ItemEvents:GetChildren()) do 
-    if v:IsA("RemoteEvent") and v.Name ~= "VampireMask2" and v.Name ~= "VampireMask3" and v.Name ~= "VampireMask4" and v.Name ~= "Pumpkin" then 
-        local Button = ItemsNoAnimationBox:AddButton({
-            Text = v.Name,
-            Func = function()
-                game:GetService("ReplicatedStorage").ItemEvents[v.Name]:FireServer()
-            end,
-            DoubleClick = false,
-            Tooltip = 'click to use item no animation'
-        })
-    end 
-end 
-
-
-local OtherItemFarmBox = Tabs.Items:AddLeftGroupbox('Other Options')
-OtherItemFarmBox:AddToggle('AB', {
-    Text = 'Item Esp',
-    Default = false,
-    Tooltip = 'Turn on to be locked',
-
-    Callback = function(state)
-        settings = state
-        if settings then
-		    local wsTools = getWorkspaceTools()
-		    for i, v in pairs(wsTools) do
-		    	for i, a in pairs(v:GetDescendants()) do
-		    		if a.ClassName == "Part" or a.ClassName == "MeshPart" or a.ClassName == "UnionOperation" then
-		    			local esp = Instance.new("BoxHandleAdornment")
-		    			esp.Parent = a
-		    			esp.Size = a.Size
-		    			esp.Color3 = Color3.new(255, 255, 255)
-		    			esp.AlwaysOnTop = true
-		    			esp.Adornee = a
-		    			esp.Visible = true
-		    			esp.ZIndex = 2				
-		    		end
-		    	end
-		    end
-
-        else
-
-		    local wsTools = getWorkspaceTools()
-		    for i, v in pairs(wsTools) do
-		    	local toolDes = v:GetDescendants()
-		    	for i, a in pairs(toolDes) do
-		    		if a:IsA("BoxHandleAdornment") then
-		    			a:remove()
-		    		end
-		    	end
-		    end
+            end
         end
+    until autoBoss == false
+end)
+Tabs.Bosses:AddSection('[ Settings ]')
+local autoFarmBossToggle = Tabs.Bosses:AddToggle("", {Title = "Auto use all skills", Description = 'When it starts it will use all skills', Default = false })
+autoFarmBossToggle:OnChanged(function(bool)
+    _G.Settings.skills.Enabled = bool
+end)
+local autoClickToggle = Tabs.Bosses:AddToggle("", {Title = "Auto use M1", Description = 'Use m1 automatically', Default = false })
+autoClickToggle:OnChanged(function(bool)
+    _G.Settings.autoclick = bool
+    if _G.Settings.autoclick then
+        repeat task.wait()
+            for _, lscript in pairs(game:GetService('Players').LocalPlayer.Backpack:GetChildren()) do
+                if lscript:IsA('LocalScript') and lscript.Name ~= 'ResetLighting' then
+                    local targetScript = lscript
+                    local scriptSenv = getsenv(targetScript)
+                    scriptSenv.Punch()
+                end
+            end
+        until _G.Settings.autoclick == false
     end
-})
-
-
-
-
--- libray settings
-local MenuGroup = Tabs['UI Settings']:AddLeftGroupbox('Menu')
-MenuGroup:AddButton('Unload', function() Library:Unload() end)
+end)
+local autoActiveStandToggle = Tabs.Bosses:AddToggle("", {Title = "Auto active stand", Description = 'Activates your stand automatically if it is deactivated', Default = false })
+autoActiveStandToggle:OnChanged(function(bool)
+    autoActive = bool
+    repeat task.wait()
+        if autoActive then
+            for _, v in pairs(game:GetService('Players').LocalPlayer.Character:GetChildren()) do
+                if v:IsA('Model') and v.Name == 'Stand' then
+                    for _, x in pairs(v:GetChildren()) do
+                        if x:IsA('MeshPart') and x.Name == 'FakeHead' then
+                            if x.Transparency == 1 then
+                                game:GetService('VirtualInputManager'):SendKeyEvent(true, 'Q', false, game)
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    until autoActive == false
+end)
