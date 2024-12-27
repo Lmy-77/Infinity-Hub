@@ -152,23 +152,26 @@ end
 local KeyPress = function(v)
     return game:GetService("VirtualInputManager"):SendKeyEvent(true, v, false, game)
 end
+local scriptVersion = '2.6a'
 
 
 
 
 -- library settings
-local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
-local Window = Fluent:CreateWindow({
-    Title = "Infinity Hub  |  "..game:GetService('MarketplaceService'):GetProductInfo(game.PlaceId).Name,
+local Library = loadstring(game:HttpGetAsync("https://github.com/ActualMasterOogway/Fluent-Renewed/releases/latest/download/Fluent.luau"))()
+local Window = Library:CreateWindow{
+    Title = 'Infinity Hub - '.. scriptVersion ..' | Flee The Facility',
     SubTitle = "by lmy77",
     TabWidth = 120,
-    Size = UDim2.fromOffset(500, 370),
+    Size = UDim2.fromOffset(830, 525),
+    Resize = true,
+    MinSize = Vector2.new(470, 380),
     Acrylic = false,
-    Theme = "Darker",
-    MinimizeKey = Enum.KeyCode.J
-})
-local Options = Fluent.Options
-Fluent:ToggleTransparency(false)
+    Theme = "United GNOME",
+    MinimizeKey = Enum.KeyCode.K
+}
+local Options = Library.Options
+Library:ToggleTransparency(false)
 
 
 
@@ -262,7 +265,7 @@ Tabs.Game:AddButton({
         for _, v in pairs(game:GetService('Players'):GetChildren()) do
             if v.Name ~= game:GetService('Players').LocalPlayer.Name then
                 if v.Character:findFirstChild('BeastPowers') then
-                    Fluent:Notify{
+                    Library:Notify{
                         Title = "Infinity Hub - Notify",
                         Content = 'Beast is '..v.Name,
                         Duration = 4
