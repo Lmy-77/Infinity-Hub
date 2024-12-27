@@ -662,6 +662,24 @@ grabSniperToolToggle:OnChanged(function(bool)
         end
     end
 end)
+local autoStorageItemToggle = Tabs.Items:AddToggle("", {Title = "Auto storage item", Description = 'Take the item and save it in the inventory automatically', Default = false })
+autoStorageItemToggle:OnChanged(function(bool)
+    autoStorage = bool
+    while autoStorage do task.wait()
+        for _, v in pairs(game:GetService('Players').LocalPlayer.Backpack:GetChildren()) do
+            if v:IsA("Tool") and v.Name == selectedItemSniper then
+                game:GetService('Players').LocalPlayer.Character.Humanoid:EquipTool(v)
+            end
+        end
+        local args = {
+            [1] = {
+                [1] = "Inventory",
+                [2] = "ItemStore"
+            }
+        }
+        game:GetService("ReplicatedStorage"):WaitForChild("SwtwnModules"):WaitForChild("Event"):FireServer(unpack(args))
+    end
+end)
 Tabs.Items:AddSection('[ Buy item ]')
 local itemBuyDropdown = Tabs.Items:AddDropdown("Dropdown", {
     Title = "Select item",
