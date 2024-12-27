@@ -493,14 +493,18 @@ killToggle:OnChanged(function(bool)
                 if hrt:IsA('Part') and hrt.Name == 'HumanoidRootPart' then
                     hrt.CFrame = game:GetService('Players')[selectedPlayer].Character.HumanoidRootPart.CFrame
                     wait()
-                    local ohString1 = "Damage"
-                    local ohString2 = "Punch"
-                    local ohNil3 = nil
-                    local ohNil4 = nil
-                    local ohInstance5 = game:GetService('Players')[selectedPlayer].Character.Humanoid
-                    local ohCFrame6 = CFrame.new(1038.02563, 402.826263, -684.448059, -0.192306787, -0.383487046, -0.90330255, 0.964351177, 0.0966612548, -0.24634023, 0.181782663, -0.91847384, 0.351227522)
-                    local ohBoolean7 = false
-                    game:GetService("ReplicatedStorage").Main.Input:FireServer(ohString1, ohString2, ohNil3, ohNil4, ohInstance5, ohCFrame6, ohBoolean7)
+                    for _, hum in pairs(v:GetChildren()) do
+                        if hum.Name == 'Humanoid' then
+                            local ohString1 = "Damage"
+                            local ohString2 = "Punch"
+                            local ohNil3 = nil
+                            local ohNil4 = nil
+                            local ohInstance5 = hum
+                            local ohCFrame6 = CFrame.new(1038.02563, 402.826263, -684.448059, -0.192306787, -0.383487046, -0.90330255, 0.964351177, 0.0966612548, -0.24634023, 0.181782663, -0.91847384, 0.351227522)
+                            local ohBoolean7 = false
+                            game:GetService("ReplicatedStorage").Main.Input:FireServer(ohString1, ohString2, ohNil3, ohNil4, ohInstance5, ohCFrame6, ohBoolean7)
+                        end
+                    end
                 end
             end
         end
@@ -795,14 +799,18 @@ autoFarmMobToggle:OnChanged(function(bool)
                                 if hrt:IsA('Part') and hrt.Name == 'HumanoidRootPart' then
                                     if v.Humanoid.Health >= 1 then
                                         hrt.CFrame = cframe
-                                        local ohString1 = "Damage"
-                                        local ohString2 = "Punch"
-                                        local ohNil3 = nil
-                                        local ohNil4 = nil
-                                        local ohInstance5 = v.Humanoid
-                                        local ohCFrame6 = CFrame.new(1038.02563, 402.826263, -684.448059, -0.192306787, -0.383487046, -0.90330255, 0.964351177, 0.0966612548, -0.24634023, 0.181782663, -0.91847384, 0.351227522)
-                                        local ohBoolean7 = false
-                                        game:GetService("ReplicatedStorage").Main.Input:FireServer(ohString1, ohString2, ohNil3, ohNil4, ohInstance5, ohCFrame6, ohBoolean7)
+                                        for _, hum in pairs(v:GetChildren()) do
+                                            if hum.Name == 'Humanoid' then
+                                                local ohString1 = "Damage"
+                                                local ohString2 = "Punch"
+                                                local ohNil3 = nil
+                                                local ohNil4 = nil
+                                                local ohInstance5 = hum
+                                                local ohCFrame6 = CFrame.new(1038.02563, 402.826263, -684.448059, -0.192306787, -0.383487046, -0.90330255, 0.964351177, 0.0966612548, -0.24634023, 0.181782663, -0.91847384, 0.351227522)
+                                                local ohBoolean7 = false
+                                                game:GetService("ReplicatedStorage").Main.Input:FireServer(ohString1, ohString2, ohNil3, ohNil4, ohInstance5, ohCFrame6, ohBoolean7)
+                                            end
+                                        end
                                     end
                                 end
                             end
@@ -888,14 +896,18 @@ autoFarmBossToggle:OnChanged(function(bool)
                             for _, hrt in pairs(game:GetService('Players').LocalPlayer.Character:GetChildren()) do
                                 if hrt:IsA('Part') and hrt.Name == 'HumanoidRootPart' then
                                     hrt.CFrame = cframe
-                                    local ohString1 = "Damage"
-                                    local ohString2 = "Punch"
-                                    local ohNil3 = nil
-                                    local ohNil4 = nil
-                                    local ohInstance5 = v.Humanoid
-                                    local ohCFrame6 = CFrame.new(1038.02563, 402.826263, -684.448059, -0.192306787, -0.383487046, -0.90330255, 0.964351177, 0.0966612548, -0.24634023, 0.181782663, -0.91847384, 0.351227522)
-                                    local ohBoolean7 = false
-                                    game:GetService("ReplicatedStorage").Main.Input:FireServer(ohString1, ohString2, ohNil3, ohNil4, ohInstance5, ohCFrame6, ohBoolean7)
+                                    for _, hum in pairs(v:GetChildren()) do
+                                        if hum.Name == 'Humanoid' then
+                                            local ohString1 = "Damage"
+                                            local ohString2 = "Punch"
+                                            local ohNil3 = nil
+                                            local ohNil4 = nil
+                                            local ohInstance5 = hum
+                                            local ohCFrame6 = CFrame.new(1038.02563, 402.826263, -684.448059, -0.192306787, -0.383487046, -0.90330255, 0.964351177, 0.0966612548, -0.24634023, 0.181782663, -0.91847384, 0.351227522)
+                                            local ohBoolean7 = false
+                                            game:GetService("ReplicatedStorage").Main.Input:FireServer(ohString1, ohString2, ohNil3, ohNil4, ohInstance5, ohCFrame6, ohBoolean7)
+                                        end
+                                    end
                                 end
                             end
                             if _G.Settings.skills.Enabled then
