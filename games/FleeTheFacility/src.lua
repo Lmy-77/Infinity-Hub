@@ -200,7 +200,7 @@ Window:SelectTab(1)
 
 -- source
 Tabs.Game:AddSection('[ Game Cheats ]')
-local AutoHackToggle = Tabs.Game:AddToggle("", {Title = "Auto hack", Default = false })
+local AutoHackToggle = Tabs.Game:AddToggle("", {Title = "Auto hack", Description = 'I automatically hack computers to avoid errors', Default = false })
 AutoHackToggle:OnChanged(function(bool)
     autoHack = bool
     while autoHack do task.wait()
@@ -209,7 +209,7 @@ AutoHackToggle:OnChanged(function(bool)
 end)
 Tabs.Game:AddButton({
     Title = "Teleport to exit foor",
-    Description = "",
+    Description = "Teleports you to the exit door ",
     Callback = function()
         for _, v in pairs(workspace:GetDescendants()) do
             if (v:IsA('Model') and v.Name == 'ExitDoor') then
@@ -220,7 +220,7 @@ Tabs.Game:AddButton({
 })
 Tabs.Game:AddButton({
     Title = "Teleport to computer",
-    Description = "Risk of kicking, use responsibly",
+    Description = "Teleports you to an uncompleted computer. Be careful, if you abuse it too much you could get kicked, use it responsibly",
     Callback = function()
         local map = workspace:FindFirstChild(tostring(game.ReplicatedStorage.CurrentMap.Value))
         for _, v in pairs(map:GetChildren()) do
@@ -239,7 +239,7 @@ Tabs.Game:AddButton({
 })
 Tabs.Game:AddButton({
     Title = "Save captured players",
-    Description = "",
+    Description = "Save all the players inside the capsules and then return to your position",
     Callback = function()
         local oldPos = game.Players.LocalPlayer.Character.HumanoidRootPart.Position
         local TeleportOldPos = '';
@@ -260,13 +260,13 @@ Tabs.Game:AddButton({
 })
 Tabs.Game:AddButton({
     Title = "Check beast",
-    Description = "",
+    Description = "Send a notification showing who the beast is",
     Callback = function()
         for _, v in pairs(game:GetService('Players'):GetChildren()) do
             if v.Name ~= game:GetService('Players').LocalPlayer.Name then
                 if v.Character:findFirstChild('BeastPowers') then
                     Library:Notify{
-                        Title = "Infinity Hub - Notify",
+                        Title = "Infinity Hub",
                         Content = 'Beast is '..v.Name,
                         Duration = 4
                     }
@@ -277,7 +277,7 @@ Tabs.Game:AddButton({
 })
 
 Tabs.LPlayer:AddSection('[ Game Options ]')
-local AntiRagdollToggle = Tabs.LPlayer:AddToggle("", {Title = "Anti ragdoll (Beta)", Default = false })
+local AntiRagdollToggle = Tabs.LPlayer:AddToggle("", {Title = "Anti ragdoll (Beta)", Description = "When you're down, you'll get up automatically", Default = false })
 AntiRagdollToggle:OnChanged(function(bool)
     antiRagdoll = bool
     if antiRagdoll then
@@ -305,15 +305,16 @@ end)
 local Method;
 local MethodTONoSlow = Tabs.LPlayer:AddDropdown("Dropdown", {
     Title = "Method:",
+    Description = 'Select one of these methods to activate the no slow mode',
     Values = {'Remote', 'Speed'},
     Multi = false,
-    Default = 1,
+    Default = nil,
 })
 MethodTONoSlow:OnChanged(function (args)
     Method = args
     print(Method)
 end)
-local NoSlowToggle = Tabs.LPlayer:AddToggle("", {Title = "No slow", Default = false })
+local NoSlowToggle = Tabs.LPlayer:AddToggle("", {Title = "No slow", Description = 'If your speed is slowed down, it will return to normal', Default = false })
 NoSlowToggle:OnChanged(function(bool)
     NoSlow = bool
     if NoSlow then
@@ -338,7 +339,7 @@ NoSlowToggle:OnChanged(function(bool)
         end
     end
 end)
-local ActiveCrawlingToggle = Tabs.LPlayer:AddToggle("", {Title = "Active Crawling (Beast)", Default = false })
+local ActiveCrawlingToggle = Tabs.LPlayer:AddToggle("", {Title = "Active crawling (Beast)", Description = "When you're a beast, you'll now be able to crawling", Default = false })
 ActiveCrawlingToggle:OnChanged(function(bool)
     antiveCrawling = bool
     while antiveCrawling do task.wait()
@@ -404,7 +405,7 @@ local Input = Tabs.LPlayer:AddInput("Input", {
 })
 Tabs.LPlayer:AddButton({
     Title = "Set ws and jp",
-    Description = "",
+    Description = "Your walkspeed and jumppower will be modified according to the values above in inputs",
     Callback = function()
         WalkSpeedBypass()
         JumpPowerBypass()
@@ -414,7 +415,7 @@ Tabs.LPlayer:AddButton({
 })
 Tabs.LPlayer:AddButton({
     Title = "Reset ws jp",
-    Description = "",
+    Description = "Reset your walkspeed and jumppower for normal",
     Callback = function()
         WalkSpeedBypass()
         JumpPowerBypass()
