@@ -33,9 +33,6 @@ local Button = Tabs.Bosses:AddButton({
     Description = "Starts the automatic boss kill script",
     Callback = function()
         repeat wait() until game:IsLoaded() and game:GetService("Players")
-        for i,v in pairs(getconnections(game.Players.LocalPlayer.Idled)) do
-            v:Disable()
-        end
         local Players =  game:GetService("Players")
         local LocalPlayer =  Players.LocalPlayer
         local Character =  LocalPlayer.Character
