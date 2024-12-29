@@ -75,7 +75,7 @@ local function NMBE_fake_script()
 
 	local button = script.Parent
 	button.MouseButton1Click:Connect(function()
-		game:GetService('VirtualInputManager'):SendKeyEvent(true, "J", false, game)
+		game:GetService('VirtualInputManager'):SendKeyEvent(true, "K", false, game)
 	end)
 end
 coroutine.wrap(NMBE_fake_script)()
