@@ -6,6 +6,7 @@ queue_on_teleport[[
 ]]
 
 
+
 -- start
 print[[
 
@@ -164,3 +165,10 @@ T4:OnChanged(function(bool)
         end
     end
 end)
+local button = Tabs.Bosses:CreateButton{
+    Title = 'Spawn Boss',
+    Description = 'Teleport you to spawn boss',
+    Callback = function()
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = workspace.Objects.Spawns.BossSpawn.CFrame
+    end
+}
