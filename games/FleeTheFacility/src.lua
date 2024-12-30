@@ -495,3 +495,14 @@ Tabs.EspSettings:AddButton({
         BeastColorPicker:SetValueRGB(Color3.fromRGB(255, 0, 0))
     end
 })
+wait(.5)
+local path = game:GetService('CoreGui')
+for _, v in pairs(path:GetDescendants()) do
+    if v:IsA('ScreenGui') and v.Name == 'FluentRenewed_Infinity Hub - 2.6a | Flee The Facility' then
+        for _, x in pairs(v:GetChildren()) do
+            if x:IsA('ImageButton') and x.Name == 'ImageButton' then
+                x:Destroy()
+            end
+        end
+    end
+end
