@@ -88,6 +88,10 @@ local Tabs = {
         Title = "Bosses",
         Icon = "angry"
     }),
+    Keys = Window:AddTab({
+        Title = "Keys",
+        Icon = "key"
+    }),
 }
 Window:SelectTab(1)
 
@@ -957,4 +961,43 @@ autoActiveStandToggle:OnChanged(function(bool)
         end
     until autoActive == false
 end)
-		
+
+
+Tabs.Keys:AddSection('[ Keybinds ]')
+local keyBindSettings = {
+    Enabled = false,
+}
+local TsKeyBind = Tabs.Keys:CreateKeybind("Keybind", {
+    Title = "Time stop - Keybind",
+    Mode = "Toggle",
+    Default = '...',
+    Callback = function(Value)
+        if keyBindSettings.Enabled then
+            game:GetService("ReplicatedStorage").Main.Timestop:FireServer(20, 'shadowdio')
+        end
+    end,
+    ChangedCallback = function(New)
+        print("Keybind changed!", New)
+    end
+})
+local ResetKeyBind = Tabs.Keys:CreateKeybind("Keybind", {
+    Title = "Reset Universe - Keybind",
+    Mode = "Toggle",
+    Default = '...',
+    Callback = function(Value)
+        if keyBindSettings.Enabled then
+            local args = {
+                [1] = "Alternate",
+                [2] = "UniverseReset"
+            }
+            game:GetService("ReplicatedStorage"):WaitForChild("Main"):WaitForChild("Input"):FireServer(unpack(args))
+        end
+    end,
+    ChangedCallback = function(New)
+        print("Keybind changed!", New)
+    end
+})
+local activeKeyToggle = Tabs.Keys:AddToggle("", {Title = "Active", Description = '', Default = false })
+activeKeyToggle:OnChanged(function(bool)
+    keyBindSettings.Enabled = bool
+end)
