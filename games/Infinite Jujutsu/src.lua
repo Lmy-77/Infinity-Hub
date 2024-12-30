@@ -134,8 +134,8 @@ end)
 Tabs.Bosses:AddSection('[ Boss Farm ]')
 local T4 = Tabs.Bosses:AddToggle("", {Title = "Intakill boss", Description = 'Kills boss instantly', Default = false })
 T4:OnChanged(function(bool)
-    boss = bool
-    while boos do task.wait()
+    instaBoss = bool
+    while instaBoss do task.wait()
         for _, mob in ipairs(mobsFolder:GetChildren()) do
             if mob:IsA("Model") then
                 for _, head in pairs(mob:GetChildren()) do
@@ -147,8 +147,8 @@ T4:OnChanged(function(bool)
         end
     end
 end)
-local T4 = Tabs.Bosses:AddToggle("", {Title = "Attack boss", Description = 'Activate to farm to the bosses on your mission', Default = false })
-T4:OnChanged(function(bool)
+local T5 = Tabs.Bosses:AddToggle("", {Title = "Attack boss", Description = 'Activate to farm to the bosses on your mission', Default = false })
+T5:OnChanged(function(bool)
     attackBoss = bool
     while attackBoss do task.wait()
         for _, mob in ipairs(mobsFolder:GetChildren()) do
