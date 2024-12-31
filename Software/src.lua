@@ -1,3 +1,71 @@
+-- function
+local allowedDomains = { "example.com", "api.trustedservice.com", "github.com", "raw.githubusercontent.com" }
+local originalHttpGet = game.HttpGet
+local originalHttpPost = game.HttpPost
+local HttpService = game:GetService("HttpService")
+local function isAllowed(url)
+    for _, domain in ipairs(allowedDomains) do
+        if string.find(url, domain) then
+            return true
+        end
+    end
+    return false
+end
+local function customHttpGet(url)
+    local success, response = pcall(function()
+        return HttpService:RequestAsync({
+            Url = url,
+            Method = "GET"
+        })
+    end)
+    if success and response.Success then
+        return response.Body
+    else
+        return nil
+    end
+end
+local function customHttpPost(url, data)
+    local success, response = pcall(function()
+        return HttpService:RequestAsync({
+            Url = url,
+            Method = "POST",
+            Headers = { ["Content-Type"] = "application/json" },
+            Body = HttpService:JSONEncode(data)
+        })
+    end)
+    if success and response.Success then
+        return response.Body
+    else
+        return nil
+    end
+end
+game.HttpGet = function(self, url, ...)
+    if isAllowed(url) then
+        return customHttpGet(url)
+    end
+    return nil
+end
+game.HttpPost = function(self, url, data, ...)
+    if isAllowed(url) then
+        return customHttpPost(url, data)
+    end
+    return nil
+end
+
+
+
+
+
+-- auto loader
+local queue_on_teleport = queue_on_teleport or syn and syn.queue_on_teleport
+queue_on_teleport[[
+    repeat wait() until game:IsLoaded() print("ServerHoped or rejoined")
+    wait(2)
+    loadstring(game:HttpGet("https://gitlab.com/Lmy77/menu/-/raw/main/infinityhub"))()
+]]
+
+
+
 -- start
 print[[
 
