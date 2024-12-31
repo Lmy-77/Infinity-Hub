@@ -1,3 +1,18 @@
+-- start
+print[[
+
+ _____            __   _           _   _               _    _           _     
+|_   _|          / _| (_)         (_) | |             | |  | |         | |    
+  | |    _ __   | |_   _   _ __    _  | |_   _   _    | |__| |  _   _  | |__  
+  | |   | '_ \  |  _| | | | '_ \  | | | __| | | | |   |  __  | | | | | | '_ \ 
+ _| |_  | | | | | |   | | | | | | | | | |_  | |_| |   | |  | | | |_| | | |_) |
+|_____| |_| |_| |_|   |_| |_| |_| |_|  \__|  \__, |   |_|  |_|  \__,_| |_.__/ 
+                                              __/ |                           
+                                             |___/    
+]]
+
+
+
 -- detect service
 local UserInputService = game:GetService("UserInputService")
 if UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled and not UserInputService.MouseEnabled then
