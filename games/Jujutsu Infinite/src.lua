@@ -137,9 +137,12 @@ automaticallyToggle:OnChanged(function(bool)
                             }
                         }
                         game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Server"):WaitForChild("Combat"):WaitForChild("M1"):FireServer(unpack(args))
-                        for _, head in pairs(v:GetChildren()) do
-                            if head:IsA('Part') and head.Name == 'Head' then
-                                head:Destroy()
+                        local currentHealth = v.Humanoid.Health
+                        if v.Humanoid.Health ~= currentHealth then
+                            for _, head in pairs(v:GetChildren()) do
+                                if head:IsA('Part') and head.Name == 'Head' then
+                                    head:Destroy()
+                                end
                             end
                         end
                     end
