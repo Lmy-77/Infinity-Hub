@@ -123,6 +123,7 @@ automaticallyToggle:OnChanged(function(bool)
         end
         wait(.5)
         game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = workspace.Objects.Spawns.BossSpawn.CFrame
+        wait(1.5)
     end
     while autoBoss do task.wait()
         for _, v in pairs(mobsFolder:GetChildren()) do
