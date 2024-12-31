@@ -135,6 +135,13 @@ Tabs.Bosses:AddSection('[ Boss Farm ]')
 local T4 = Tabs.Bosses:AddToggle("", {Title = "Intakill boss", Description = 'Kills boss instantly', Default = false })
 T4:OnChanged(function(bool)
     instaBoss = bool
+    if instaBoss then
+        for _, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+            if v:IsA('Tool') and v.Name == 'Innates' then
+                game.Players.LocalPlayer.Character.Humanoid:EquipTool(v)
+            end
+        end
+    end
     while instaBoss do task.wait()
         for _, mob in ipairs(mobsFolder:GetChildren()) do
             if mob:IsA("Model") then
