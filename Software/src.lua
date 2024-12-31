@@ -54,8 +54,6 @@ end
 
 
 
-
-
 -- auto loader
 local queue_on_teleport = queue_on_teleport or syn and syn.queue_on_teleport
 queue_on_teleport[[
