@@ -1,3 +1,18 @@
+-- start
+print[[
+
+ _____            __   _           _   _               _    _           _     
+|_   _|          / _| (_)         (_) | |             | |  | |         | |    
+  | |    _ __   | |_   _   _ __    _  | |_   _   _    | |__| |  _   _  | |__  
+  | |   | '_ \  |  _| | | | '_ \  | | | __| | | | |   |  __  | | | | | | '_ \ 
+ _| |_  | | | | | |   | | | | | | | | | |_  | |_| |   | |  | | | |_| | | |_) |
+|_____| |_| |_| |_|   |_| |_| |_| |_|  \__|  \__, |   |_|  |_|  \__,_| |_.__/ 
+                                              __/ |                           
+                                             |___/    
+]]
+
+
+
 -- check device
 local Library = loadstring(game:HttpGetAsync("https://github.com/ActualMasterOogway/Fluent-Renewed/releases/latest/download/Fluent.luau"))()
 Library:Notify{
