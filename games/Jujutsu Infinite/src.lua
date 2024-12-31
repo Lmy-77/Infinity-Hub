@@ -1,23 +1,9 @@
+-- auto loader
 local queue_on_teleport = queue_on_teleport or syn and syn.queue_on_teleport
 queue_on_teleport[[
     repeat wait() until game:IsLoaded() print("ServerHoped or rejoined")
     wait(2)
     loadstring(game:HttpGet("https://raw.githubusercontent.com/Lmy-77/Infinity-Hub/refs/heads/scripts/games/Infinite%20Jujutsu/src.lua",true))()
-]]
-
-
-
--- start
-print[[
-
- _____            __   _           _   _               _    _           _     
-|_   _|          / _| (_)         (_) | |             | |  | |         | |    
-  | |    _ __   | |_   _   _ __    _  | |_   _   _    | |__| |  _   _  | |__  
-  | |   | '_ \  |  _| | | | '_ \  | | | __| | | | |   |  __  | | | | | | '_ \ 
- _| |_  | | | | | |   | | | | | | | | | |_  | |_| |   | |  | | | |_| | | |_) |
-|_____| |_| |_| |_|   |_| |_| |_| |_|  \__|  \__, |   |_|  |_|  \__,_| |_.__/ 
-                                              __/ |                           
-                                             |___/    
 ]]
 
 
@@ -31,20 +17,20 @@ local mobsFolder = workspace:FindFirstChild("Objects"):FindFirstChild("Mobs")
 -- library settings
 local Library = loadstring(game:HttpGetAsync("https://github.com/ActualMasterOogway/Fluent-Renewed/releases/latest/download/Fluent.luau"))()
 local Window = Library:CreateWindow{
- Title = 'Infinity Hub - '.. scriptVersion ..' | Jujutsu Infinite',
- SubTitle = "by lmy77",
- TabWidth = 120,
- Size = UDim2.fromOffset(830, 525),
- Resize = true,
- MinSize = Vector2.new(470, 380),
- Acrylic = false,
- Theme = "United GNOME",
- MinimizeKey = Enum.KeyCode.K
+    Title = 'Infinity Hub - '.. scriptVersion ..' | Jujutsu Infinite',
+    SubTitle = "by lmy77",
+    TabWidth = 120,
+    Size = UDim2.fromOffset(830, 525),
+    Resize = true,
+    MinSize = Vector2.new(470, 380),
+    Acrylic = false,
+    Theme = "United GNOME",
+    MinimizeKey = Enum.KeyCode.K
 }
 Library:Notify{
- Title = "Infinity Hub",
- Content = "Welcome to infinity hub, have fun ❤️",
- Duration = 4
+    Title = "Infinity Hub",
+    Content = "Welcome to infinity hub".. game.Players.LocalPlayer.Name ..", have fun ❤️",
+    Duration = 4
 }
 local Options = Library.Options
 Library:ToggleTransparency(false)
@@ -62,7 +48,11 @@ local Tabs = {
         Icon = "angry"
     }),
 }
-Window:SelectTab(1)
+if game.PlaceId == 10450270085 then
+    Window:SelectTab(1)
+elseif game.PlaceId == 16379688837 then
+    Window:SelectTab(2)
+end
 
 
 
@@ -132,16 +122,47 @@ T3:OnChanged(function(bool)
    end
 end)
 Tabs.Bosses:AddSection('[ Boss Farm ]')
-local T4 = Tabs.Bosses:AddToggle("", {Title = "Intakill boss", Description = 'Kills boss instantly', Default = false })
-T4:OnChanged(function(bool)
-    instaBoss = bool
-    if instaBoss then
+local automaticallyToggle = Tabs.Bosses:AddToggle("", {Title = "Auto farm boss", Description = 'Kill the boss automatically', Default = false })
+automaticallyToggle:OnChanged(function(bool)
+    autoBoss = bool
+    if autoBoss then
         for _, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
             if v:IsA('Tool') and v.Name == 'Innates' then
                 game.Players.LocalPlayer.Character.Humanoid:EquipTool(v)
             end
         end
     end
+    while autoBoss do task.wait()
+        for _, v in pairs(mobsFolder:GetChildren()) do
+            if v:IsA('Model') then
+                if not mobsFolder:FindFirstChild(v) then
+                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = workspace.Objects.Spawns.BossSpawn.CFrame
+                else
+                    for _, hrt in pairs(v:GetChildren()) do
+                        if hrt:IsA('Part') and hrt.Name == 'HumanoidRootPart' then
+                            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = hrt.CFrame
+                            local args = {
+                                [1] = 1,
+                                [2] = {
+                                    [1] = v.Humanoid
+                                }
+                            }
+                            game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Server"):WaitForChild("Combat"):WaitForChild("M1"):FireServer(unpack(args))
+                            for _, head in pairs(v:GetChildren()) do
+                                if head:IsA('Part') and head.Name == 'Head' then
+                                    head:Destroy()
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
+end)
+local T4 = Tabs.Bosses:AddToggle("", {Title = "Intakill boss", Description = 'Kills boss instantly', Default = false })
+T4:OnChanged(function(bool)
+    instaBoss = bool
     while instaBoss do task.wait()
         for _, mob in ipairs(mobsFolder:GetChildren()) do
             if mob:IsA("Model") then
@@ -157,18 +178,29 @@ end)
 local T5 = Tabs.Bosses:AddToggle("", {Title = "Attack boss", Description = 'Activate to farm to the bosses on your mission', Default = false })
 T5:OnChanged(function(bool)
     attackBoss = bool
+    if attackBoss then
+        for _, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+            if v:IsA('Tool') and v.Name == 'Innates' then
+                game.Players.LocalPlayer.Character.Humanoid:EquipTool(v)
+            end
+        end
+    end
     while attackBoss do task.wait()
         for _, mob in ipairs(mobsFolder:GetChildren()) do
-           if mob:IsA("Model") then
-               game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = mob.HumanoidRootPart.CFrame
-               local args = {
-                   [1] = 1,
-                   [2] = {
-                       [1] = mob.Humanoid
-                   }
-               }
-               game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Server"):WaitForChild("Combat"):WaitForChild("M1"):FireServer(unpack(args))
-           end
+            if mob:IsA("Model") then
+                for _, hrt in pairs(mob:GetChildren()) do
+                    if hrt:IsA('Part') and hrt.Name == 'HumanoidRootPart' then
+                        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = hrt.CFrame
+                        local args = {
+                            [1] = 1,
+                            [2] = {
+                                [1] = mob.Humanoid
+                            }
+                        }
+                        game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Server"):WaitForChild("Combat"):WaitForChild("M1"):FireServer(unpack(args))
+                    end
+                end
+            end
         end
     end
 end)
