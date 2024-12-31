@@ -1,7 +1,5 @@
 -- function
 local allowedDomains = { "example.com", "api.trustedservice.com", "github.com", "raw.githubusercontent.com" }
-local originalHttpGet = game.HttpGet
-local originalHttpPost = game.HttpPost
 local HttpService = game:GetService("HttpService")
 local function isAllowed(url)
     for _, domain in ipairs(allowedDomains) do
@@ -11,46 +9,33 @@ local function isAllowed(url)
     end
     return false
 end
-local function customHttpGet(url)
+local function handleRequest(url, method, data)
     local success, response = pcall(function()
         return HttpService:RequestAsync({
             Url = url,
-            Method = "GET"
-        })
-    end)
-    if success and response.Success then
-        return response.Body
-    else
-        return nil
-    end
-end
-local function customHttpPost(url, data)
-    local success, response = pcall(function()
-        return HttpService:RequestAsync({
-            Url = url,
-            Method = "POST",
+            Method = method,
             Headers = { ["Content-Type"] = "application/json" },
-            Body = HttpService:JSONEncode(data)
+            Body = data and HttpService:JSONEncode(data) or nil
         })
     end)
     if success and response.Success then
         return response.Body
-    else
-        return nil
-    end
-end
-game.HttpGet = function(self, url, ...)
-    if isAllowed(url) then
-        return customHttpGet(url)
     end
     return nil
 end
-game.HttpPost = function(self, url, data, ...)
+game.HttpGet = function(_, url, ...)
     if isAllowed(url) then
-        return customHttpPost(url, data)
+        return handleRequest(url, "GET")
     end
     return nil
 end
+game.HttpPost = function(_, url, data, ...)
+    if isAllowed(url) then
+        return handleRequest(url, "POST", data)
+    end
+    return nil
+end
+
 
 
 
