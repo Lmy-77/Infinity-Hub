@@ -121,27 +121,25 @@ automaticallyToggle:OnChanged(function(bool)
                 game.Players.LocalPlayer.Character.Humanoid:EquipTool(v)
             end
         end
+        wait(.5)
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = workspace.Objects.Spawns.BossSpawn.CFrame
     end
     while autoBoss do task.wait()
         for _, v in pairs(mobsFolder:GetChildren()) do
             if v:IsA('Model') then
-                if not mobsFolder:FindFirstChild(v) then
-                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = workspace.Objects.Spawns.BossSpawn.CFrame
-                else
-                    for _, hrt in pairs(v:GetChildren()) do
-                        if hrt:IsA('Part') and hrt.Name == 'HumanoidRootPart' then
-                            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = hrt.CFrame
-                            local args = {
-                                [1] = 1,
-                                [2] = {
-                                    [1] = v.Humanoid
-                                }
+                for _, hrt in pairs(v:GetChildren()) do
+                    if hrt:IsA('Part') and hrt.Name == 'HumanoidRootPart' then
+                        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = hrt.CFrame
+                        local args = {
+                            [1] = 1,
+                            [2] = {
+                                [1] = v.Humanoid
                             }
-                            game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Server"):WaitForChild("Combat"):WaitForChild("M1"):FireServer(unpack(args))
-                            for _, head in pairs(v:GetChildren()) do
-                                if head:IsA('Part') and head.Name == 'Head' then
-                                    head:Destroy()
-                                end
+                        }
+                        game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Server"):WaitForChild("Combat"):WaitForChild("M1"):FireServer(unpack(args))
+                        for _, head in pairs(v:GetChildren()) do
+                            if head:IsA('Part') and head.Name == 'Head' then
+                                head:Destroy()
                             end
                         end
                     end
@@ -150,6 +148,7 @@ automaticallyToggle:OnChanged(function(bool)
         end
     end
 end)
+Tabs.Bosses:AddSection('[ Separate functions ]')
 local T4 = Tabs.Bosses:AddToggle("", {Title = "Intakill boss", Description = 'Kills boss instantly', Default = false })
 T4:OnChanged(function(bool)
     instaBoss = bool
