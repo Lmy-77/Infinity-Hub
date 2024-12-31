@@ -127,7 +127,6 @@ automaticallyToggle:OnChanged(function(bool)
     while autoBoss do task.wait()
         for _, v in pairs(mobsFolder:GetChildren()) do
             if v:IsA('Model') then
-                local currentHealth = v.Humanoid.Health
                 for _, hrt in pairs(v:GetChildren()) do
                     if hrt:IsA('Part') and hrt.Name == 'HumanoidRootPart' then
                         game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = hrt.CFrame
@@ -138,11 +137,10 @@ automaticallyToggle:OnChanged(function(bool)
                             }
                         }
                         game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Server"):WaitForChild("Combat"):WaitForChild("M1"):FireServer(unpack(args))
-                        if v.Humanoid.Health ~= currentHealth then
-                            for _, head in pairs(v:GetChildren()) do
-                                if head:IsA('Part') and head.Name == 'Head' then
-                                    head:Destroy()
-                                end
+                        wait(2.5)
+                        for _, head in pairs(v:GetChildren()) do
+                            if head:IsA('Part') and head.Name == 'Head' then
+                                head:Destroy()
                             end
                         end
                     end
