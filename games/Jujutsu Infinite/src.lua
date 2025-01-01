@@ -14,6 +14,16 @@ print[[
 
 
 -- variables
+function getTools()
+    local toolName = {};
+    for _, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+        if v:IsA('Tool') then
+            table.insert(toolName, v.Name)
+        end
+    end
+    return toolName
+end
+local selectedWeapon = ''
 local scriptVersion = '2.6a'
 local mobsFolder = workspace:FindFirstChild("Objects"):FindFirstChild("Mobs")
 
@@ -52,6 +62,10 @@ local Tabs = {
         Title = "Bosses",
         Icon = "angry"
     }),
+    Settings = Window:AddTab({
+        Title = "Settings",
+        Icon = "settings"
+    }),
 }
 if game.PlaceId == 10450270085 then
     Window:SelectTab(1)
@@ -79,7 +93,7 @@ T2:OnChanged(function(bool)
    teleportMob = bool
    if teleportMob then
        for _, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
-           if v:IsA('Tool') and v.Name == 'Innates' then
+           if v:IsA('Tool') and v.Name == selectedWeapon then
                game.Players.LocalPlayer.Character.Humanoid:EquipTool(v)
            end
        end
@@ -132,7 +146,7 @@ automaticallyToggle:OnChanged(function(bool)
     autoBoss = bool
     if autoBoss then
         for _, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
-            if v:IsA('Tool') and v.Name == 'Innates' then
+            if v:IsA('Tool') and v.Name == selectedWeapon then
                 game.Players.LocalPlayer.Character.Humanoid:EquipTool(v)
             end
         end
@@ -186,7 +200,7 @@ T5:OnChanged(function(bool)
     attackBoss = bool
     if attackBoss then
         for _, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
-            if v:IsA('Tool') and v.Name == 'Innates' then
+            if v:IsA('Tool') and v.Name == selectedWeapon then
                 game.Players.LocalPlayer.Character.Humanoid:EquipTool(v)
             end
         end
@@ -215,5 +229,25 @@ local button = Tabs.Bosses:CreateButton{
     Description = 'Teleport you to spawn boss',
     Callback = function()
         game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = workspace.Objects.Spawns.BossSpawn.CFrame
+    end
+}
+
+
+Tabs.Settings:AddSection('[ Farm Settings ]')
+local selectedWeaponDropdown = Tabs.Settings:AddDropdown("", {
+    Title = "Select weapon",
+    Description = 'Select the weapon you want him to use to kill the boss / mobs',
+    Values = getTools(),
+    Multi = false,
+    Default = 'Innates',
+})
+selectedWeaponDropdown:OnChanged(function(value)
+    selectedWeapon = value
+end)
+local button = Tabs.Settings:CreateButton{
+    Title = 'Refresh',
+    Description = '',
+    Callback = function()
+        selectedWeaponDropdown:SetValues(getTools())
     end
 }
