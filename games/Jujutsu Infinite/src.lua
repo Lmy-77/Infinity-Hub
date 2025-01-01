@@ -55,15 +55,15 @@ Library:ToggleTransparency(false)
 -- tabs
 local Tabs = {
     Mobs = Window:AddTab({
-        Title = "Mobs",
+        Title = "| Mobs",
         Icon = "ghost"
     }),
     Bosses = Window:AddTab({
-        Title = "Bosses",
+        Title = "| Bosses",
         Icon = "angry"
     }),
     Settings = Window:AddTab({
-        Title = "Settings",
+        Title = "| Settings",
         Icon = "settings"
     }),
 }
