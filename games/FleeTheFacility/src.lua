@@ -193,19 +193,19 @@ Library:ToggleTransparency(false)
 -- tabs
 local Tabs = {
     Game = Window:AddTab({
-        Title = "Game",
+        Title = "| Game",
         Icon = "layers"
     }),
     LPlayer = Window:AddTab({
-        Title = "Local Player",
+        Title = "| Local Player",
         Icon = 'user'
     }),
     Esp = Window:AddTab({
-        Title = "Esp",
+        Title = "| Esp",
         Icon = "view"
     }),
     EspSettings = Window:AddTab({
-        Title = "Esp Settings",
+        Title = "| Esp Settings",
         Icon = "settings"
     }),
 }
