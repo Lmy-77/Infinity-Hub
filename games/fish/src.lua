@@ -228,47 +228,47 @@ Library:ToggleTransparency(false)
 -- tabs
 local Tabs = {
   FischTab = Window:AddTab({
-      Title = "Fish",
+      Title = "| Fish",
       Icon = "waves"
   }),
   RodTab = Window:AddTab({
-      Title = "Rods",
+      Title = "| Rods",
       Icon = "fish"
   }),
   ItemTab = Window:AddTab({
-      Title = "Items",
+      Title = "| Items",
       Icon = "anchor"
   }),
   SkinsTab = Window:AddTab({
-      Title = "Skins",
+      Title = "| Skins",
       Icon = "package"
   }),
   TeleportTab = Window:AddTab({
-      Title = "Teleport",
+      Title = "| Teleport",
       Icon = "map-pin"
   }),
   AprraiserTab = Window:AddTab({
-      Title = "Appraiser",
+      Title = "| Appraiser",
       Icon = "hand-coins"
   }),
   EventTab = Window:AddTab({
-      Title = "Events",
+      Title = "| Events",
       Icon = "calendar"
   }),
   TotemTab = Window:AddTab({
-      Title = "Auto Totem",
+      Title = "| Auto Totem",
       Icon = "sunrise"
   }),
   LPlayer = Window:AddTab({
-      Title = "Local Player",
+      Title = "| Local Player",
       Icon = "circle-user-round"
   }),
   Players = Window:AddTab({
-      Title = "Players",
+      Title = "| Players",
       Icon = "users-round"
   }),
   CreditsTab = Window:AddTab({
-      Title = "Credits",
+      Title = "| Credits",
       Icon = "crown"
   }),
 }
