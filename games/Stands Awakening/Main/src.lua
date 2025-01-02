@@ -76,35 +76,35 @@ Library:ToggleTransparency(false)
 -- tabs
 local Tabs = {
     Stands = Window:AddTab({
-        Title = "Stands",
+        Title = "| Stands",
         Icon = "venetian-mask"
     }),
     LPlayer = Window:AddTab({
-        Title = "Local Player",
+        Title = "| Local Player",
         Icon = "circle-user-round"
     }),
     Players = Window:AddTab({
-        Title = "Players",
+        Title = "| Players",
         Icon = "users-round"
     }),
     Items = Window:AddTab({
-        Title = "Items",
+        Title = "| Items",
         Icon = "hammer"
     }),
     Money = Window:AddTab({
-        Title = "Money",
+        Title = "| Money",
         Icon = "banknote"
     }),
     Mobs = Window:AddTab({
-        Title = "Mobs",
+        Title = "| Mobs",
         Icon = "ghost"
     }),
     Bosses = Window:AddTab({
-        Title = "Bosses",
+        Title = "| Bosses",
         Icon = "angry"
     }),
     Keys = Window:AddTab({
-        Title = "Keys",
+        Title = "| Keys",
         Icon = "key"
     }),
 }
