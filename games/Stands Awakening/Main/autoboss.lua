@@ -19,7 +19,7 @@ Library:ToggleTransparency(false)
 -- tabs
 local Tabs = {
     Bosses = Window:AddTab({
-        Title = "Boss",
+        Title = "| Boss",
         Icon = "angry"
     }),
 }
