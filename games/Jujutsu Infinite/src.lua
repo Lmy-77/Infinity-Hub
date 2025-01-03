@@ -141,56 +141,13 @@ T3:OnChanged(function(bool)
    end
 end)
 Tabs.Bosses:AddSection('[ Boss Farm ]')
-local automaticallyToggle = Tabs.Bosses:AddToggle("", {Title = "Auto farm boss", Description = 'Kill the boss automatically', Default = false })
-automaticallyToggle:OnChanged(function(bool)
-    autoBoss = bool
-    if autoBoss then
-        for _, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
-            if v:IsA('Tool') and v.Name == selectedWeapon then
-                game.Players.LocalPlayer.Character.Humanoid:EquipTool(v)
-            end
-        end
-        wait(.5)
-        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = workspace.Objects.Spawns.BossSpawn.CFrame
-        wait(1.5)
-    end
-    while autoBoss do task.wait()
-        for _, v in pairs(mobsFolder:GetChildren()) do
-            if v:IsA('Model') then
-                for _, hrt in pairs(v:GetChildren()) do
-                    if hrt:IsA('Part') and hrt.Name == 'HumanoidRootPart' then
-                        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = hrt.CFrame
-                        local args = {
-                            [1] = 1,
-                            [2] = {
-                                [1] = v.Humanoid
-                            }
-                        }
-                        game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Server"):WaitForChild("Combat"):WaitForChild("M1"):FireServer(unpack(args))
-                        wait(2.5)
-                        for _, head in pairs(v:GetChildren()) do
-                            if head:IsA('Part') and head.Name == 'Head' then
-                                head:Destroy()
-                            end
-                        end
-                    end
-                end
-            end
-        end
-    end
-end)
-Tabs.Bosses:AddSection('[ Separate functions ]')
 local T4 = Tabs.Bosses:AddToggle("", {Title = "Intakill boss", Description = 'Kills boss instantly', Default = false })
 T4:OnChanged(function(bool)
     instaBoss = bool
     while instaBoss do task.wait()
         for _, mob in ipairs(mobsFolder:GetChildren()) do
             if mob:IsA("Model") then
-                for _, head in pairs(mob:GetChildren()) do
-                    if head:IsA('Part') and head.Name == 'Head' then
-                        head:Destroy()
-                    end
-                end
+                mob.Humanoid.Health = 0
             end
         end
     end
