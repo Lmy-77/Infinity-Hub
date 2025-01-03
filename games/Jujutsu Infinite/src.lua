@@ -15,196 +15,197 @@ print[[
 
 -- variables
 function getTools()
-    local toolName = {};
-    for _, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
-        if v:IsA('Tool') then
-            table.insert(toolName, v.Name)
-        end
-    end
-    return toolName
+   local toolName = {};
+   for _, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+       if v:IsA('Tool') then
+           table.insert(toolName, v.Name)
+       end
+   end
+   return toolName
 end
 local selectedWeapon = ''
-local scriptVersion = '2.6a'
+local scriptVersion = '2.8a'
 local mobsFolder = workspace:FindFirstChild("Objects"):FindFirstChild("Mobs")
 
 
 
 -- library settings
-local Library = loadstring(game:HttpGetAsync("https://github.com/ActualMasterOogway/Fluent-Renewed/releases/latest/download/Fluent.luau"))()
-local Window = Library:CreateWindow{
-    Title = 'Infinity Hub - '.. scriptVersion ..' | Jujutsu Infinite',
-    SubTitle = "by lmy77",
-    TabWidth = 120,
-    Size = UDim2.fromOffset(830, 525),
-    Resize = true,
-    MinSize = Vector2.new(470, 380),
-    Acrylic = false,
-    Theme = "United GNOME",
-    MinimizeKey = Enum.KeyCode.K
-}
-Library:Notify{
-    Title = "Infinity Hub",
-    Content = "Welcome to infinity hub".. game.Players.LocalPlayer.Name ..", have fun ❤️",
-    Duration = 4
-}
-local Options = Library.Options
-Library:ToggleTransparency(false)
+local Rayfield = loadstring(game:HttpGet('https://raw.githubusercontent.com/Lmy-77/Infinity-Hub/refs/heads/library/Rayfield/src.lua'))()
+local Window = Rayfield:CreateWindow({
+   Name = "Infinity Hub - ".. scriptVersion .." | Jujutsu Infinite",
+   Icon = 'infinity',
+   LoadingTitle = "Infinity Hub",
+   LoadingSubtitle = "by lmy77",
+   Theme = "Dark Blue",
+   DisableRayfieldPrompts = false,
+   DisableBuildWarnings = false,
+   ConfigurationSaving = {
+      Enabled = true,
+      FolderName = 'Infinity-Hub/Jujutsu-Infinite/Saved-Settings',
+      FileName = "Settings.infh"
+   },
+})
 
 
 
 -- tabs
-local Tabs = {
-    Mobs = Window:AddTab({
-        Title = "| Mobs",
-        Icon = "ghost"
-    }),
-    Bosses = Window:AddTab({
-        Title = "| Bosses",
-        Icon = "angry"
-    }),
-    Settings = Window:AddTab({
-        Title = "| Settings",
-        Icon = "settings"
-    }),
-}
-if game.PlaceId == 10450270085 then
-    Window:SelectTab(1)
-elseif game.PlaceId == 16379688837 then
-    Window:SelectTab(2)
-end
+local Mobs = Window:CreateTab("Mobs", "ghost")
+local Bosses = Window:CreateTab("Boss", "angry")
+local Settings = Window:CreateTab("Settings", "settings")
 
 
 
 -- source
-Tabs.Mobs:AddSection('[ Mob Farm ]')
-local T1 = Tabs.Mobs:AddToggle("", {Title = "Auto take quest", Description = 'Collect the quests for you', Default = false })
-T1:OnChanged(function(bool)
-    autoQuest = bool
-    while autoQuest do task.wait(1)
-        local tempData = game:GetService("Players").LocalPlayer.ReplicatedTempData
-        local questFolder = tempData:FindFirstChild('quest')
-        if not questFolder then
-            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-509, 4470, -15616)
-        end
-    end
-end)
-local T2 = Tabs.Mobs:AddToggle("", {Title = "Attack mobs", Description = 'Activate to farm to the mobs on your mission', Default = false })
-T2:OnChanged(function(bool)
-   teleportMob = bool
-   if teleportMob then
-       for _, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
-           if v:IsA('Tool') and v.Name == selectedWeapon then
-               game.Players.LocalPlayer.Character.Humanoid:EquipTool(v)
-           end
-       end
-   end
-   while teleportMob do task.wait()
-       for _, v in pairs(game:GetService("Players").LocalPlayer.PlayerGui:GetChildren()) do
-           if v:IsA('BillboardGui') and v.Name == 'QuestMarker' then
-               billboardGui = v
-               targetAdornee = billboardGui.Adornee
-               for _, mob in ipairs(mobsFolder:GetChildren()) do
-                   if mob:IsA("Model") and mob:FindFirstChild("HumanoidRootPart") == targetAdornee then
-                       game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = mob.HumanoidRootPart.CFrame
-                       local args = {
-                           [1] = 1,
-                           [2] = {
-                               [1] = mob.Humanoid
-                           }
-                       }
-                       game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Server"):WaitForChild("Combat"):WaitForChild("M1"):FireServer(unpack(args))
-                   end
-               end
-           end
-       end
-   end
-end)
-local T3 = Tabs.Mobs:AddToggle("", {Title = "Intakill mobs", Description = 'Kills all enemies instantly', Default = false })
-T3:OnChanged(function(bool)
-   instaKill = bool
-   while instaKill do task.wait()
-       for _, v in pairs(game:GetService("Players").LocalPlayer.PlayerGui:GetChildren()) do
-           if v:IsA('BillboardGui') and v.Name == 'QuestMarker' then
-               billboardGui = v
-               targetAdornee = billboardGui.Adornee
-               for _, mob in ipairs(mobsFolder:GetChildren()) do
-                   if mob:IsA("Model") and mob:FindFirstChild("HumanoidRootPart") == targetAdornee then
-                       for _, head in pairs(mob:GetChildren()) do
-                           if head:IsA('Part') and head.Name == 'Head' then
-                               head:Destroy()
-                           end
-                       end
-                   end
-               end
-           end
-       end
-   end
-end)
-Tabs.Bosses:AddSection('[ Boss Farm ]')
-local T4 = Tabs.Bosses:AddToggle("", {Title = "Intakill boss", Description = 'Kills boss instantly', Default = false })
-T4:OnChanged(function(bool)
-    instaBoss = bool
-    while instaBoss do task.wait()
-        for _, mob in ipairs(mobsFolder:GetChildren()) do
-            if mob:IsA("Model") then
-                mob.Humanoid.Health = 0
+local Section = Mobs:CreateSection("[ Mob Farm ]")
+local Toggle = Mobs:CreateToggle({
+    Name = "Auto take quest",
+    CurrentValue = false,
+    Flag = "",
+    Callback = function(bool)
+        autoQuest = bool
+        while autoQuest do task.wait(1)
+            local tempData = game:GetService("Players").LocalPlayer.ReplicatedTempData
+            local questFolder = tempData:FindFirstChild('quest')
+            if not questFolder then
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-509, 4470, -15616)
             end
         end
-    end
-end)
-local T5 = Tabs.Bosses:AddToggle("", {Title = "Attack boss", Description = 'Activate to farm to the bosses on your mission', Default = false })
-T5:OnChanged(function(bool)
-    attackBoss = bool
-    if attackBoss then
-        for _, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
-            if v:IsA('Tool') and v.Name == selectedWeapon then
-                game.Players.LocalPlayer.Character.Humanoid:EquipTool(v)
+    end,
+})
+local Toggle = Mobs:CreateToggle({
+    Name = "Auto attack",
+    CurrentValue = false,
+    Flag = "",
+    Callback = function(bool)
+        teleportMob = bool
+        if teleportMob then
+            for _, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+                if v:IsA('Tool') and v.Name == selectedWeapon then
+                    game.Players.LocalPlayer.Character.Humanoid:EquipTool(v)
+                end
             end
         end
-    end
-    while attackBoss do task.wait()
-        for _, mob in ipairs(mobsFolder:GetChildren()) do
-            if mob:IsA("Model") then
-                for _, hrt in pairs(mob:GetChildren()) do
-                    if hrt:IsA('Part') and hrt.Name == 'HumanoidRootPart' then
-                        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = hrt.CFrame
-                        local args = {
-                            [1] = 1,
-                            [2] = {
-                                [1] = mob.Humanoid
+        while teleportMob do task.wait()
+            for _, v in pairs(game:GetService("Players").LocalPlayer.PlayerGui:GetChildren()) do
+                if v:IsA('BillboardGui') and v.Name == 'QuestMarker' then
+                    billboardGui = v
+                    targetAdornee = billboardGui.Adornee
+                    for _, mob in ipairs(mobsFolder:GetChildren()) do
+                        if mob:IsA("Model") and mob:FindFirstChild("HumanoidRootPart") == targetAdornee then
+                            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = mob.HumanoidRootPart.CFrame
+                            local args = {
+                                [1] = 1,
+                                [2] = {
+                                    [1] = mob.Humanoid
+                                }
                             }
-                        }
-                        game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Server"):WaitForChild("Combat"):WaitForChild("M1"):FireServer(unpack(args))
+                            game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Server"):WaitForChild("Combat"):WaitForChild("M1"):FireServer(unpack(args))
+                        end
                     end
                 end
             end
         end
-    end
-end)
-local button = Tabs.Bosses:CreateButton{
-    Title = 'Spawn Boss',
-    Description = 'Teleport you to spawn boss',
+    end,
+})
+local Toggle = Mobs:CreateToggle({
+    Name = "Insta kill",
+    CurrentValue = false,
+    Flag = "",
+    Callback = function(bool)
+        instaKill = bool
+        while instaKill do task.wait()
+            for _, v in pairs(game:GetService("Players").LocalPlayer.PlayerGui:GetChildren()) do
+                if v:IsA('BillboardGui') and v.Name == 'QuestMarker' then
+                    billboardGui = v
+                    targetAdornee = billboardGui.Adornee
+                    for _, mob in ipairs(mobsFolder:GetChildren()) do
+                        if mob:IsA("Model") and mob:FindFirstChild("HumanoidRootPart") == targetAdornee then
+                            for _, head in pairs(mob:GetChildren()) do
+                                if head:IsA('Part') and head.Name == 'Head' then
+                                    head:Destroy()
+                                    mob.Humanoid.Health = 0
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end,
+})
+
+
+local Section = Bosses:CreateSection("[ Boss Farm ]")
+local Toggle = Bosses:CreateToggle({
+    Name = "Insta kill",
+    CurrentValue = false,
+    Flag = "",
+    Callback = function(bool)
+        autoFarmBoss = bool
+        while autoFarmBoss do task.wait()
+            for _, mob in ipairs(mobsFolder:GetChildren()) do
+                if mob:IsA("Model") then
+                    mob.Humanoid.Health = 0
+                end
+            end
+        end
+    end,
+})
+local Toggle = Bosses:CreateToggle({
+    Name = "Auto attack",
+    CurrentValue = false,
+    Flag = "",
+    Callback = function(bool)
+        attackBoss = bool
+        if attackBoss then
+            for _, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+                if v:IsA('Tool') and v.Name == selectedWeapon then
+                    game.Players.LocalPlayer.Character.Humanoid:EquipTool(v)
+                end
+            end
+        end
+        while attackBoss do task.wait()
+            for _, mob in ipairs(mobsFolder:GetChildren()) do
+                if mob:IsA("Model") then
+                    for _, hrt in pairs(mob:GetChildren()) do
+                        if hrt:IsA('Part') and hrt.Name == 'HumanoidRootPart' then
+                            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = hrt.CFrame
+                            local args = {
+                                [1] = 1,
+                                [2] = {
+                                    [1] = mob.Humanoid
+                                }
+                            }
+                            game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Server"):WaitForChild("Combat"):WaitForChild("M1"):FireServer(unpack(args))
+                        end
+                    end
+                end
+            end
+        end
+    end,
+})
+local Button = Bosses:CreateButton({
+    Name = "Spawn boss",
     Callback = function()
         game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = workspace.Objects.Spawns.BossSpawn.CFrame
-    end
-}
-
-
-Tabs.Settings:AddSection('[ Farm Settings ]')
-local selectedWeaponDropdown = Tabs.Settings:AddDropdown("", {
-    Title = "Select weapon",
-    Description = 'Select the weapon you want him to use to kill the boss / mobs',
-    Values = getTools(),
-    Multi = false,
-    Default = 'Innates',
+    end,
 })
-selectedWeaponDropdown:OnChanged(function(value)
-    selectedWeapon = value
-end)
-local button = Tabs.Settings:CreateButton{
-    Title = 'Refresh',
-    Description = '',
+
+
+local Section = Settings:CreateSection("[ Farm Settings ]")
+local selectedWeaponDropdown = Settings:CreateDropdown({
+    Name = "Select weapon",
+    Options = getTools(),
+    CurrentOption = {"Innates"},
+    MultipleOptions = false,
+    Flag = "",
+    Callback = function(Options)
+        selectedWeapon = Options
+    end,
+})
+local Button = Settings:CreateButton({
+    Name = "Spawn boss",
     Callback = function()
-        selectedWeaponDropdown:SetValues(getTools())
-    end
-}
+        selectedWeaponDropdown:Refresh(getTools())
+    end,
+})
