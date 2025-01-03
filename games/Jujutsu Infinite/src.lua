@@ -36,9 +36,9 @@ local Window = Rayfield:CreateWindow({
    Icon = 'infinity',
    LoadingTitle = "Infinity Hub",
    LoadingSubtitle = "by lmy77",
-   Theme = "Dark Blue",
-   DisableRayfieldPrompts = false,
-   DisableBuildWarnings = false,
+   Theme = "DarkBlue",
+   DisableRayfieldPrompts = true,
+   DisableBuildWarnings = true,
    ConfigurationSaving = {
       Enabled = true,
       FolderName = 'Infinity-Hub/Jujutsu-Infinite/Saved-Settings',
@@ -49,9 +49,10 @@ local Window = Rayfield:CreateWindow({
 
 
 -- tabs
-local Mobs = Window:CreateTab("Mobs", "ghost")
-local Bosses = Window:CreateTab("Boss", "angry")
-local Settings = Window:CreateTab("Settings", "settings")
+local Mobs = Window:CreateTab("Mobs")
+local Bosses = Window:CreateTab("Boss")
+local Spam = Window:CreateTab("Spam")
+local Settings = Window:CreateTab("Settings")
 
 
 
@@ -188,6 +189,37 @@ local Button = Bosses:CreateButton({
     Name = "Spawn boss",
     Callback = function()
         game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = workspace.Objects.Spawns.BossSpawn.CFrame
+    end,
+})
+
+
+local Section = Spam:CreateSection("[ Spam Skills ]")
+local Button = Spam:CreateButton({
+    Name = "Maximum: Jacob's Ladder",
+    Callback = function()
+        local ohString1 = "Maximum: Jacob's Ladder"
+        game:GetService("ReplicatedStorage").Remotes.Server.Combat.Skill:FireServer(ohString1)
+    end,
+})
+local Button = Bosses:CreateButton({
+    Name = "Maximum: Six Eyes",
+    Callback = function()
+        local ohString1 = "Maximum: Six Eyes"
+        game:GetService("ReplicatedStorage").Remotes.Server.Combat.Skill:FireServer(ohString1)
+    end,
+})
+local Button = Bosses:CreateButton({
+    Name = "Domain Expansion: Malevolent Shrine",
+    Callback = function()
+        local ohString1 = "Domain Expansion: Malevolent Shrine"
+        game:GetService("ReplicatedStorage").Remotes.Server.Combat.Skill:FireServer(ohString1)
+    end,
+})
+local Button = Bosses:CreateButton({
+    Name = "Domain Expansion: Unlimited Void",
+    Callback = function()
+        local ohString1 = "Domain Expansion: Unlimited Void"
+        game:GetService("ReplicatedStorage").Remotes.Server.Combat.Skill:FireServer(ohString1)
     end,
 })
 
