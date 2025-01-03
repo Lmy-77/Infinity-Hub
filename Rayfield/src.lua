@@ -614,7 +614,7 @@ local Debounce = false
 local searchOpen = false
 local Notifications = Rayfield.Notifications
 
-local SelectedTheme = RayfieldLibrary.Theme['Dark Blue']
+local SelectedTheme = RayfieldLibrary.Theme.DarkBlue
 
 local function ChangeTheme(Theme)
 	if typeof(Theme) == 'string' then
