@@ -201,21 +201,21 @@ local Button = Spam:CreateButton({
         game:GetService("ReplicatedStorage").Remotes.Server.Combat.Skill:FireServer(ohString1)
     end,
 })
-local Button = Bosses:CreateButton({
+local Button = Spam:CreateButton({
     Name = "Maximum: Six Eyes",
     Callback = function()
         local ohString1 = "Maximum: Six Eyes"
         game:GetService("ReplicatedStorage").Remotes.Server.Combat.Skill:FireServer(ohString1)
     end,
 })
-local Button = Bosses:CreateButton({
+local Button = Spam:CreateButton({
     Name = "Domain Expansion: Malevolent Shrine",
     Callback = function()
         local ohString1 = "Domain Expansion: Malevolent Shrine"
         game:GetService("ReplicatedStorage").Remotes.Server.Combat.Skill:FireServer(ohString1)
     end,
 })
-local Button = Bosses:CreateButton({
+local Button = Spam:CreateButton({
     Name = "Domain Expansion: Unlimited Void",
     Callback = function()
         local ohString1 = "Domain Expansion: Unlimited Void"
