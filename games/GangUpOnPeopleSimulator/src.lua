@@ -66,7 +66,7 @@ local SaveManager = loadstring(game:HttpGet(repo .. 'addons/SaveManager.lua'))()
 Library:Notify('Script Loaded, Game: '..game:GetService('MarketplaceService'):GetProductInfo(game.PlaceId).Name, 4)
 wait(0.3) Library:Notify('Welcome '..game.Players.LocalPlayer.Name, 4) wait(0.3) Library:Notify('Made by Lmy77', 4) wait(0.3) Library:Notify('Keybind: J', 4)
 local Window = Library:CreateWindow({
-    Title = 'Infinity Hub - Version 2.4 - '..game:GetService('MarketplaceService'):GetProductInfo(game.PlaceId).Name,
+    Title = 'Infinity Hub - Version 2.8a | '..game:GetService('MarketplaceService'):GetProductInfo(game.PlaceId).Name,
     Center = true,
     AutoShow = true,
     TabPadding = 8,
