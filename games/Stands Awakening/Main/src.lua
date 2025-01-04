@@ -285,11 +285,10 @@ autoBlockToggle:OnChanged(function(bool)
     autoBlock = bool
     repeat task.wait()
         if autoBlock then
-            local args = {
-                [1] = "Alternate",
-                [2] = "Block"
-            }
-            game:GetService("ReplicatedStorage").Main.Input:FireServer(unpack(args))
+            local ohString1 = "Alternate"
+            local ohString2 = "Block"
+            local ohBoolean3 = true
+            game:GetService("ReplicatedStorage").Main.Input:FireServer(ohString1, ohString2, ohBoolean3)
         end
     until autoBlock == false
 end)
