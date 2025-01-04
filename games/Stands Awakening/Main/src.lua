@@ -549,7 +549,11 @@ local Button = Tabs.Players:AddButton({
    Title = "Teleport player to limbo",
    Description = "Teleports and kills the desired player. Need sans",
    Callback = function()
-       game:GetService('Players').LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService('Players')[selectedPlayer].Character.HumanoidRootPart.CFrame
+       for _, v in pairs(game:GetService('Players')[selectedPlayer].Character:GetChildren()) do
+           if v:IsA('Part') and v.Name == 'HumanoidRootPart' then
+               game:GetService('Players').LocalPlayer.Character.HumanoidRootPart.CFrame = v.CFrame
+           end
+       end
        wait(.5)
        local math = math.huge
        local ohString1 = "Alternate"
@@ -560,11 +564,15 @@ local Button = Tabs.Players:AddButton({
    end
 })
 local Button = Tabs.Players:AddButton({
-   Title = "Teleport to player",
-   Description = "Click for teleport to player choosed",
-   Callback = function()
-    game:GetService('Players').LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService('Players')[selectedPlayer].Character.HumanoidRootPart.CFrame
-   end
+    Title = "Teleport to player",
+    Description = "Click for teleport to player choosed",
+    Callback = function()
+        for _, v in pairs(game:GetService('Players')[selectedPlayer].Character:GetChildren()) do
+            if v:IsA('Part') and v.Name == 'HumanoidRootPart' then
+                game:GetService('Players').LocalPlayer.Character.HumanoidRootPart.CFrame = v.CFrame
+            end
+        end
+    end
 })
 local Button = Tabs.Players:AddButton({
    Title = "Refresh",
