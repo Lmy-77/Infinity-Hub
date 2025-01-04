@@ -51,6 +51,7 @@ local function FireTool(ToolName)
         end
     end
 end
+getgenv().scriptVersion = '2.8a'
 
 
 
