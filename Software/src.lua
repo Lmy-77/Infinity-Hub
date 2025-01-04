@@ -1,5 +1,5 @@
 -- auto loader
-local scriptVersion = '2.8a'
+local getgenv().scriptVersion = '2.8a'
 local queue_on_teleport = queue_on_teleport or syn and syn.queue_on_teleport
 queue_on_teleport[[
     repeat wait() until game:IsLoaded() print("ServerHoped or rejoined")
