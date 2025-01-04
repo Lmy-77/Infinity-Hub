@@ -198,7 +198,7 @@ local RunService = game:GetService('RunService')
 local GuiService = game:GetService('GuiService')
 local vim = game:GetService("VirtualInputManager")
 local Signals = {"Activated", "MouseButton1Down", "MouseButton2Down", "MouseButton1Click", "MouseButton2Click"}
-local scriptVersion = '2.6a'
+local scriptVersion = '2.8a'
 local Utils = {}
 
 
