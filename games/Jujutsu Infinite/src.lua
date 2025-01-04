@@ -24,15 +24,15 @@ function getTools()
    return toolName
 end
 local selectedWeapon = ''
-local scriptVersion = '2.8a'
 local mobsFolder = workspace:FindFirstChild("Objects"):FindFirstChild("Mobs")
+getgenv().scriptVersion = '2.8a'
 
 
 
 -- library settings
 local Rayfield = loadstring(game:HttpGet('https://raw.githubusercontent.com/Lmy-77/Infinity-Hub/refs/heads/library/Rayfield/src.lua'))()
 local Window = Rayfield:CreateWindow({
-   Name = "Infinity Hub - ".. scriptVersion .." | Jujutsu Infinite",
+   Name = "Infinity Hub - ".. getgenv().scriptVersion .." | Jujutsu Infinite",
    Icon = 'infinity',
    LoadingTitle = "Infinity Hub",
    LoadingSubtitle = "by lmy77",
