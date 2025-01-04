@@ -57,7 +57,7 @@ end
 -- library settings
 local Library = loadstring(game:HttpGetAsync("https://github.com/ActualMasterOogway/Fluent-Renewed/releases/latest/download/Fluent.luau"))()
 local Window = Library:CreateWindow{
-    Title = 'Infinity Hub - '.. scriptVersion ..' | Stands Awakenig',
+    Title = 'Infinity Hub - '.. getgenv().scriptVersion ..' | Stands Awakenig',
     SubTitle = "by lmy77",
     TabWidth = 120,
     Size = UDim2.fromOffset(830, 525),
