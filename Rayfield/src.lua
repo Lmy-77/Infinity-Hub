@@ -9,9 +9,11 @@
 
 ]]
 
+if debugX then
+	warn('Initialising Rayfield')
+end
 
-
-local InterfaceBuild = '9NBD'
+local InterfaceBuild = '3K3W'
 local Release = "Build 1.67"
 local RayfieldFolder = "Rayfield"
 local ConfigurationFolder = RayfieldFolder.."/Configurations"
@@ -40,6 +42,8 @@ local cachedSettings
 local prompt = useStudio and require(script.Parent.prompt) or loadstring(game:HttpGet('https://raw.githubusercontent.com/SiriusSoftwareLtd/Sirius/refs/heads/request/prompt.lua'))()
 local request = (syn and syn.request) or (fluxus and fluxus.request) or (http and http.request) or http_request or request
 
+
+
 local function loadSettings()
 	local file = nil
 
@@ -52,7 +56,7 @@ local function loadSettings()
 	-- for debug in studio
 	if useStudio then
 		file = [[
-		{"General":{"rayfieldOpen":{"Value":"K","Type":"bind","Name":"Infinity Hub Keybind","Element":{"HoldToInteract":false,"Ext":true,"Name":"Infinity Hub Keybind","Set":null,"CallOnChange":true,"Callback":null,"CurrentKeybind":"K"}}},"System":{"usageAnalytics":{"Value":false,"Type":"toggle","Name":"Anonymised Analytics","Element":{"Ext":true,"Name":"Anonymised Analytics","Set":null,"CurrentValue":false,"Callback":null}}}}
+		{"General":{"rayfieldOpen":{"Value":"K","Type":"bind","Name":"Rayfield Keybind","Element":{"HoldToInteract":false,"Ext":true,"Name":"Rayfield Keybind","Set":null,"CallOnChange":true,"Callback":null,"CurrentKeybind":"K"}}},"System":{"usageAnalytics":{"Value":false,"Type":"toggle","Name":"Anonymised Analytics","Element":{"Ext":true,"Name":"Anonymised Analytics","Set":null,"CurrentValue":false,"Callback":null}}}}
 	]]
 	end
 
@@ -88,7 +92,15 @@ local function loadSettings()
 	end
 end
 
+if debugX then
+	warn('Now Loading Settings Configuration')
+end
+
 loadSettings()
+
+if debugX then
+	warn('Settings Loaded')
+end
 
 --if not cachedSettings or not cachedSettings.System or not cachedSettings.System.usageAnalytics then
 --	local fileFunctionsAvailable = isfile and writefile and readfile
@@ -114,13 +126,40 @@ loadSettings()
 --	repeat task.wait() until analytics ~= nil
 --end
 
+if debugX then
+	warn('Querying Settings for Reporter Information')
+end
+
 if #cachedSettings == 0 or (cachedSettings.System and cachedSettings.System.usageAnalytics and cachedSettings.System.usageAnalytics.Value) then
 	if useStudio then
 		print('Sending analytics')
 	else
-		local reporter = loadstring(game:HttpGet("https://analytics.sirius.menu/reporter"))()
-		reporter.report("0193dbf8-7da1-79de-b399-2c0f68b0a9ad", Release, InterfaceBuild)
+		if debugX then
+			warn('Reporting Analytics')
+		end
+		task.spawn(function()
+			local success, reporter = pcall(function()
+				return loadstring(game:HttpGet("https://analytics.sirius.menu/reporter"))()
+			end)
+
+			if success and reporter then
+				pcall(function()
+					reporter.report("0193dbf8-7da1-79de-b399-2c0f68b0a9ad", Release, InterfaceBuild)
+				end)
+			else
+				warn("Failed to load or execute the reporter. \nPlease notify Rayfield developers at sirius.menu/discord.")
+			end
+		end)
+		
+		if debugX then
+			warn('Finished Report')
+		end
+
 	end
+end
+
+if debugX then
+	warn('Moving on to continue initialisation')
 end
 
 local RayfieldLibrary = {
@@ -614,7 +653,7 @@ local Debounce = false
 local searchOpen = false
 local Notifications = Rayfield.Notifications
 
-local SelectedTheme = RayfieldLibrary.Theme.DarkBlue
+local SelectedTheme = RayfieldLibrary.Theme.Default
 
 local function ChangeTheme(Theme)
 	if typeof(Theme) == 'string' then
@@ -778,8 +817,10 @@ local function UnpackColor(Color)
 end
 
 local function LoadConfiguration(Configuration)
-	local Data = HttpService:JSONDecode(Configuration)
+	local success, Data = pcall(function() return HttpService:JSONDecode(Configuration) end)
 	local changed
+	
+	if not success then warn('Rayfield had an issue decoding the configuration file, please try delete the file and reopen Rayfield.') return end
 
 	-- Iterate through current UI elements' flags
 	for FlagName, Flag in pairs(RayfieldLibrary.Flags) do
@@ -1402,7 +1443,7 @@ end
 
 
 function RayfieldLibrary:CreateWindow(Settings)
-	if Rayfield['Loading'] then
+	if Rayfield:FindFirstChild('Loading') then
 		if getgenv and not getgenv().rayfieldCached then
 			Rayfield.Enabled = true
 			Rayfield.Loading.Visible = true
@@ -3539,15 +3580,15 @@ function RayfieldLibrary:LoadConfiguration()
 				end
 			else
 				notified = true
-				RayfieldLibrary:Notify({Title = "Infinity Hub Configurations", Content = "We couldn't enable Configuration Saving as you are not using software with filesystem support.", Image = 4384402990})
+				RayfieldLibrary:Notify({Title = "Rayfield Configurations", Content = "We couldn't enable Configuration Saving as you are not using software with filesystem support.", Image = 4384402990})
 			end
 		end)
 
 		if success and loaded and not notified then
-			RayfieldLibrary:Notify({Title = "Infinity Hub Configurations", Content = "The configuration file for this script has been loaded from a previous session.", Image = 4384403532})
+			RayfieldLibrary:Notify({Title = "Rayfield Configurations", Content = "The configuration file for this script has been loaded from a previous session.", Image = 4384403532})
 		elseif not success and not notified then
 			warn('Rayfield Configurations Error | '..tostring(result))
-			RayfieldLibrary:Notify({Title = "Infinity Hub Configurations", Content = "We've encountered an issue loading your configuration correctly.\n\nCheck the Developer Console for more information.", Image = 4384402990})
+			RayfieldLibrary:Notify({Title = "Rayfield Configurations", Content = "We've encountered an issue loading your configuration correctly.\n\nCheck the Developer Console for more information.", Image = 4384402990})
 		end
 	end
 
