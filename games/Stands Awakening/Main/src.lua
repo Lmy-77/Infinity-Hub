@@ -51,7 +51,6 @@ local function FireTool(ToolName)
         end
     end
 end
-local scriptVersion = '2.6a'
 
 
 
