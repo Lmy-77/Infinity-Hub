@@ -472,7 +472,7 @@ Tabs.LPlayer:AddButton({
 Tabs.Stats:AddSection('[ View Stats ]')
 local Stats = Tabs.Stats:CreateParagraph("Aligned Paragraph", {
     Title = "- Your Stats -",
-    Content = "Money: "..game:GetService("Players").LocalPlayer.SavedPlayerStatsModule.Credits.Value.. "\nBeast Chance: "..game:GetService("Players").LocalPlayer.SavedPlayerStatsModule.BeastChance.Value.."\nLevel: "..game:GetService("Players").LocalPlayer.SavedPlayerStatsModule.Level.Value.."\nXp: "..game:GetService("Players").LocalPlayer.SavedPlayerStatsModule.Xp.Value.."\nAction: "..getAction(),
+    Content = "Money: "..game:GetService("Players").LocalPlayer.SavedPlayerStatsModule.Credits.Value.. "\nBeast Chance: "..game:GetService("Players").LocalPlayer.SavedPlayerStatsModule.BeastChance.Value.."%\nLevel: "..game:GetService("Players").LocalPlayer.SavedPlayerStatsModule.Level.Value.."\nXp: "..game:GetService("Players").LocalPlayer.SavedPlayerStatsModule.Xp.Value.."\nAction: "..getAction(),
     TitleAlignment = "Middle",
 })
 task.spawn(function()
