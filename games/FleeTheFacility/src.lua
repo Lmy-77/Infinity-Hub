@@ -167,7 +167,24 @@ end
 local KeyPress = function(v)
     return game:GetService("VirtualInputManager"):SendKeyEvent(true, v, false, game)
 end
-getgenv().scriptVersion = '2.8a'
+local function moveGradually(destination)
+    local humanoidRootPart = game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart")
+    local currentPosition = humanoidRootPart.Position
+    local steps = 50
+    for i = 1, steps do
+        local nextPosition = currentPosition:Lerp(destination, i / steps)
+        humanoidRootPart.CFrame = CFrame.new(nextPosition)
+        wait(0.05)
+    end
+end
+function getAction()
+    if game:GetService("Players").LocalPlayer.TempPlayerStatsModule.ActionProgress.Value == 0 then
+        return 'Nothing or walking'
+    else
+        return 'Hacking a computer or opening a door'
+    end
+end
+scriptVersion = '2.8a'
 
 
 
@@ -175,7 +192,7 @@ getgenv().scriptVersion = '2.8a'
 -- library settings
 local Library = loadstring(game:HttpGetAsync("https://github.com/ActualMasterOogway/Fluent-Renewed/releases/latest/download/Fluent.luau"))()
 local Window = Library:CreateWindow{
-    Title = 'Infinity Hub - '.. getgenv().scriptVersion ..' | Flee The Facility',
+    Title = 'Infinity Hub - '.. scriptVersion ..' | Flee The Facility',
     SubTitle = "by lmy77",
     TabWidth = 120,
     Size = UDim2.fromOffset(830, 525),
@@ -199,6 +216,10 @@ local Tabs = {
     LPlayer = Window:AddTab({
         Title = "| Local Player",
         Icon = 'user'
+    }),
+    Stats = Window:AddTab({
+        Title = "| Stats",
+        Icon = "chart-bar"
     }),
     Esp = Window:AddTab({
         Title = "| Esp",
@@ -238,13 +259,19 @@ Tabs.Game:AddButton({
     Description = "Teleports you to an uncompleted computer. Be careful, if you abuse it too much you could get kicked, use it responsibly",
     Callback = function()
         local map = workspace:FindFirstChild(tostring(game.ReplicatedStorage.CurrentMap.Value))
-        for _, v in pairs(map:GetChildren()) do
-            if v:IsA('Model') and v.Name == 'ComputerTable' then
-                for _, x in pairs(v:GetChildren()) do
-                    if x:IsA('Part') and x.Name:lower():find('computertrigger') then
-                        if x.ActionSign.Value == 20 and v.Screen.Color ~= Color3.fromRGB(40, 127, 71) then
-                            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = x.CFrame
-                            return
+        if map then
+            for _, v in pairs(map:GetChildren()) do
+                if v:IsA('Model') and v.Name == 'ComputerTable' then
+                    for _, x in pairs(v:GetChildren()) do
+                        if x:IsA('Part') and x.Name:lower():find('computertrigger') then
+                            if x.ActionSign.Value == 20 and v.Screen.Color ~= Color3.fromRGB(40, 127, 71) then
+                                local oldKick = nil
+                                oldKick = hookfunction(game.Players.LocalPlayer.Kick, function(self, ...)
+                                    return oldKick(self, ...)
+                                end)
+                                moveGradually(x.Position)
+                                return
+                            end
                         end
                     end
                 end
@@ -302,6 +329,8 @@ AntiRagdollToggle:OnChanged(function(bool)
                     if v.Value == true then
                         wait(.2)
                         v.Value = false
+                        game.Players.LocalPlayer.Character.Ragdoller.Enabled = false
+                        game.Players.LocalPlayer.Character.Humanoid.PlatformStand = false
                     end
                 end
             end
@@ -438,6 +467,19 @@ Tabs.LPlayer:AddButton({
         game.Players.LocalPlayer.Character.Humanoid.JumpPower = 50
     end
 })
+
+
+Tabs.Stats:AddSection('[ View Stats ]')
+local Stats = Tabs.Stats:CreateParagraph("Aligned Paragraph", {
+    Title = "- Your Stats -",
+    Content = "Money: "..game:GetService("Players").LocalPlayer.SavedPlayerStatsModule.Credits.Value.. "\nBeast Chance: "..game:GetService("Players").LocalPlayer.SavedPlayerStatsModule.BeastChance.Value.."\nLevel: "..game:GetService("Players").LocalPlayer.SavedPlayerStatsModule.Level.Value.."\nXp: "..game:GetService("Players").LocalPlayer.SavedPlayerStatsModule.Xp.Value.."\nAction: "..getAction(),
+    TitleAlignment = "Middle",
+})
+task.spawn(function()
+    repeat task.wait()
+        Stats:SetValue('Money: '..game:GetService("Players").LocalPlayer.SavedPlayerStatsModule.Credits.Value.. "\nBeast Chance: "..game:GetService("Players").LocalPlayer.SavedPlayerStatsModule.BeastChance.Value.."\nLevel: "..game:GetService("Players").LocalPlayer.SavedPlayerStatsModule.Level.Value.."\nXp: "..game:GetService("Players").LocalPlayer.SavedPlayerStatsModule.Xp.Value.."\nAction: "..getAction())
+    until game.Players.LocalPlayer.Character.Humanoid.Health == 9e99
+end)
 
 
 Tabs.Esp:AddSection('[ Esp Settings ]')
