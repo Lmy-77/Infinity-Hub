@@ -260,33 +260,32 @@ Tabs.Game:AddButton({
     Title = "Teleport to computer",
     Description = "Teleports you to an uncompleted computer. Be careful, if you abuse it too much you could get kicked, use it responsibly",
     Callback = function()
-        local cooldownTime = 15
+        local cooldownTime = 30
         local lastExecution = 0
-        local currentTime = os.time()
-        local map = workspace:FindFirstChild(tostring(game.ReplicatedStorage.CurrentMap.Value))
-        if currentTime - lastExecution < cooldownTime then
-            local timeLeft = cooldownTime - (currentTime - lastExecution)
-            Library:Notify{
-                Title = "Infinity Hub",
-                Content = 'Security time running, wait for the security time to run out. Run again at: '..timeLeft,
-                Duration = 4
-            }
-        else
-            lastExecution = currentTime
-            if map then
-                for _, v in pairs(map:GetChildren()) do
-                    if v:IsA('Model') and v.Name == 'ComputerTable' then
-                        for _, x in pairs(v:GetChildren()) do
-                            if x:IsA('Part') and x.Name:lower():find('computertrigger') then
-                                if x.ActionSign.Value == 20 and v.Screen.Color ~= Color3.fromRGB(40, 127, 71) then
-                                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = x.CFrame
-                                    return
+        while true do
+            local currentTime = os.time()
+            if currentTime - lastExecution < cooldownTime then
+                local timeLeft = cooldownTime - (currentTime - lastExecution)
+                print(timeLeft)
+            else
+                lastExecution = currentTime
+                local map = workspace:FindFirstChild(tostring(game.ReplicatedStorage.CurrentMap.Value))
+                if map then
+                    for _, v in pairs(map:GetChildren()) do
+                        if v:IsA("Model") and v.Name == "ComputerTable" then
+                            for _, x in pairs(v:GetChildren()) do
+                                if x:IsA("Part") and x.Name:lower():find("computertrigger") then
+                                    if x.ActionSign.Value == 20 and v.Screen.Color ~= Color3.fromRGB(40, 127, 71) then
+                                        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = x.CFrame
+                                        break
+                                    end
                                 end
                             end
                         end
                     end
                 end
             end
+            wait(1)
         end
     end
 })
@@ -396,7 +395,10 @@ NoSlowToggle:OnChanged(function(bool)
 end)
 local ActiveCrawlingToggle = Tabs.LPlayer:AddToggle("", {Title = "Active crawling (Beast)", Description = "When you're a beast, you'll now be able to crawling", Default = false })
 ActiveCrawlingToggle:OnChanged(function(bool)
-
+    activeCraw = bool
+    while activeCraw do task.wait()
+        game:GetService("Players").LocalPlayer.TempPlayerStatsModule.DisableCrawl.Value = false
+    end
 end)
 local ProtectionToggle = Tabs.LPlayer:AddToggle("", {Title = "Self-protection", Description = "Teleports you away from the beast and then returns you to your old position", Default = false })
 ProtectionToggle:OnChanged(function(bool)
@@ -508,12 +510,12 @@ Tabs.LPlayer:AddButton({
 Tabs.Stats:AddSection('[ View Stats ]')
 local Stats = Tabs.Stats:CreateParagraph("Aligned Paragraph", {
     Title = "- Your Stats -",
-    Content = "Money: "..game:GetService("Players").LocalPlayer.SavedPlayerStatsModule.Credits.Value.. "\nBeast Chance: "..game:GetService("Players").LocalPlayer.SavedPlayerStatsModule.BeastChance.Value.."%\nLevel: "..game:GetService("Players").LocalPlayer.SavedPlayerStatsModule.Level.Value.."\nXp: "..game:GetService("Players").LocalPlayer.SavedPlayerStatsModule.Xp.Value.."\nAction: "..getAction(),
+    Content = "Money: "..game:GetService("Players").LocalPlayer.SavedPlayerStatsModule.Credits.Value.. "\nBeast Chance: "..game:GetService("Players").LocalPlayer.PlayerGui.MenusScreenGui.MainMenuWindow.Body.BeastChanceFrame.PercentageLabel.Text.."%\nLevel: "..game:GetService("Players").LocalPlayer.SavedPlayerStatsModule.Level.Value.."\nXp: "..game:GetService("Players").LocalPlayer.SavedPlayerStatsModule.Xp.Value.."\nAction: "..getAction(),
     TitleAlignment = "Middle",
 })
 task.spawn(function()
     repeat task.wait()
-        Stats:SetValue('Money: '..game:GetService("Players").LocalPlayer.SavedPlayerStatsModule.Credits.Value.. "\nBeast Chance: "..game:GetService("Players").LocalPlayer.SavedPlayerStatsModule.BeastChance.Value.."\nLevel: "..game:GetService("Players").LocalPlayer.SavedPlayerStatsModule.Level.Value.."\nXp: "..game:GetService("Players").LocalPlayer.SavedPlayerStatsModule.Xp.Value.."\nAction: "..getAction())
+        Stats:SetValue('Money: '..game:GetService("Players").LocalPlayer.SavedPlayerStatsModule.Credits.Value.. "\nBeast Chance: "..game:GetService("Players").LocalPlayer.PlayerGui.MenusScreenGui.MainMenuWindow.Body.BeastChanceFrame.PercentageLabel.Text.."\nLevel: "..game:GetService("Players").LocalPlayer.SavedPlayerStatsModule.Level.Value.."\nXp: "..game:GetService("Players").LocalPlayer.SavedPlayerStatsModule.Xp.Value.."\nAction: "..getAction())
     until game.Players.LocalPlayer.Character.Humanoid.Health == 9e99
 end)
 
@@ -591,7 +593,7 @@ Tabs.EspSettings:AddButton({
 wait(.5)
 local path = game:GetService('CoreGui')
 for _, v in pairs(path:GetDescendants()) do
-    if v:IsA('ScreenGui') and v.Name == 'FluentRenewed_Infinity Hub - 2.6a | Flee The Facility' then
+    if v:IsA('ScreenGui') and v.Name == 'FluentRenewed_Infinity Hub - 2.8a | Flee The Facility' then
         for _, x in pairs(v:GetChildren()) do
             if x:IsA('ImageButton') and x.Name == 'ImageButton' then
                 x:Destroy()
