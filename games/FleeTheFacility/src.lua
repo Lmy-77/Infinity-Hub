@@ -408,7 +408,7 @@ ProtectionToggle:OnChanged(function(bool)
     local character = player.Character or player.CharacterAdded:Wait()
     local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
     local targetPlayerName = getBeast()
-    local teleportDistance = 5
+    local teleportDistance = 8
     local safeDistance = 15
 
 
