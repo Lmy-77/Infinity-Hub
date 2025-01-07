@@ -167,21 +167,20 @@ end
 local KeyPress = function(v)
     return game:GetService("VirtualInputManager"):SendKeyEvent(true, v, false, game)
 end
-local function moveGradually(destination)
-    local humanoidRootPart = game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart")
-    local currentPosition = humanoidRootPart.Position
-    local steps = 50
-    for i = 1, steps do
-        local nextPosition = currentPosition:Lerp(destination, i / steps)
-        humanoidRootPart.CFrame = CFrame.new(nextPosition)
-        wait(0.05)
-    end
-end
 function getAction()
     if game:GetService("Players").LocalPlayer.TempPlayerStatsModule.ActionProgress.Value == 0 then
         return 'Nothing or walking'
     else
         return 'Hacking a computer or opening a door'
+    end
+end
+function getBeast()
+    for _, v in pairs(game:GetService('Players'):GetChildren()) do
+        if v.Name ~= game:GetService('Players').LocalPlayer.Name then
+            if v.Character:findFirstChild('BeastPowers') then
+                return v.Name
+            end
+        end
     end
 end
 scriptVersion = '2.8a'
@@ -258,19 +257,28 @@ Tabs.Game:AddButton({
     Title = "Teleport to computer",
     Description = "Teleports you to an uncompleted computer. Be careful, if you abuse it too much you could get kicked, use it responsibly",
     Callback = function()
+        local cooldownTime = 15
+        local lastExecution = 0
+        local currentTime = os.time()
         local map = workspace:FindFirstChild(tostring(game.ReplicatedStorage.CurrentMap.Value))
-        if map then
-            for _, v in pairs(map:GetChildren()) do
-                if v:IsA('Model') and v.Name == 'ComputerTable' then
-                    for _, x in pairs(v:GetChildren()) do
-                        if x:IsA('Part') and x.Name:lower():find('computertrigger') then
-                            if x.ActionSign.Value == 20 and v.Screen.Color ~= Color3.fromRGB(40, 127, 71) then
-                                local oldKick = nil
-                                oldKick = hookfunction(game.Players.LocalPlayer.Kick, function(self, ...)
-                                    return oldKick(self, ...)
-                                end)
-                                moveGradually(x.Position)
-                                return
+        if currentTime - lastExecution < cooldownTime then
+            local timeLeft = cooldownTime - (currentTime - lastExecution)
+            Library:Notify{
+                Title = "Infinity Hub",
+                Content = 'Security time running, wait for the security time to run out. Run again at: '..timeLeft,
+                Duration = 4
+            }
+        else
+            lastExecution = currentTime
+            if map then
+                for _, v in pairs(map:GetChildren()) do
+                    if v:IsA('Model') and v.Name == 'ComputerTable' then
+                        for _, x in pairs(v:GetChildren()) do
+                            if x:IsA('Part') and x.Name:lower():find('computertrigger') then
+                                if x.ActionSign.Value == 20 and v.Screen.Color ~= Color3.fromRGB(40, 127, 71) then
+                                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = x.CFrame
+                                    return
+                                end
                             end
                         end
                     end
@@ -385,11 +393,36 @@ NoSlowToggle:OnChanged(function(bool)
 end)
 local ActiveCrawlingToggle = Tabs.LPlayer:AddToggle("", {Title = "Active crawling (Beast)", Description = "When you're a beast, you'll now be able to crawling", Default = false })
 ActiveCrawlingToggle:OnChanged(function(bool)
-    antiveCrawling = bool
-    while antiveCrawling do task.wait()
-        for _, v in pairs(game:GetService("Players").LocalPlayer.TempPlayerStatsModule:GetChildren()) do
-            if (v:IsA('BoolValue') and v.Name == 'DisableCrawl') then
-                v.Value = false
+
+end)
+local ProtectionToggle = Tabs.LPlayer:AddToggle("", {Title = "Self-protection", Description = "Teleports you away from the beast and then returns you to your old position", Default = false })
+ProtectionToggle:OnChanged(function(bool)
+    autoProtection = bool
+
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+    local targetPlayerName = getBeast()
+    local teleportDistance = 5
+    local safeDistance = 15
+
+
+    while autoProtection do task.wait()
+        local targetPlayer = game.Players:FindFirstChild(targetPlayerName)
+        if targetPlayer and targetPlayer.Character then
+            local targetHumanoidRootPart = targetPlayer.Character:FindFirstChild("HumanoidRootPart")
+            if targetHumanoidRootPart then
+                local distance = (humanoidRootPart.Position - targetHumanoidRootPart.Position).Magnitude
+                if distance < teleportDistance and not isTeleporting then
+                    oldPos = humanoidRootPart.Position
+                    local behindPosition = targetHumanoidRootPart.CFrame * CFrame.new(0, 0, teleportDistance + 2)
+                    humanoidRootPart.CFrame = behindPosition
+                    isTeleporting = true
+                elseif distance > safeDistance and isTeleporting then
+                    humanoidRootPart.CFrame = CFrame.new(oldPos)
+                    oldPos = nil
+                    isTeleporting = false
+                end
             end
         end
     end
@@ -472,12 +505,12 @@ Tabs.LPlayer:AddButton({
 Tabs.Stats:AddSection('[ View Stats ]')
 local Stats = Tabs.Stats:CreateParagraph("Aligned Paragraph", {
     Title = "- Your Stats -",
-    Content = "Money: "..game:GetService("Players").LocalPlayer.SavedPlayerStatsModule.Credits.Value.. "\nBeast Chance: "..game:GetService("Players").LocalPlayer.PlayerGui.MenusScreenGui.MainMenuWindow.Body.BeastChanceFrame.PercentageLabel.Text.."%\nLevel: "..game:GetService("Players").LocalPlayer.SavedPlayerStatsModule.Level.Value.."\nXp: "..game:GetService("Players").LocalPlayer.SavedPlayerStatsModule.Xp.Value.."\nAction: "..getAction(),
+    Content = "Money: "..game:GetService("Players").LocalPlayer.SavedPlayerStatsModule.Credits.Value.. "\nBeast Chance: "..game:GetService("Players").LocalPlayer.SavedPlayerStatsModule.BeastChance.Value.."%\nLevel: "..game:GetService("Players").LocalPlayer.SavedPlayerStatsModule.Level.Value.."\nXp: "..game:GetService("Players").LocalPlayer.SavedPlayerStatsModule.Xp.Value.."\nAction: "..getAction(),
     TitleAlignment = "Middle",
 })
 task.spawn(function()
     repeat task.wait()
-        Stats:SetValue('Money: '..game:GetService("Players").LocalPlayer.SavedPlayerStatsModule.Credits.Value.. "\nBeast Chance: "..game:GetService("Players").LocalPlayer.PlayerGui.MenusScreenGui.MainMenuWindow.Body.BeastChanceFrame.PercentageLabel.Text.."\nLevel: "..game:GetService("Players").LocalPlayer.SavedPlayerStatsModule.Level.Value.."\nXp: "..game:GetService("Players").LocalPlayer.SavedPlayerStatsModule.Xp.Value.."\nAction: "..getAction())
+        Stats:SetValue('Money: '..game:GetService("Players").LocalPlayer.SavedPlayerStatsModule.Credits.Value.. "\nBeast Chance: "..game:GetService("Players").LocalPlayer.SavedPlayerStatsModule.BeastChance.Value.."\nLevel: "..game:GetService("Players").LocalPlayer.SavedPlayerStatsModule.Level.Value.."\nXp: "..game:GetService("Players").LocalPlayer.SavedPlayerStatsModule.Xp.Value.."\nAction: "..getAction())
     until game.Players.LocalPlayer.Character.Humanoid.Health == 9e99
 end)
 
@@ -555,7 +588,7 @@ Tabs.EspSettings:AddButton({
 wait(.5)
 local path = game:GetService('CoreGui')
 for _, v in pairs(path:GetDescendants()) do
-    if v:IsA('ScreenGui') and v.Name == 'FluentRenewed_Infinity Hub - 2.8a | Flee The Facility' then
+    if v:IsA('ScreenGui') and v.Name == 'FluentRenewed_Infinity Hub - 2.6a | Flee The Facility' then
         for _, x in pairs(v:GetChildren()) do
             if x:IsA('ImageButton') and x.Name == 'ImageButton' then
                 x:Destroy()
