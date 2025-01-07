@@ -248,7 +248,10 @@ Tabs.Game:AddButton({
     Callback = function()
         for _, v in pairs(workspace:GetDescendants()) do
             if (v:IsA('Model') and v.Name == 'ExitDoor') then
-                game:GetService('Players').LocalPlayer.Character:PivotTo(v:GetPivot())
+                local modelPivot = v:GetPivot()
+                local frontOffset = modelPivot.LookVector * 5
+                local targetPosition = modelPivot.Position + frontOffset
+                game:GetService('Players').LocalPlayer.Character:PivotTo(CFrame.new(targetPosition, modelPivot.Position))
             end
         end
     end
