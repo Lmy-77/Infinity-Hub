@@ -1094,6 +1094,30 @@ local ResetKeyBind = Tabs.Keys:CreateKeybind("Keybind", {
       print("Keybind changed!", New)
   end
 })
+local ResetKeyBind = Tabs.Keys:CreateKeybind("Keybind", {
+    Title = "Spam Knife - Keybind",
+    Mode = "Toggle",
+    Default = '...',
+    Callback = function(Value)
+        if keyBindSettings.Enabled then
+            repeat task.wait(.2)
+                local args = {
+                    [1] = "Alternate",
+                    [2] = "Knife"
+                }
+                game:GetService("ReplicatedStorage"):WaitForChild("Main"):WaitForChild("Input"):FireServer(unpack(args))
+                local args = {
+                    [1] = "Alternate",
+                    [2] = "ResetKnife"
+                }
+                game:GetService("ReplicatedStorage"):WaitForChild("Main"):WaitForChild("Input"):FireServer(unpack(args))
+            until wait(2)
+        end
+    end,
+    ChangedCallback = function(New)
+        print("Keybind changed!", New)
+    end
+})
 local activeKeyToggle = Tabs.Keys:AddToggle("", {Title = "Active", Description = '', Default = false })
 activeKeyToggle:OnChanged(function(bool)
  keyBindSettings.Enabled = bool
