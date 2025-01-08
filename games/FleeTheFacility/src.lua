@@ -256,36 +256,53 @@ Tabs.Game:AddButton({
         end
     end
 })
+local cooldown = false
+
 Tabs.Game:AddButton({
     Title = "Teleport to computer",
-    Description = "Teleports you to an uncompleted computer. Be careful, if you abuse it too much you could get kicked, use it responsibly",
+    Description = "Teleports you to an uncompleted computer",
     Callback = function()
-        local cooldownTime = 30
-        local lastExecution = 0
-        while true do
-            local currentTime = os.time()
-            if currentTime - lastExecution < cooldownTime then
-                local timeLeft = cooldownTime - (currentTime - lastExecution)
-                print(timeLeft)
-            else
-                lastExecution = currentTime
-                local map = workspace:FindFirstChild(tostring(game.ReplicatedStorage.CurrentMap.Value))
-                if map then
-                    for _, v in pairs(map:GetChildren()) do
-                        if v:IsA("Model") and v.Name == "ComputerTable" then
-                            for _, x in pairs(v:GetChildren()) do
-                                if x:IsA("Part") and x.Name:lower():find("computertrigger") then
-                                    if x.ActionSign.Value == 20 and v.Screen.Color ~= Color3.fromRGB(40, 127, 71) then
-                                        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = x.CFrame
-                                        break
-                                    end
-                                end
+        if cooldown then
+            Library:Notify{
+                Title = "Infinity Hub",
+                Content = 'Cooldown, wait',
+                Duration = 4
+            }
+            return
+        end
+        local progress = game:GetService("Players").LocalPlayer.TempPlayerStatsModule.ActionProgress.Value
+        if progress ~= 0 then
+            Library:Notify{
+                Title = "Infinity Hub",
+                Content = 'Finish computer first',
+                Duration = 4
+            }
+            return
+        end
+        local map = workspace:FindFirstChild(tostring(game.ReplicatedStorage.CurrentMap.Value))
+        if map then
+            for _, v in pairs(map:GetChildren()) do
+                if v:IsA("Model") and v.Name == "ComputerTable" then
+                    for _, x in pairs(v:GetChildren()) do
+                        if x:IsA("Part") and x.Name:lower():find("computertrigger") then
+                            if x.ActionSign.Value == 20 and v.Screen.Color ~= Color3.fromRGB(40, 127, 71) then
+                                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = x.CFrame
+                                wait(.5)
+                                game:GetService('VirtualInputManager'):SendKeyEvent(true, 'E', false, game) wait(.1) game:GetService('VirtualInputManager'):SendKeyEvent(false, 'E', false, game)
+                                wait(.5)
+                                task.spawn(function()
+                                    wait(1)
+                                    repeat task.wait() until game:GetService("Players").LocalPlayer.TempPlayerStatsModule.ActionProgress.Value == 0
+                                    cooldown = true
+                                    task.wait(20)
+                                    cooldown = false
+                                end)
+                                return
                             end
                         end
                     end
                 end
             end
-            wait(1)
         end
     end
 })
