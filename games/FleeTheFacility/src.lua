@@ -1,3 +1,4 @@
+---@diagnostic disable: undefined-global
 -- start
 print[[
 
@@ -240,6 +241,14 @@ AutoHackToggle:OnChanged(function(bool)
     autoHack = bool
     while autoHack do task.wait()
         game:GetService("ReplicatedStorage").RemoteEvent:FireServer("SetPlayerMinigameResult",true)
+        for _, v in pairs(game:GetService("Players").LocalPlayer.PlayerGui:GetChildren()) do
+            if v:IsA('ScreenGui') and v.Name == 'ScreenGui' then
+                if v.TimingCircle.Visible == true then
+                    wait(.2)
+                    KeyPress('E')
+                end
+            end
+        end
     end
 end)
 Tabs.Game:AddButton({
@@ -257,7 +266,6 @@ Tabs.Game:AddButton({
     end
 })
 local cooldown = false
-
 Tabs.Game:AddButton({
     Title = "Teleport to computer",
     Description = "Teleports you to an uncompleted computer",
@@ -307,6 +315,61 @@ Tabs.Game:AddButton({
     end
 })
 Tabs.Game:AddButton({
+    Title = "Capture a radom player [ Beast ]",
+    Description = "Click this button for captura a random player",
+    Callback = function()
+        local map = workspace:FindFirstChild(tostring(game.ReplicatedStorage.CurrentMap.Value))
+        local oldPos = game.Players.LocalPlayer.Character.HumanoidRootPart.Position
+        local TeleportOldPos = '';
+        TeleportOldPos = oldPos
+
+
+        local beastPower = game:GetService('Players').LocalPlayer.Character:FindFirstChild('BeastPowers')
+        if not beastPower then
+            Library:Notify{
+                Title = "Infinity Hub",
+                Content = 'You dont is the beast',
+                Duration = 4
+            }
+            return
+        end
+        for _, v in pairs(game:GetService('Players'):GetChildren()) do
+            if (v.Name ~= game.Players.LocalPlayer.Name) then
+                if (v.TempPlayerStatsModule.Captured.Value == false) then
+                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.Character.HumanoidRootPart.CFrame
+                    wait(.2)
+                    local ohString1 = "HammerHit"
+                    local ohInstance2 = v.Character["Left Arm"]
+                    game.Players.LocalPlayer.Character.Hammer.HammerEvent:FireServer(ohString1, ohInstance2)
+                    wait(.5)
+                    local ohString1 = "HammerTieUp"
+                    local ohInstance2 = v.Character.Torso
+                    local ohVector33 = Vector3.new(144.39588928222656, 9.367745399475098, 54.09453582763672)
+                    game.Players.LocalPlayer.Character.Hammer.HammerEvent:FireServer(ohString1, ohInstance2, ohVector33)
+                    wait(.5)
+                    for _, x in pairs(map:GetChildren()) do
+                        if x:IsA('Model') and x.Name == 'FreezePod' then
+                            for _, z in pairs(x:GetDescendants()) do
+                                if z:IsA('IntValue') and z.Name == 'ActionSign' then
+                                    if z.Value == 30 then
+                                        local pivotCFrame = x:GetPivot()
+                                        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = pivotCFrame
+                                        wait(.25)
+                                        KeyPress('E')
+                                        wait(.2)
+                                        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(TeleportOldPos)
+                                        return
+                                    end
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
+})
+Tabs.Game:AddButton({
     Title = "Save captured players",
     Description = "Save all the players inside the capsules and then return to your position",
     Callback = function()
@@ -346,7 +409,7 @@ Tabs.Game:AddButton({
 })
 
 Tabs.LPlayer:AddSection('[ Game Options ]')
-local AntiRagdollToggle = Tabs.LPlayer:AddToggle("", {Title = "Anti ragdoll (Beta)", Description = "When you're down, you'll get up automatically", Default = false })
+local AntiRagdollToggle = Tabs.LPlayer:AddToggle("", {Title = "Anti ragdoll [ Beta ]", Description = "When you're down, you'll get up automatically", Default = false })
 AntiRagdollToggle:OnChanged(function(bool)
     antiRagdoll = bool
     if antiRagdoll then
@@ -419,33 +482,35 @@ ActiveCrawlingToggle:OnChanged(function(bool)
 end)
 local ProtectionToggle = Tabs.LPlayer:AddToggle("", {Title = "Self-protection", Description = "Teleports you away from the beast and then returns you to your old position", Default = false })
 ProtectionToggle:OnChanged(function(bool)
+    local savedPosition = ''
+    local teleporting = false
     autoProtection = bool
-
-    local player = game.Players.LocalPlayer
-    local character = player.Character or player.CharacterAdded:Wait()
-    local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
-    local targetPlayerName = getBeast()
-    local teleportDistance = 8
-    local safeDistance = 15
-
-
-    while autoProtection do task.wait()
-        local targetPlayer = game.Players:FindFirstChild(targetPlayerName)
-        if targetPlayer and targetPlayer.Character then
-            local targetHumanoidRootPart = targetPlayer.Character:FindFirstChild("HumanoidRootPart")
-            if targetHumanoidRootPart then
-                local distance = (humanoidRootPart.Position - targetHumanoidRootPart.Position).Magnitude
-                if distance < teleportDistance and not isTeleporting then
-                    oldPos = humanoidRootPart.Position
-                    local behindPosition = targetHumanoidRootPart.CFrame * CFrame.new(0, 0, teleportDistance + 2)
-                    humanoidRootPart.CFrame = behindPosition
-                    isTeleporting = true
-                elseif distance > safeDistance and isTeleporting then
-                    humanoidRootPart.CFrame = CFrame.new(oldPos)
-                    oldPos = nil
-                    isTeleporting = false
+    while autoProtection do
+        if autoProtection and not teleporting then
+            savedPosition = game:GetService('Players').LocalPlayer.Character.HumanoidRootPart.Position
+            teleporting = true
+            while autoProtection do
+                local beast = getBeast()
+                if beast then
+                    local beastCharacter = game:GetService('Players'):FindFirstChild(beast).Character
+                    if beastCharacter then
+                        local beastPosition = beastCharacter.HumanoidRootPart.Position
+                        local myCharacter = game:GetService('Players').LocalPlayer.Character
+                        local myPosition = myCharacter.HumanoidRootPart.Position
+                        if (beastPosition - savedPosition).Magnitude <= 20 then
+                            local offset = beastCharacter.HumanoidRootPart.CFrame.LookVector * -10
+                            local teleportPosition = beastPosition + offset
+                            myCharacter.HumanoidRootPart.CFrame = CFrame.new(teleportPosition)
+                        end
+                    end
                 end
+                if not beast and (myCharacter.HumanoidRootPart.Position - savedPosition).Magnitude > 5 then
+                    myCharacter.HumanoidRootPart.CFrame = CFrame.new(savedPosition)
+                    wait(0.5)
+                end
+                wait(0.1)
             end
+            teleporting = false
         end
     end
 end)
@@ -454,7 +519,7 @@ Tabs.LPlayer:AddButton({
     Description = "read the text box after clicking",
     Callback = function()
         Window:Dialog({
-            Title = "Infinity Hub - Prompt",
+            Title = "Infinity Hub",
             Content = "Once activated, there's no way back to normal. Are you sure you want to activate it?",
             Buttons = {
                 {
