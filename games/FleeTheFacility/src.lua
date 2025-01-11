@@ -252,15 +252,16 @@ AutoHackToggle:OnChanged(function(bool)
     end
 end)
 Tabs.Game:AddButton({
-    Title = "Teleport to exit foor",
+    Title = "Teleport to exit door",
     Description = "Teleports you to the exit door ",
     Callback = function()
         for _, v in pairs(workspace:GetDescendants()) do
             if (v:IsA('Model') and v.Name == 'ExitDoor') then
-                local modelPivot = v:GetPivot()
-                local frontOffset = modelPivot.LookVector * 5
-                local targetPosition = modelPivot.Position + frontOffset
-                game:GetService('Players').LocalPlayer.Character:PivotTo(CFrame.new(targetPosition, modelPivot.Position))
+                for _, x in pairs(v:GetChildren()) do
+                    if (x:IsA('Part') and x.Name == 'ExitDoorTrigger') then
+                        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = x.CFrame
+                    end
+                end
             end
         end
     end
@@ -610,6 +611,17 @@ Tabs.LPlayer:AddButton({
         JumpPowerBypass()
         game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 16
         game.Players.LocalPlayer.Character.Humanoid.JumpPower = 50
+    end
+})
+Tabs.LPlayer:AddButton({
+    Title = "Open menu",
+    Description = "Click this button for open main menu",
+    Callback = function()
+        if game:GetService("Players").LocalPlayer.PlayerGui.MenusScreenGui.MainMenuWindow.Visible == false then
+            game:GetService("Players").LocalPlayer.PlayerGui.MenusScreenGui.MainMenuWindow.Visible = true
+        elseif game:GetService("Players").LocalPlayer.PlayerGui.MenusScreenGui.MainMenuWindow.Visible == true then
+            game:GetService("Players").LocalPlayer.PlayerGui.MenusScreenGui.MainMenuWindow.Visible = false
+        end
     end
 })
 
