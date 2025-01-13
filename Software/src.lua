@@ -1,4 +1,4 @@
--- auto loader
+-- teleport service
 local queue_on_teleport = queue_on_teleport or syn and syn.queue_on_teleport
 queue_on_teleport[[
     repeat wait() until game:IsLoaded() print("ServerHoped or rejoined")
@@ -18,10 +18,13 @@ local games = {
     [{10450270085, 16379688837}] = 'https://raw.githubusercontent.com/Lmy-77/Infinity-Hub/refs/heads/scripts/games/Jujutsu%20Infinite/src.lua',
     [{10260193230}] = 'https://raw.githubusercontent.com/Lmy-77/Infinity-Hub/refs/heads/scripts/games/Meme%20Sea/src.lua'
 }
-
 for ids, url in next, games do
     if table.find(ids, game.PlaceId) then
         loadstring(game:HttpGet(url))()
+        break
+    end
+    if not table.find(ids, game.PlaceId) then
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/Lmy-77/Infinity-Hub/refs/heads/modules/Notification/Support.lua"))()
         break
     end
 end
