@@ -260,6 +260,8 @@ Tabs.Game:AddButton({
                 for _, x in pairs(v:GetChildren()) do
                     if (x:IsA('Part') and x.Name == 'ExitDoorTrigger') then
                         game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = x.CFrame
+                        wait(.2)
+                        KeyPress('E')
                     end
                 end
             end
@@ -512,7 +514,7 @@ Tabs.LPlayer:AddButton({
                     local ohString1 = "HammerHit"
                     local ohInstance2 = v.Character["Left Arm"]
                     game.Players.LocalPlayer.Character.Hammer.HammerEvent:FireServer(ohString1, ohInstance2)
-                    wait(.5)
+                    wait(.3)
                     local ohString1 = "HammerTieUp"
                     local ohInstance2 = v.Character.Torso
                     local ohVector33 = Vector3.new(144.39588928222656, 9.367745399475098, 54.09453582763672)
@@ -525,7 +527,7 @@ Tabs.LPlayer:AddButton({
                                     if z.Value == 30 then
                                         local pivotCFrame = x:GetPivot()
                                         game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = pivotCFrame
-                                        wait(.25)
+                                        wait(.5)
                                         KeyPress('E')
                                         wait(.2)
                                         game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(TeleportOldPos)
