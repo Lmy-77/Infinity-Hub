@@ -1169,22 +1169,35 @@ T2:OnChanged(function(bool)
 end)
 local T14 = Tabs.AutoFarm:AddToggle("", {Title = "Use instinct", Description = 'Active this if you want use instinct automatically', Default = false })
 T14:OnChanged(function(bool)
-instinct = bool
+    instinct = bool
     while instinct do task.wait()
-      local UserInputService = game:GetService("UserInputService")
-      if UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled then
-        if game:GetService("Lighting").Instinct.TintColor == Color3.fromRGB(255, 255, 255) then
-          game:GetService('VirtualInputManager'):SendKeyEvent(true, 'E', false, game)
-          wait(.5)
-          game:GetService('VirtualInputManager'):SendKeyEvent(false, 'E', false, game)
+        local UserInputService = game:GetService("UserInputService")
+        if UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled then
+            if game:GetService("Lighting").Instinct.TintColor == Color3.fromRGB(255, 255, 255) then
+                game:GetService('VirtualInputManager'):SendKeyEvent(true, 'E', false, game)
+                wait(.5)
+                game:GetService('VirtualInputManager'):SendKeyEvent(false, 'E', false, game)
+            end
+        elseif UserInputService.KeyboardEnabled then
+            if game:GetService("Lighting").Instinct.TintColor == Color3.fromRGB(255, 255, 255) then
+                game:GetService('VirtualInputManager'):SendKeyEvent(true, 'E', false, game)
+                wait(.5)
+                game:GetService('VirtualInputManager'):SendKeyEvent(false, 'E', false, game)
+            end
         end
-      elseif UserInputService.KeyboardEnabled then
-        if game:GetService("Lighting").Instinct.TintColor == Color3.fromRGB(255, 255, 255) then
-          game:GetService('VirtualInputManager'):SendKeyEvent(true, 'E', false, game)
-          wait(.5)
-          game:GetService('VirtualInputManager'):SendKeyEvent(false, 'E', false, game)
+    end
+end)
+local T15 = Tabs.AutoFarm:AddToggle("", {Title = "Use aura", Description = 'Active this if you want use aura automatically', Default = false })
+T15:OnChanged(function(bool)
+    aura = bool
+    while aura do task.wait()
+        local auraFolder = game.Players.LocalPlayer.Character.AuraColor_Folder
+        local auraFind = auraFolder:FindFirstChild('LeftHand_AuraColor')
+        if not auraFind then
+            game:GetService('VirtualInputManager'):SendKeyEvent(true, 'B', false, game)
+            wait(.5)
+            game:GetService('VirtualInputManager'):SendKeyEvent(false, 'B', false, game)
         end
-      end
     end
 end)
 local T7 = Tabs.AutoFarm:AddToggle("", {Title = "Ignore raid bosses quest", Description = 'Active this if you want ignore raid boss', Default = false })
@@ -1560,18 +1573,12 @@ local spawnNoobToggle = Tabs.RaidBoss:AddToggle("", {Title = "Auto spawn evil no
 spawnNoobToggle:OnChanged(function(bool)
     spawnNoob = bool
     while spawnNoob do task.wait()
-        for _, v in pairs(workspace.Monster:GetChildren()) do
-            if v:IsA('Model') and v.Name == 'Evil Noob' then
-                if not v:FindFirstChild('Humanoid') and not v:FindFirstChild('Humanoid').Health ~= 0 then
-                    for _, v in pairs(workspace.Island.MoaiIsland:GetChildren()) do
-                        if v:IsA('Model') and v.Name == 'Summon2' then
-                            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.Summon.CFrame
-                            for _, x in pairs(v:GetDescendants()) do
-                                if x:IsA('ProximityPrompt') and x.Name == 'SummonPrompt' then
-                                    fireproximityprompt(x);
-                                end
-                            end
-                        end
+        for _, v in pairs(workspace.Island.MoaiIsland:GetChildren()) do
+            if v:IsA('Model') and v.Name == 'Summon2' then
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.Summon.CFrame
+                for _, x in pairs(v:GetDescendants()) do
+                    if x:IsA('ProximityPrompt') and x.Name == 'SummonPrompt' then
+                        fireproximityprompt(x);
                     end
                 end
             end
