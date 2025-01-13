@@ -6,7 +6,13 @@ local UIStroke = Instance.new("UIStroke")
 local Text = Instance.new("TextLabel")
 local UIAspectRatioConstraint = Instance.new("UIAspectRatioConstraint")
 local UIAspectRatioConstraint_2 = Instance.new("UIAspectRatioConstraint")
+local sound = Instance.new("Sound")
 
+
+sound.SoundId = "rbxassetid://8551372796"
+sound.Volume = 10
+sound.Looped = false
+sound.Parent = workspace
 
 Notification.Name = "Notification"
 Notification.Parent = (game:GetService("CoreGui") or gethui())
@@ -72,6 +78,12 @@ local backgroundTween = TweenService:Create(Background, backgroundTweenInfo, {
 local textTween = TweenService:Create(Text, textTweenInfo, {
     TextTransparency = 0
 })
+
+
+sound:Play()
+sound.Ended:Connect(function()
+    sound:Destroy()
+end)
 
 backgroundTween:Play()
 backgroundTween.Completed:Connect(function()
