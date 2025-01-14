@@ -18,13 +18,15 @@ local games = {
     [{10450270085, 16379688837}] = 'https://raw.githubusercontent.com/Lmy-77/Infinity-Hub/refs/heads/scripts/games/Jujutsu%20Infinite/src.lua',
     [{10260193230}] = 'https://raw.githubusercontent.com/Lmy-77/Infinity-Hub/refs/heads/scripts/games/Meme%20Sea/src.lua'
 }
+local found = false
 for ids, url in next, games do
     if table.find(ids, game.PlaceId) then
         loadstring(game:HttpGet(url))()
+        found = true
         break
     end
-    if not table.find(ids, game.PlaceId) then
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/Lmy-77/Infinity-Hub/refs/heads/modules/Notification/Support.lua"))()
-        break
-    end
+end
+if not found then
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/Lmy-77/Infinity-Hub/refs/heads/modules/Notification/Support.lua"))()
+    break
 end
