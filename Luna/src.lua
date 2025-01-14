@@ -1845,7 +1845,7 @@ local function Hide(Window, bind, notif)
 	bind = string.split(tostring(bind), "Enum.KeyCode.")
 	bind = bind[2]
 	if notif then
-		Luna:Notification({Title = "Interface Hidden", Content = "The interface has been hidden, you may reopen the interface by Pressing the UI Bind In Settings ("..tostring(bind)..")", Icon = "visibility_off"})
+		print('Interface Hidden, press (K) for reopen')
 	end
 	tween(Window, {BackgroundTransparency = 1})
 	tween(Window.Elements, {BackgroundTransparency = 1})
@@ -1900,7 +1900,7 @@ if gethui then
 			Interface.Name = "Luna-Old"
 		end
 	end
-elseif not isStudio then
+elseif not  then
 	for _, Interface in ipairs(CoreGui:GetChildren()) do
 		if Interface.Name == LunaUI.Name and Interface ~= LunaUI then
 			Hide(Interface.SmartWindow)
@@ -1926,6 +1926,7 @@ local Navigation = Main.Navigation
 local Tabs = Navigation.Tabs
 local Notifications = LunaUI.Notifications
 local KeySystem : Frame = Main.KeySystem
+LunaUI.MobileSupport.Interact.Text = 'Show Infinity Hub'
 
 -- local function LoadConfiguration(Configuration, autoload)
 -- 	local Data = HttpService:JSONDecode(Configuration)
