@@ -28,5 +28,4 @@ for ids, url in next, games do
 end
 if not found then
     loadstring(game:HttpGet("https://raw.githubusercontent.com/Lmy-77/Infinity-Hub/refs/heads/modules/Notification/Support.lua"))()
-    break
 end
