@@ -66,7 +66,7 @@ local backgroundTweenInfo = TweenInfo.new(
     Enum.EasingDirection.Out
 )
 local textTweenInfo = TweenInfo.new(
-    0.2,
+    0.1,
     Enum.EasingStyle.Quad,
     Enum.EasingDirection.Out
 )
