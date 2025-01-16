@@ -460,14 +460,16 @@ local knockToggle = Tabs.LPlayer:AddToggle("", {Title = "Knock aura", Descriptio
 knockToggle:OnChanged(function(bool)
     knock = bool
 
-    local beastPower = game:GetService('Players').LocalPlayer.Character:FindFirstChild('BeastPowers')
-    if not beastPower then
-        Library:Notify{
-            Title = "Infinity Hub",
-            Content = 'You dont is the beast',
-            Duration = 4
-        }
-        return
+    if (knock) then
+        local beastPower = game:GetService('Players').LocalPlayer.Character:FindFirstChild('BeastPowers')
+        if not beastPower then
+            Library:Notify{
+                Title = "Infinity Hub",
+                Content = 'You dont is the beast',
+                Duration = 4
+            }
+            return
+        end
     end
     while knock do task.wait()
         for _, v in pairs(game.Players:GetChildren()) do
@@ -630,7 +632,7 @@ Tabs.LPlayer:AddButton({
 
 Tabs.Stats:AddSection('[ View Stats ]')
 local Stats = Tabs.Stats:CreateParagraph("Aligned Paragraph", {
-    Title = "- Your Stats -",
+    Title = "-   -",
     Content = "Money: "..game:GetService("Players").LocalPlayer.SavedPlayerStatsModule.Credits.Value.. "\nBeast Chance: "..game:GetService("Players").LocalPlayer.PlayerGui.MenusScreenGui.MainMenuWindow.Body.BeastChanceFrame.PercentageLabel.Text.."%\nLevel: "..game:GetService("Players").LocalPlayer.SavedPlayerStatsModule.Level.Value.."\nXp: "..game:GetService("Players").LocalPlayer.SavedPlayerStatsModule.Xp.Value.."\nAction: "..getAction(),
     TitleAlignment = "Middle",
 })
