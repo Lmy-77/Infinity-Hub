@@ -151,14 +151,3 @@ local Button = Tabs.Visual:AddButton({
         end
     end
 })
-
-
-
-
-
-
-for _, v in pairs(getgc(true)) do
-    if (type(v) == 'table' or type(v) == 'string') and rawget(v, 'Kraken') then
-        rawset(v, 'Kraken' true)
-    end
-end
