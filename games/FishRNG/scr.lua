@@ -110,7 +110,6 @@ local Button = Tabs.Itens:AddButton({
 })
 
 
-
 Tabs.Visual:AddSection('[ Visual Options ]')
 local Button = Tabs.Visual:AddButton({
     Title = "Unlock collection",
@@ -151,3 +150,20 @@ local Button = Tabs.Visual:AddButton({
         end
     end
 })
+
+
+
+-- modded beta
+local success, result = pcall(function()
+    return require
+end)
+for _, v in pairs(game:GetService("ReplicatedStorage").GameStats.Items:GetChildren()) do
+    if (v:IsA('ModuleScript') and v.Name:lower():find('potion')) then
+        if success and type(result) == "function" then
+            local mScripts = require(v)
+            mScripts.Buff = 9e9
+            mScripts.Time = 9e9
+            mScripts.Description = 'Modded by Infinity Hub'
+        end
+    end
+end
