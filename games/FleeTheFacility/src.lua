@@ -43,26 +43,26 @@ OldNameCall = hookmetamethod(game, "__namecall", function(...)
     return OldNameCall(...)
 end)
 local function WalkSpeedBypass()
-  local gmt = getrawmetatable(game)
-  setreadonly(gmt, false)
-  local oldIndex = gmt.__Index
-  gmt.__Index = newcclosure(function(self, b)
-    if b == 'WalkSpeed' then
-      return 16
-    end
-    return oldIndex(self, b)
-  end)
+    local gmt = getrawmetatable(game)
+    setreadonly(gmt, false)
+    local oldIndex = gmt.__Index
+    gmt.__Index = newcclosure(function(self, b)
+        if b == 'WalkSpeed' then
+            return 16
+        end
+        return oldIndex(self, b)
+    end)
 end
 local function JumpPowerBypass()
-  local gmt = getrawmetatable(game)
-  setreadonly(gmt, false)
-  local oldIndex = gmt.__Index
-  gmt.__Index = newcclosure(function(self, b)
-    if b == 'JumpPower' then
-      return 50
-    end
-    return oldIndex(self, b)
-  end)
+    local gmt = getrawmetatable(game)
+    setreadonly(gmt, false)
+    local oldIndex = gmt.__Index
+    gmt.__Index = newcclosure(function(self, b)
+        if b == 'JumpPower' then
+            return 50
+        end
+        return oldIndex(self, b)
+    end)
 end
 local BeastColor = Color3.new(255, 0, 0)
 local InoccentColor = Color3.new(255, 255, 255)
@@ -474,10 +474,14 @@ knockToggle:OnChanged(function(bool)
     while knock do task.wait()
         for _, v in pairs(game.Players:GetChildren()) do
             if v.Name ~= game.Players.LocalPlayer.Name then
-                local ohString1 = "HammerHit"
-                local ohInstance2 = game.Players[v.Name].Character["Left Arm"]
-                game.Players.LocalPlayer.Character.Hammer.HammerEvent:FireServer(ohString1, ohInstance2)
-                wait(.1)
+                for _, x in pairs(game.Players[v.Name].Character:GetChildren()) do
+                    if (x:IsA('Part') and x.Name == 'Left Arm') then
+                        local ohString1 = "HammerHit"
+                        local ohInstance2 = x
+                        game.Players.LocalPlayer.Character.Hammer.HammerEvent:FireServer(ohString1, ohInstance2)
+                        wait(.1)
+                    end
+                end
             end
         end
     end
@@ -579,8 +583,8 @@ Tabs.LPlayer:AddButton({
 Tabs.LPlayer:AddSection('[ Character Options ]')
 local Input = Tabs.LPlayer:AddInput("Input", {
     Title = "WalkSpeed",
-    Default = "...",
-    Placeholder = "",
+    Default = "",
+    Placeholder = "...",
     Numeric = false,
     Finished = false,
     Callback = function(Value)
@@ -589,8 +593,8 @@ local Input = Tabs.LPlayer:AddInput("Input", {
 })
 local Input = Tabs.LPlayer:AddInput("Input", {
     Title = "JumpPower",
-    Default = "...",
-    Placeholder = "",
+    Default = "",
+    Placeholder = "...",
     Numeric = false,
     Finished = false,
     Callback = function(Value)
@@ -632,7 +636,7 @@ Tabs.LPlayer:AddButton({
 
 Tabs.Stats:AddSection('[ View Stats ]')
 local Stats = Tabs.Stats:CreateParagraph("Aligned Paragraph", {
-    Title = "-   -",
+    Title = "- Your Stats -",
     Content = "Money: "..game:GetService("Players").LocalPlayer.SavedPlayerStatsModule.Credits.Value.. "\nBeast Chance: "..game:GetService("Players").LocalPlayer.PlayerGui.MenusScreenGui.MainMenuWindow.Body.BeastChanceFrame.PercentageLabel.Text.."%\nLevel: "..game:GetService("Players").LocalPlayer.SavedPlayerStatsModule.Level.Value.."\nXp: "..game:GetService("Players").LocalPlayer.SavedPlayerStatsModule.Xp.Value.."\nAction: "..getAction(),
     TitleAlignment = "Middle",
 })
