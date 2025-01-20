@@ -262,6 +262,7 @@ Tabs.Game:AddButton({
                         game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = x.CFrame
                         wait(.2)
                         KeyPress('E')
+                        return
                     end
                 end
             end
