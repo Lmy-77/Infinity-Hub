@@ -25,7 +25,7 @@ local oldKick = nil
 local meta = getrawmetatable(game)
 local oldNameCall = meta.__namecall
 setreadonly(meta, false)
-oldKick = hookfunction(game.Players.LocalPlayer.Kick function(...)
+oldKick = hookfunction(game.Players.LocalPlayer.Kick, function(...)
     return warn('kick attempt canceled')
 end)
 meta.__namecall = function(self, ...)
@@ -95,4 +95,57 @@ function bypassTeleport(x, y, z)
     setreadonly(meta, true)
     teleport(Vector3.new(x, y, z))
 end
-bypassTeleport(x, y ,z) -- position
+bypassTeleport(0, 0, 0) -- position
+
+
+
+-- get module and localscript
+local scriptPath = nil
+local includeTables = false
+local method = {
+    [1] = {
+        Enabled = false,
+        values = {
+            _table = false,
+            _function = false,
+            _string = false,
+            _boolean = false,
+            _number = false
+        }
+    },
+    [2] = {nil}
+}
+function getLScript(tbl, indent)
+    indent = indent or 0
+    local LSCRIPT_VALUES = method[1].values
+    local spacing = string.rep("  ", indent)
+
+    for key, value in pairs(tbl) do
+        if LSCRIPT_VALUES._table then
+            if type(value) == 'table' then
+                print(spacing .. tostring(key) .. ': table')
+            end
+        end
+        if LSCRIPT_VALUES._function then
+            if type(value) == 'function' then
+                print(spacing .. tostring(key) .. ': function')
+            end
+        end
+        if LSCRIPT_VALUES._string then
+            if type(value) == 'string' then
+                print(spacing .. tostring(key) .. ': string')
+            end
+        end
+        if LSCRIPT_VALUES._boolean then
+            if type(value) == 'boolean' then
+                print(spacing .. tostring(key) .. ': boolean')
+            end
+        end
+        if LSCRIPT_VALUES._number then
+            if type(value) == 'number' then
+                print(spacing .. tostring(key) .. ': number')
+            end
+        end
+    end
+end
+if method[1].Enabled then getLScript(getsenv(scriptPath)) end
