@@ -71,12 +71,18 @@ Interact.TextTransparency = 1.000
 
 
 local function NMBE_fake_script()
-	local script = Instance.new('LocalScript', Interact)
+    local script = Instance.new('LocalScript', Interact)
 
-	local button = script.Parent
-	button.MouseButton1Click:Connect(function()
-		game:GetService('VirtualInputManager'):SendKeyEvent(true, "K", false, game)
-	end)
+    local path = game:GetService('CoreGui')
+    for _, v in pairs(path:GetDescendants()) do
+        if v:IsA('ScreenGui') and v.Name == 'FluentRenewed_Infinity Hub - 2.8a | Flee The Facility' then
+            if v.Enabled == true then
+                v.Enabled = false
+            elseif v.Enabled == false then
+                v.Enabled = true
+            end
+        end
+    end
 end
 coroutine.wrap(NMBE_fake_script)()
 local function XHCTHDF_fake_script()
