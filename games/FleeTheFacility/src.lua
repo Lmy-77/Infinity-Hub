@@ -1,4 +1,13 @@
----@diagnostic disable: undefined-global
+-- detect service
+local UserInputService = game:GetService("UserInputService")
+if UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled and not UserInputService.MouseEnabled then
+	print("Mobile device")
+elseif not UserInputService.TouchEnabled and UserInputService.KeyboardEnabled and UserInputService.MouseEnabled then
+	print("Computer device")
+end
+
+
+
 -- start
 print[[
 
@@ -14,13 +23,9 @@ print[[
 
 
 
--- detect service
-local UserInputService = game:GetService("UserInputService")
+-- load preference
 if UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled and not UserInputService.MouseEnabled then
-	print("Mobile device")
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/Lmy-77/Infinity-Hub/refs/heads/scripts/games/FleeTheFacility/Mobile/Button/src.lua",true))()
-elseif not UserInputService.TouchEnabled and UserInputService.KeyboardEnabled and UserInputService.MouseEnabled then
-	print("Computer device")
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/Lmy-77/Infinity-Hub/refs/heads/modules/Mobile/Button/src.lua",true))()
 end
 
 
@@ -184,6 +189,14 @@ function getBeast()
         end
     end
 end
+local function CreatePlataform()
+    local model = Instance.new('Model', workspace)
+    model.Name = 'plataform'
+    local plataform = Instance.new('Part', model)
+    plataform.Position = Vector3.new(400.9646301269531, 3.3987059593200684, 157.8434600830078)
+    plataform.Name = 'handle'
+    plataform.Anchored = true
+end
 scriptVersion = '2.8a'
 
 
@@ -228,6 +241,10 @@ local Tabs = {
     EspSettings = Window:AddTab({
         Title = "| Esp Settings",
         Icon = "settings"
+    }),
+    ServerVip = Window:AddTab({
+        Title = "| Server Vip",
+        Icon = "crown"
     }),
 }
 Window:SelectTab(1)
@@ -358,7 +375,7 @@ Tabs.Game:AddButton({
 })
 
 Tabs.LPlayer:AddSection('[ Survival Options ]')
-local AntiRagdollToggle = Tabs.LPlayer:AddToggle("", {Title = "Anti ragdoll [ Beta ]", Description = "When you're down, you'll get up automatically", Default = false })
+local AntiRagdollToggle = Tabs.LPlayer:AddToggle("", {Title = "Anti ragdoll", Description = "When you're down, you'll get up automatically", Default = false })
 AntiRagdollToggle:OnChanged(function(bool)
     antiRagdoll = bool
     if antiRagdoll then
@@ -708,6 +725,7 @@ local BeastColorPicker = Tabs.EspSettings:AddColorpicker("Colorpicker", {
 BeastColorPicker:OnChanged(function()
     BeastColor = BeastColorPicker.Value
 end)
+
 Tabs.EspSettings:AddButton({
     Title = "Reset colors",
     Description = "",
@@ -729,3 +747,64 @@ for _, v in pairs(path:GetDescendants()) do
         end
     end
 end
+
+
+Tabs.ServerVip:AddSection('[ Server Vip Cheats ]')
+local Autofarmtoggle = Tabs.ServerVip:AddToggle("", {Title = "Auto farm", Description = "When you activate this function in the script it automatically ends the game for you, remembering that this function is still in beta so it is recommended to use it on private servers, I don't recommend using it on public servers", Default = false })
+Autofarmtoggle:OnChanged(function(bool)
+    local checkBeast = game.Players.LocalPlayer.Character:FindFirstChild('BeastPowers')
+    local map = workspace:FindFirstChild(tostring(game.ReplicatedStorage.CurrentMap.Value))
+    autofarm = bool
+
+
+    while autofarm do task.wait()
+        local mapFind = workspace:FindFirstChild(tostring(game.ReplicatedStorage.CurrentMap.Value))
+        if mapFind then
+            if not checkBeast then
+                print('Innocent auto farm script in dev')
+            end
+            if checkBeast then
+                local map = workspace:FindFirstChild(tostring(game.ReplicatedStorage.CurrentMap.Value))
+                local oldPos = game.Players.LocalPlayer.Character.HumanoidRootPart.Position
+
+                for _, v in pairs(game:GetService('Players'):GetChildren()) do
+                    if (v.Name ~= game.Players.LocalPlayer.Name) then
+                        if (v.TempPlayerStatsModule.Captured.Value == false) then
+                            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.Character.HumanoidRootPart.CFrame
+                            wait(.5)
+                            local ohString1 = "HammerHit"
+                            local ohInstance2 = v.Character["Left Arm"]
+                            game.Players.LocalPlayer.Character.Hammer.HammerEvent:FireServer(ohString1, ohInstance2)
+                            wait(.5)
+                            local ohString1 = "HammerTieUp"
+                            local ohInstance2 = v.Character.Torso
+                            local ohVector33 = Vector3.new(144.39588928222656, 9.367745399475098, 54.09453582763672)
+                            game.Players.LocalPlayer.Character.Hammer.HammerEvent:FireServer(ohString1, ohInstance2, ohVector33)
+                            wait(.5)
+                            for _, x in pairs(map:GetChildren()) do
+                                if x:IsA('Model') and x.Name == 'FreezePod' then
+                                    for _, z in pairs(x:GetDescendants()) do
+                                        if z:IsA('IntValue') and z.Name == 'ActionSign' then
+                                            if z.Value == 30 then
+                                                local pivotCFrame = x:GetPivot()
+                                                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = pivotCFrame
+                                                wait(.5)
+                                                KeyPress('E')
+                                                wait(.2)
+                                                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(oldPos)
+                                                wait(1)
+                                            end
+                                        end
+                                    end
+                                end
+                            end
+                        end
+                    end
+                end
+                wait(1)
+            end
+        else
+            print('Waiting for map spawn')
+        end
+    end
+end)
