@@ -113,7 +113,16 @@ local method = {
             _number = false
         }
     },
-    [2] = {nil}
+    [2] = {
+        Enabled = false,
+        values = {
+            _table = false,
+            _function = false,
+            _string = false,
+            _boolean = false,
+            _number = false
+        }
+    }
 }
 function getLScript(tbl, indent)
     indent = indent or 0
@@ -121,7 +130,7 @@ function getLScript(tbl, indent)
     local spacing = string.rep("  ", indent)
 
     for key, value in pairs(tbl) do
-        if LSCRIPT_VALUES._table then
+        if LSCRIPT_VALUES._table and includeTables then
             if type(value) == 'table' then
                 print(spacing .. tostring(key) .. ': table')
             end
@@ -148,4 +157,81 @@ function getLScript(tbl, indent)
         end
     end
 end
-if method[1].Enabled then getLScript(getsenv(scriptPath)) end
+function getMScript(tbl, indent)
+    indent = indent or 0
+    local MSCRIPT_VALUE = method[2].values
+    local spacing = string.rep("  ", indent)
+
+    for key, value in pairs(tbl) do
+        if MSCRIPT_VALUE._table and includeTables then
+            if type(value) == 'table' then
+                print(spacing .. tostring(key) .. ': table')
+            end
+        end
+        if MSCRIPT_VALUE._function then
+            if type(value) == 'function' then
+                print(spacing .. tostring(key) .. ': function')
+            end
+        end
+        if MSCRIPT_VALUE._string then
+            if type(value) == 'string' then
+                print(spacing .. tostring(key) .. ': string')
+            end
+        end
+        if MSCRIPT_VALUE._boolean then
+            if type(value) == 'boolean' then
+                print(spacing .. tostring(key) .. ': boolean')
+            end
+        end
+        if MSCRIPT_VALUE._number then
+            if type(value) == 'number' then
+                print(spacing .. tostring(key) .. ': number')
+            end
+        end
+    end
+end
+if method[1].Enabled then getLScript(getsenv(scriptPath)) else return end
+if method[2].Enabled then getMScript(require(scriptPath)) else return end
+
+
+
+-- cancel remotes
+local remotePath = nil
+local mt = getrawmetatable(game)
+local oldNamecall = mt.__namecall
+setreadonly(mt, false)
+oldNameCall = hookmetamethod(game, '__namecall', function(self, ...)
+    local args = {...}
+    local method = getnamecallmethod()
+    if (method == 'FireServer' or method == 'InvokeServer') and self == remotePath then
+        if args then -- put arg here
+            return nil
+        else
+            return nil
+        end
+    end
+    return oldNameCall(self, ...)
+end)
+setreadonly(mt, true)
+
+
+
+-- cancel functions
+local scriptPath = nil
+local scriptFunc = nil
+local method = {
+    [1] = false,
+    [2] = false
+}
+if method[1] then
+    local senv = getsenv(scriptPath)
+    hookfunction(senv[scriptFunc], function(...)
+        return nil
+    end)
+end
+if method[2] then
+    local req = require(scriptPath)
+    hookfunction(req[scriptFunc], function(...)
+        return nil
+    end)
+end
