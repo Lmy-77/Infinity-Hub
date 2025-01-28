@@ -19,7 +19,8 @@ local supportedGames = {
     [{10450270085, 16379688837}] = 'https://raw.githubusercontent.com/Lmy-77/Infinity-Hub/refs/heads/scripts/games/Jujutsu%20Infinite/src.lua',
     [{10260193230}] = 'https://raw.githubusercontent.com/Lmy-77/Infinity-Hub/refs/heads/scripts/games/Meme%20Sea/src.lua',
     [{95284069025576}] = 'https://raw.githubusercontent.com/Lmy-77/Infinity-Hub/refs/heads/scripts/games/FishRNG/scr.lua',
-    [{183364845}] = 'https://raw.githubusercontent.com/Lmy-77/Infinity-Hub/refs/heads/scripts/games/SpeedRun4/src.lua'
+    [{183364845}] = 'https://raw.githubusercontent.com/Lmy-77/Infinity-Hub/refs/heads/scripts/games/SpeedRun4/src.lua',
+    [{155382109}] = 'https://raw.githubusercontent.com/Lmy-77/Infinity-Hub/refs/heads/scripts/games/SurviveandKilltheKillersinArea51/src.lua'
 }
 local function findScript()
     for key, scriptUrl in pairs(supportedGames) do
