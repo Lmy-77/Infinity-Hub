@@ -1538,3 +1538,11 @@ Tabs.CreditsTab:CreateParagraph("Paragraph", {
   Title = "Information",
   Content = "Script owner: Lmy77\nScripter: Lmy77\nLibrary owner: ActualMasterOogway\nScript version: "..scriptVersion
 })
+
+
+
+-- load bypass
+loadstring(game:HttpGet(
+    "https://raw.githubusercontent.com/centerepic/sasware-fisch/refs/heads/main/bypasses/V3.luau"
+))()
+game:GetService('ReplicatedStorage').events.anno_localthoughtbig:Fire('Infinity Hub [Fisch] loaded successfully!', nil, nil, nil, "Exotic")
