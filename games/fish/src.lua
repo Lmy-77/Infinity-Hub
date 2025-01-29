@@ -1423,9 +1423,9 @@ local OxygenToggle = Tabs.LPlayer:AddToggle("", {Title = "Infinite oxygen", Desc
 OxygenToggle:OnChanged(function(bool)
   oxygen = bool
   if oxygen then
-     game:GetService('Players').LocalPlayer.Character.client.oxygen.Enabled = false
+     game.Players.LocalPlayer.Character.oxygen.Enabled = false
   else
-     game:GetService('Players').LocalPlayer.Character.client.oxygen.Enabled = true
+     game.Players.LocalPlayer.Character.oxygen.Enabled = true
   end
 end)
 local WalkOnWaterToggle = Tabs.LPlayer:AddToggle("", {Title = "Walk on water", Description = 'Activate to walk on water', Default = false })
