@@ -14,6 +14,18 @@ print[[
 
 
 -- variables
+function modGun()
+    for _, v in pairs(getgc(true)) do
+        if type(v) == 'table' and rawget(v, 'stored_ammo') then
+            rawset(v, 'ammo', math.huge)
+            rawset(v, 'stored_ammo', math.huge)
+            rawset(v, 'is_auto', true)
+            rawset(v, 'shoot_wait', 0)
+            rawset(v, 'bullet_count', 10)
+            rawset(v, 'inaccuracy', 0)
+        end
+    end
+end
 scriptVersion = '2.8a'
 
 
@@ -53,10 +65,33 @@ Window:SelectTab(1)
 
 -- source
 Tabs.Game:AddSection('[ Game Cheats ]')
-local CollectWeaponToggle = Tabs.Game:AddToggle("", {Title = "Collect all weapons", Description = 'Collect all weapons in map', Default = false })
-CollectWeaponToggle:OnChanged(function(bool)
-    weapon = bool
-    if weapon then
+local FarmKillerToggle = Tabs.Game:AddToggle("", {Title = "Kill all killers", Description = 'Collect all weapons in map', Default = false })
+FarmKillerToggle:OnChanged(function(bool)
+    killerFarm = bool
+    while killerFarm do task.wait()
+        for _, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+            if v:IsA('Tool') and v.Name == 'RayGun' then
+                game.Players.LocalPlayer.Character.Humanoid:EquipTool(v)
+            end
+        end
+        for _, v in pairs(workspace.Killers:GetChildren()) do
+            local humanoid = v:FindFirstChild('Zombie') or v:FindFirstChild('Humanoid')
+            if humanoid.Health ~= 0 then
+                local modelPosition = v.Head.Position
+                local cframe = CFrame.new(modelPosition + Vector3.new(0, 2.5, 0)) * CFrame.Angles(math.rad(270), 0, 0)
+                for _, hrt in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
+                    if hrt:IsA('Part') and hrt.Name == 'HumanoidRootPart' then
+                        hrt.CFrame = cframe
+                    end
+                end
+            end
+        end
+    end
+end)
+Tabs.Game:AddButton({
+    Title = "Collect all weapons",
+    Description = "",
+    Callback = function()
         local oldPos = game.Players.LocalPlayer.Character.HumanoidRootPart.Position
         teleportOldPos = oldPos
         for _, v in pairs(workspace.Weapons:GetChildren()) do
@@ -73,19 +108,7 @@ CollectWeaponToggle:OnChanged(function(bool)
         wait(1)
         game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(teleportOldPos)
     end
-end)
-local FarmKillerToggle = Tabs.Game:AddToggle("", {Title = "Kill all killers", Description = 'Collect all weapons in map', Default = false })
-FarmKillerToggle:OnChanged(function(bool)
-    killerFarm = bool
-    while killerFarm do task.wait()
-        for _, v in pairs(workspace.Killers:GetChildren()) do
-            local humanoid = v.Zombie or v.Humanoid
-            if humanoid.Health ~= 0 then
-                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame * CFrame.new(0, 0, 8)
-            end
-        end
-    end
-end)
+})
 Tabs.Game:AddButton({
     Title = "Cancel kill remote",
     Description = "",
@@ -107,12 +130,7 @@ Tabs.Game:AddButton({
     Title = "Infnite ammo",
     Description = "",
     Callback = function()
-        for _, v in pairs(getgc(true)) do
-            if type(v) == 'table' and rawget(v, 'ammo') and rawget(v, 'stored_ammo') then
-                rawset(v, 'ammo', math.huge)
-                rawset(v, 'stored_ammo', math.huge)
-            end
-        end
+        modGun()
     end
 })
 
@@ -120,26 +138,18 @@ Tabs.Game:AddButton({
 Tabs.Esp:AddSection('[ Game Options ]')
 local EspKillerToggle = Tabs.Esp:AddToggle("", {Title = "Esp killers", Description = '', Default = false })
 EspKillerToggle:OnChanged(function(bool)
-    local EspPath = workspace.Killers
-    local EspHighlight = Instance.new('Highlight')
-    EspHighlight.Name = 'InfHub_Esp'
     espKiller = bool
-
     if espKiller then
-        for _, v in pairs(EspPath:GetChildren()) do
-            if v:IsA('Model') then
-                EspHighlight.Parent = v
+        for _, model in ipairs(workspace.Killers:GetChildren()) do
+            if model:IsA("Model") then
+                local highlight = Instance.new("Highlight")
+                highlight.Name = "Esp Killers"
+                highlight.Parent = model
             end
         end
-        wait()
-        EspPath.ChildAdded:Connect(function(child)
-            if espKiller then
-                EspHighlight.Parent = child
-            end
-        end)
     else
-        for _, v in pairs(game:GetDescendants()) do
-            if v:IsA('Highlight') and v.Name == 'InfHub_Esp' then
+        for _, v in ipairs(workspace.Killers:GetDescendants()) do
+            if v:IsA("Highlight") and v.Name == "Esp Killers" then
                 v:Destroy()
             end
         end
