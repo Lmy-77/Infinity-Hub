@@ -2,7 +2,7 @@ return {
     Accent = Color3.fromHex("2188ff"), -- focusBorder
 
     AcrylicMain = Color3.fromHex("f6f8fa"), -- sideBar.background
-    AcrylicBorder = Color3.fromHex("e1e4e8"), -- titleBar.border
+    AcrylicBorder = Color3.fromHex("6130a1"), -- titleBar.border
     AcrylicGradient = ColorSequence.new(Color3.fromHex("f6f8fa"), Color3.fromHex("f6f8fa")), -- sideBar.background
     AcrylicNoise = 1,
 
