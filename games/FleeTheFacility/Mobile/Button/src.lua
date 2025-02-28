@@ -76,15 +76,7 @@ local function NMBE_fake_script()
     local button = script.Parent
     local path = game:GetService('CoreGui')
     button.MouseButton1Click:Connect(function()
-        for _, v in pairs(path:GetDescendants()) do
-            if v:IsA('ScreenGui') and v.Name == 'FluentRenewed_Infinity Hub - 2.8a | Flee The Facility' then
-                if v.Enabled == true then
-                    v.Enabled = false
-                elseif v.Enabled == false then
-                    v.Enabled = true
-                end
-            end
-        end
+	game:GetService('VirtualInputManager'):SendKeyEvent(false, 'K', false)
     end)
 end
 coroutine.wrap(NMBE_fake_script)()
